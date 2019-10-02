@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "930086712816",
+    "firebase_url": "https://elavonaplicacionmovil.firebaseio.com",
+    "project_id": "elavonaplicacionmovil",
+    "storage_bucket": "elavonaplicacionmovil.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:930086712816:android:0ee241382e8163f980d935",
+        "android_client_info": {
+          "package_name": "smc.microformas.com.mx.elavonappmovil"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "930086712816-6nfqli4pnl0nare2341ppactnudqqq17.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "smc.microformas.com.mx.elavonappmovil",
+            "certificate_hash": "81b5c1ea3f3b5115743013722d45adcef40a7e4f"
+          }
+        },
+        {
+          "client_id": "930086712816-drqjuatsm1564ainjng7vbt321ilfo90.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZ8m3OIDsCp4LcQ2QLeDB1X7Cdq-iWgjQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "930086712816-drqjuatsm1564ainjng7vbt321ilfo90.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
