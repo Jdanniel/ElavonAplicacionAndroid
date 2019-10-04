@@ -41,13 +41,16 @@ class DBProvider {
     Directory documentDirectory = await getApplicationDocumentsDirectory();
     final path = join(documentDirectory.path, 'ElavonDB.db');
 
+    //BORRAR BASE DE DATOS
+    final bool isexistsDb = await databaseExists(path);
+    if(isexistsDb) await deleteDatabase(path);
+
     final String queryServicios = 'CREATE TABLE $tableservicios ( idservicio INTEGER PRIMARY KEY, descservicio TEXT)';
     final String queryModelos = 'CREATE TABLE $tableModelos ( idmodelo INTEGER PRIMARY KEY, descmodelo TEXT)';
     final String queryMarcas = 'CREATE TABLE $tableMarcas ( idmarca INTEGER PRIMARY KEY, descmarca TEXT)';
     final String queryConectividad = 'CREATE TABLE $tableConectividad ( idconectividad INTEGER PRIMARY KEY, descconectividad TEXT)';
     final String querySoftware = 'CREATE TABLE $tableSoftware ( idsoftware INTEGER PRIMARY KEY, descsoftware TEXT)';
     final String queryUnidades = 'CREATE TABLE $tableUnidades (idunidad INTEGER PRIMARY KEY, noserie TEXT, idmarca INTEGER, idmodelo INTEGER, idconectividad INTEGER, idaplicativo INTEGER)';
-
 
     return await openDatabase(path,
       version: 1,
@@ -62,7 +65,6 @@ class DBProvider {
       }
     );
   }
-
 
   //INSERTAR
 
@@ -131,7 +133,7 @@ class DBProvider {
     return res;
   }
 
-  //Seleccionar
+  //Seleccionar por id
 
   Future<ServiciosModel> getServicioId(int id) async{
     final db = await database;
@@ -146,4 +148,113 @@ class DBProvider {
 
     return res.isNotEmpty ? CmodelosModel.fromJson(res.first) : null;
   }
+
+  Future<MarcasModel> getMarcasId(int id) async{
+    final db = await database;
+
+    final res = await db.query(tableMarcas, where: 'idmarca = ?', whereArgs: [id]);
+
+    return res.isNotEmpty ? MarcasModel.fromJson(res.first) : null;
+  }
+
+  Future<ConectividadModel> getConectividadId(int id) async{
+    final db = await database;
+
+    final res = await db.query(tableConectividad, where: 'idconectividad = ?', whereArgs: [id]);
+
+    return res.isNotEmpty ? ConectividadModel.fromJson(res.first) : null;
+  }
+
+  Future<Softwaremodel> getSoftwareId(int id) async{
+    final db = await database;
+
+    final res = await db.query(tableSoftware, where: 'idsoftware = ?', whereArgs: [id]);
+
+    return res.isNotEmpty ? Softwaremodel.fromJson(res.first) : null;
+  }
+
+  Future<UnidadesModel> getUnidadId(int id) async{
+    final db = await database;
+
+    final res = await db.query(tableUnidades, where: 'idunidad = ?', whereArgs: [id]);
+
+    return res.isNotEmpty ? UnidadesModel.fromJson(res.first) : null;
+  }    
+
+  //Seleccionar Todos
+  Future<List<ServiciosModel>> getAllServicio() async{
+    final db = await database;
+    final res = await db.query(tableservicios);
+
+    List<ServiciosModel> list = res.isNotEmpty 
+                              ? res.map((s) => ServiciosModel.fromJson(s)).toList()
+                              : [];
+    return list;
+  }
+
+  Future<List<CmodelosModel>> getAllModelos() async{
+    final db = await database;
+    final res = await db.query(tableModelos);
+
+    List<CmodelosModel> list = res.isNotEmpty 
+                              ? res.map((s) => CmodelosModel.fromJson(s)).toList()
+                              : [];
+    return list;
+  }  
+
+  Future<List<MarcasModel>> getAllMarcas() async{
+    final db = await database;
+    final res = await db.query(tableMarcas);
+
+    List<MarcasModel> list = res.isNotEmpty 
+                              ? res.map((s) => MarcasModel.fromJson(s)).toList()
+                              : [];
+    return list;
+  }  
+
+  Future<List<ConectividadModel>> getAllConectividad() async{
+    final db = await database;
+    final res = await db.query(tableConectividad);
+
+    List<ConectividadModel> list = res.isNotEmpty 
+                              ? res.map((s) => ConectividadModel.fromJson(s)).toList()
+                              : [];
+    return list;
+  } 
+
+  Future<List<Softwaremodel>> getAllSoftware() async{
+    final db = await database;
+    final res = await db.query(tableSoftware);
+
+    List<Softwaremodel> list = res.isNotEmpty 
+                              ? res.map((s) => Softwaremodel.fromJson(s)).toList()
+                              : [];
+    return list;
+  }      
+
+  Future<List<UnidadesModel>> getAllUnidades() async{
+    final db = await database;
+    final res = await db.query(tableUnidades);
+
+    List<UnidadesModel> list = res.isNotEmpty 
+                              ? res.map((s) => UnidadesModel.fromJson(s)).toList()
+                              : [];
+    return list;
+  }    
+
+  //Actualizar
+  Future<int> updateServicio(ServiciosModel nuevoServicio) async{
+    final db = await database;
+    final res = await db.update(tableservicios, nuevoServicio.toJson(), where: 'id = ?', whereArgs: [nuevoServicio.idServicio]);
+    return res;
+  }
+
+  //Eliminar uno
+  Future<int> deleteServicio(int id) async {
+    final db = await database;
+    final res = await db.delete(tableservicios, where: 'id = ?', whereArgs: [id]);
+    return res;
+  }
+
+  //Eliminar todo
 }

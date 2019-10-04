@@ -1,3 +1,4 @@
+import 'package:elavonappmovil/pages/carga_page.dart';
 import 'package:elavonappmovil/pages/home_page.dart';
 import 'package:elavonappmovil/pages/login.dart';
 import 'package:elavonappmovil/pages/menu/detalles/detalleOdt.dart';
@@ -22,11 +23,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    
     return Provider(
       child: MaterialApp(
         title: 'Microformas',
         debugShowCheckedModeBanner: false,
-        initialRoute: 'login',
+        initialRoute: 'cargaCatalogos',
         routes: {
           'login' : (BuildContext context) => LoginPage(),
           'home' : (BuildContext context) => HomePage(),
@@ -35,6 +37,7 @@ class MyApp extends StatelessWidget {
           'cerradas' : (BuildContext context) => ServiciosCerradosPage(),
           'detalleOdt' : (BuildContext context) => DetalleOdtPage(),
           'scanner' : (BuildContext context) => ScannerPage(),
+          'cargaCatalogos' : (BuildContext context) => CargaPage()
         },
         theme: ThemeData(primaryColor: Colors.blueAccent),
       ),
