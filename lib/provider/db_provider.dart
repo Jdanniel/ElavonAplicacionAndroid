@@ -1,6 +1,11 @@
 import 'dart:io';
 
+import 'package:elavonappmovil/models/cmodelos_model.dart';
+import 'package:elavonappmovil/models/conectividad_model.dart';
+import 'package:elavonappmovil/models/marcas_model.dart';
 import 'package:elavonappmovil/models/servicios_model.dart';
+import 'package:elavonappmovil/models/software_model.dart';
+import 'package:elavonappmovil/models/unidades_model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -65,9 +70,80 @@ class DBProvider {
     final db = await database;
 
     final res = await db.rawInsert(
-      'INSERT INTO $tableservicios()'
+      "INSERT INTO $tableservicios(idservicio,descservicio)" +
+      "VALUES (${nuevoServicio.idServicio},'${nuevoServicio.descServicio}')"
     );
+    return res;
   }
 
+  nuevoModelo(CmodelosModel nuevoModelo) async{
 
+    final db = await database;
+
+    final res = await db.rawInsert(
+      "INSERT INTO $tableModelos(idmodelo,descmodelo)" +
+      "VALUES (${nuevoModelo.idModelo},'${nuevoModelo.descModelo}')"
+    );
+    return res;
+  }
+
+  nuevoMarcas(MarcasModel nuevoMarcas) async{
+
+    final db = await database;
+
+    final res = await db.rawInsert(
+      "INSERT INTO $tableMarcas(idmarca,descmarca)" +
+      "VALUES (${nuevoMarcas.idMarca},'${nuevoMarcas.descMarca}')"
+    );
+    return res;
+  }
+
+   nuevoConectividad(ConectividadModel nuevoConectividad) async{
+
+    final db = await database;
+
+    final res = await db.rawInsert(
+      "INSERT INTO $tableConectividad(idconectividad,descconectividad)" +
+      "VALUES (${nuevoConectividad.idConectividad},'${nuevoConectividad.descConectividad}')"
+    );
+    return res;
+  }
+
+   nuevoSoftware(Softwaremodel nuevoSoftware) async{
+
+    final db = await database;
+
+    final res = await db.rawInsert(
+      "INSERT INTO $tableSoftware(idsoftware,descmarca)" +
+      "VALUES (${nuevoSoftware.idSoftware},'${nuevoSoftware.descSoftware}')"
+    );
+    return res;
+  }
+
+   nuevoUnidad(UnidadesModel nuevoUnidad) async{
+
+    final db = await database;
+
+    final res = await db.rawInsert(
+      "INSERT INTO $tableUnidades(idunidad,noserie,idmarca,idmodelo,idconectividad,idaplicativo)" +
+      "VALUES (${nuevoUnidad.idUnidad},'${nuevoUnidad.noSerie}',${nuevoUnidad.idMarca},${nuevoUnidad.idModelo},${nuevoUnidad.idConectividad},${nuevoUnidad.idAplicativo})"
+    );
+    return res;
+  }
+
+  //Seleccionar
+
+  Future<ServiciosModel> getServicioId(int id) async{
+    final db = await database;
+    final res = await db.query(tableservicios, where: 'idservicio = ?', whereArgs: [id]);
+
+    return res.isNotEmpty ? ServiciosModel.fromJson(res.first) : null;
+  }
+
+  Future<CmodelosModel> getModeloId(int id) async{
+    final db = await database;
+    final res = await db.query(tableModelos, where: 'idmodelo = ?', whereArgs: [id]);
+
+    return res.isNotEmpty ? CmodelosModel.fromJson(res.first) : null;
+  }
 }
