@@ -1,3 +1,5 @@
+import 'package:date_format/date_format.dart';
+import 'package:elavonappmovil/preferencias_usuario/preferencias_usuario.dart';
 import 'package:flutter/material.dart';
 
 import 'package:elavonappmovil/bloc/provider.dart';
@@ -231,7 +233,14 @@ class _LoginPageState extends State<LoginPage> {
     Map info = await usuarioProvider.login(bloc.gusername, bloc.gpassword);
     
     if(info['res']){
-      Navigator.pushReplacementNamed(context, 'home');
+
+    final _prefs = new PreferenciasUsuario();
+    final fechaActual = formatDate(DateTime.now(), [dd, '/', mm, '/', yyyy, ' ', HH, ':', nn]);
+    final updatesBloc = Provider.updatesBloc(context);
+    final fechaMovil = await updatesBloc.selectUpdate();
+      fechaActual != (fechaMovil != null ? fechaMovil.fecha : '') 
+      ? Navigator.pushReplacementNamed(context, 'cargaCatalogos') 
+      : Navigator.pushReplacementNamed(context, 'home');
     }else{   
       mostraAlerta(context, info['msg']);
     }    

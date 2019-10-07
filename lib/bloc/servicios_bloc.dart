@@ -19,8 +19,7 @@ class ServiciosBloc {
   
   //Insertar Servicios
   void insertServicios(ServiciosModel model) async{
-    final servicios = await DBProvider.db.nuevoServicio(model);
-    _servicioController.sink.add(servicios);
+    await DBProvider.db.nuevoServicio(model);
   }
 
   //Seleccionar Servicios por id
@@ -38,7 +37,6 @@ class ServiciosBloc {
   //Seleccionar Servicios via Http
   Future<List<ServiciosModel>> getServiciosHttp() async{
     final servicios = await catalogosProvider.getServicios();
-    _servicioHttpController.sink.add(servicios);
     return servicios;
   }
 

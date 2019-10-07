@@ -1,3 +1,4 @@
+import 'package:date_format/date_format.dart';
 import 'package:elavonappmovil/pages/carga_page.dart';
 import 'package:elavonappmovil/pages/home_page.dart';
 import 'package:elavonappmovil/pages/login.dart';
@@ -23,12 +24,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    
+
     return Provider(
       child: MaterialApp(
         title: 'Microformas',
         debugShowCheckedModeBanner: false,
-        initialRoute: 'cargaCatalogos',
+        initialRoute: 'login',
         routes: {
           'login' : (BuildContext context) => LoginPage(),
           'home' : (BuildContext context) => HomePage(),

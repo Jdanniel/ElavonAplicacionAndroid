@@ -18,12 +18,12 @@ class Softwaremodel {
     });
 
     factory Softwaremodel.fromJson(Map<String, dynamic> json) => Softwaremodel(
-        idSoftware: json["ID_SOFTWARE"],
-        descSoftware: json["DESC_SOFTWARE"],
+        idSoftware: json["ID_APLICATIVO"],
+        descSoftware: json["DESC_APLICATIVO"],
     );
 
     Map<String, dynamic> toJson() => {
-        "ID_SOFTWARE": idSoftware,
-        "DESC_SOFTWARE": descSoftware,
+        "ID_APLICATIVO": idSoftware,
+        "DESC_APLICATIVO": descSoftware,
     };
 }

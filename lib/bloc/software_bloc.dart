@@ -19,8 +19,7 @@ class SoftwareBloc {
   
   //Insertar Servicios
   void insertSoftware(Softwaremodel model) async{
-    final software = DBProvider.db.nuevoSoftware(model);
-    _softwareController.sink.add(software);
+    await DBProvider.db.nuevoSoftware(model);
   }
 
   //Seleccionar Servicios por id
@@ -37,7 +36,6 @@ class SoftwareBloc {
 
   Future<List<Softwaremodel>> getSoftwareHttp() async {
     final software = await catalogosProvider.getSoftwares();
-    _allSoftwareHttpController.sink.add(software);
     return software;
   }
 

@@ -33,4 +33,11 @@ class PreferenciasUsuario {
     _prefs.setInt("idUsuario", value);
   }
 
+  get fechaI{
+    return _prefs.getString("FechaIngreso") ?? '';
+  }
+
+  set fechaI(String value){
+    _prefs.setString("FechaIngreso", value);
+  }
 }

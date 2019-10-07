@@ -1,3 +1,4 @@
+import 'package:elavonappmovil/bloc/updates_bloc.dart';
 import 'package:flutter/material.dart';
 
 import 'login_bloc.dart';
@@ -46,6 +47,8 @@ class Provider extends InheritedWidget{
   final _softwareBloc = new SoftwareBloc();
 
   final _unidadesBloc = new UnidadesBloc();
+
+  final _updatesBloc = new UpdatesBloc();
 
   static Provider _instancia;
 
@@ -97,4 +100,9 @@ class Provider extends InheritedWidget{
   static UnidadesBloc unidadesBloc(BuildContext context){
     return (context.inheritFromWidgetOfExactType(Provider) as Provider)._unidadesBloc;
   }
+
+  static UpdatesBloc updatesBloc(BuildContext context){
+    return(context.inheritFromWidgetOfExactType(Provider) as Provider)._updatesBloc;
+  }
+
 }

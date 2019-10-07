@@ -19,8 +19,7 @@ class ConectividadBloc {
 
   //Insertar Servicios
   void insertConectividad(ConectividadModel model) async{
-    final conectividad = DBProvider.db.nuevoConectividad(model);
-    _conectividadController.sink.add(conectividad);
+    await DBProvider.db.nuevoConectividad(model);
   }
 
   //Seleccionar Servicios por id
@@ -37,7 +36,6 @@ class ConectividadBloc {
 
   Future<List<ConectividadModel>> getConectividadHttp() async{
     var conectividad = await catalogosProvider.getConectividades();
-    _allConnectividadHttpController.sink.add(conectividad);
     return conectividad;
   }
 

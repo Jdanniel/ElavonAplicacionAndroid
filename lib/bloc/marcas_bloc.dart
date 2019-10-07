@@ -20,8 +20,7 @@ class MarcasBloc {
   
   //Insertar Servicios
   void insertMarcas(MarcasModel model) async{
-    final marca = DBProvider.db.nuevoMarcas(model);
-    _marcaController.sink.add(marca);
+    await DBProvider.db.nuevoMarcas(model);
   }
 
   //Seleccionar Servicios por id
@@ -38,7 +37,6 @@ class MarcasBloc {
 
   Future<List<MarcasModel>> getMarcasHttp() async {
     final marcas = await catalogosProvider.getMarcas();
-    _allMarcaHttpController.sink.add(marcas);
     return marcas;
   }
 

@@ -1,84 +1,66 @@
-import 'package:elavonappmovil/bloc/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:date_format/date_format.dart';
+import 'package:elavonappmovil/bloc/provider.dart';
+import 'package:elavonappmovil/models/updates_model.dart';
 
-import '../preferencias_usuario/preferencias_usuario.dart';
-
-class CargaPage extends StatefulWidget {
-  @override
-  _CargaPageState createState() => _CargaPageState();
-}
-
-class _CargaPageState extends State<CargaPage> {
-
-  final prefs = new PreferenciasUsuario();
-  int totalCatalogos = 0;
-  int numeroCatalogos = 6;
+class CargaPage extends StatelessWidget {
+  const CargaPage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
 
-    cargarCatalogos(context);
+  cargarCatalogos(context);
 
-    return Container(
-      child: totalCatalogos != numeroCatalogos 
-            ? Text('Numero de catalogos cargados $totalCatalogos')
-            : Container(child: Text('Numero de catalogos cargados $totalCatalogos'),),
+    return Scaffold(
+      body: Container(
+        child: Column(
+          children: <Widget>[
+            CircularProgressIndicator(),
+            Text('Actualizado...')
+          ],
+        ),
+      ),
     );
   }
 
   void cargarCatalogos(BuildContext context) async{
-    // final serviciosBloc = Provider.serviciosBloc(context);
-    // final serviciosList = await serviciosBloc.getServiciosHttp();
-    // for(var servicio in serviciosList){
-    //   serviciosBloc.insertServicios(servicio);
-    // }
-    setState(() {
-      totalCatalogos++;
-    });
+    final dn = formatDate(DateTime.now(), [dd, '/', mm, '/', yyyy, ' ', HH, ':', nn]);
 
-    // final modeloBloc = Provider.modelosBloc(context);
-    // final modeloList = await modeloBloc.getModelosHttp();
-    // for(var modelo in modeloList){
-    //   modeloBloc.insertModel(modelo);
-    // }
-    setState(() {
-      totalCatalogos++;
-    });
-
-    // final marcaBloc = Provider.marcasBloc(context);
-    // final marcasList = await marcaBloc.getMarcasHttp();
-    // for(var marca in marcasList){
-    //   marcaBloc.insertMarcas(marca);
-    // }
-    setState(() {
-      totalCatalogos++;
-    });
-
-    // final conectividadBloc = Provider.conectividadBloc(context);
-    // final conectividadList = await conectividadBloc.getConectividadHttp();
-    // for(var conectividad in conectividadList){
-    //   conectividadBloc.insertConectividad(conectividad);
-    // }
-    setState(() {
-      totalCatalogos++;
-    });
-
-    // final softwareBloc = Provider.softwareBloc(context);
-    // final softwareList = await softwareBloc.getSoftwareHttp();
-    // for(var software in softwareList){
-    //   softwareBloc.insertSoftware(software);
-    // }
-    setState(() {
-      totalCatalogos++;
-    });
-  
-    // final unidadBloc = Provider.unidadesBloc(context);
-    // final unidadList = await unidadBloc.getUnidadesHttp();
-    // for(var unidad in unidadList){
-    //   unidadBloc.insertUnidad(unidad);
-    // }
-    setState(() {
-      totalCatalogos++;
-    });
+    final serviciosBloc = Provider.serviciosBloc(context);
+    final serviciosList = await serviciosBloc.getServiciosHttp();   
+    for(var servicio in serviciosList){
+      serviciosBloc.insertServicios(servicio);
+    }
+    final modeloBloc = Provider.modelosBloc(context);
+    final modeloList = await modeloBloc.getModelosHttp();
+    for(var modelo in modeloList){
+      modeloBloc.insertModel(modelo);
+    }
+    final marcaBloc = Provider.marcasBloc(context);
+    final marcasList = await marcaBloc.getMarcasHttp();
+    for(var marca in marcasList){
+      marcaBloc.insertMarcas(marca);
+    }      
+    final conectividadBloc = Provider.conectividadBloc(context);
+    final conectividadList = await conectividadBloc.getConectividadHttp();
+    for(var conectividad in conectividadList){
+      conectividadBloc.insertConectividad(conectividad);
+    }      
+    final softwareBloc = Provider.softwareBloc(context);
+    final softwareList = await softwareBloc.getSoftwareHttp();
+    for(var software in softwareList){
+      softwareBloc.insertSoftware(software);
+    }
+    final unidadBloc = Provider.unidadesBloc(context);
+    final unidadList = await unidadBloc.getUnidadesHttp();
+    for(var unidad in unidadList){
+      unidadBloc.insertUnidad(unidad);
+    }      
+    final updatesBloc = Provider.updatesBloc(context);
+    final up = new UpdatesModel();
+    up.fecha = dn;
+    updatesBloc.insertUpdates(up);
+    updatesBloc.selectUpdate();
+    Navigator.pushReplacementNamed(context, 'home');
   }
 }

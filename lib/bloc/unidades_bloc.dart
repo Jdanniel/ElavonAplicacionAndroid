@@ -19,8 +19,7 @@ class UnidadesBloc {
   
   //Insertar Servicios
   void insertUnidad(UnidadesModel model) async{
-    final unidad = DBProvider.db.nuevoUnidad(model);
-    _unidadController.sink.add(unidad);
+    await DBProvider.db.nuevoUnidad(model);
   }
 
   //Seleccionar Servicios por id
@@ -37,13 +36,13 @@ class UnidadesBloc {
 
   Future<List<UnidadesModel>> getUnidadesHttp() async {
     final unidades = await catalogosProvider.getUnidades();
-    _allunidadesHttpController.sink.add(unidades);
     return unidades;
   }
 
   dispose(){
     _unidadController?.close();
     _allunidadesController?.close();
+    _allunidadesHttpController?.close();
   }
 
 

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:date_format/date_format.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:elavonappmovil/preferencias_usuario/preferencias_usuario.dart';
@@ -27,6 +28,7 @@ class UsuarioProvider {
     if(resp.statusCode == 200 || resp.statusCode == 201){
       _prefs.idUsuario = decodeResp["idusuario"];
       _prefs.usuarioNombre = decodeResp["user"];
+      _prefs.fechaI = formatDate(DateTime.now(), [dd, '/', mm, '/', yyyy, ' ', HH, ':', nn]);
       return {'res': true, 'usuario': decodeResp['user'], 'idusuario': decodeResp['idusuario']};
     }else{
       return {'res': false, 'msg': 'Usuario o contraseña Incorrectas'};
