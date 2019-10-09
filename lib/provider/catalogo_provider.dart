@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:elavonappmovil/models/negocios_model.dart';
+import 'package:elavonappmovil/models/odts_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:elavonappmovil/models/software_model.dart';
 import 'package:elavonappmovil/models/unidades_model.dart';
@@ -81,5 +83,15 @@ class CatalogoProvider{
     if(decodeData == null) return[];
     return unidadesList;
   } 
-
+  
+  Future<List<Odtmodel>> getOdts() async {
+    final url = '$_url/getodtstecnico/${_prefs.idUsuario}';
+    final resp = await http.get(url,
+      headers: headerJson
+    );
+    final decodeData = json.decode(resp.body) as List;
+    final odtList = decodeData.map((map) => Odtmodel.fromJson(map)).toList(); 
+    if(decodeData == null) return [];
+    return odtList;
+  }
 }

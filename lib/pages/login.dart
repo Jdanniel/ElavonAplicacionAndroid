@@ -234,7 +234,6 @@ class _LoginPageState extends State<LoginPage> {
     
     if(info['res']){
 
-    final _prefs = new PreferenciasUsuario();
     final fechaActual = formatDate(DateTime.now(), [dd, '/', mm, '/', yyyy, ' ', HH, ':', nn]);
     final updatesBloc = Provider.updatesBloc(context);
     final fechaMovil = await updatesBloc.selectUpdate();

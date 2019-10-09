@@ -12,12 +12,18 @@ class CargaPage extends StatelessWidget {
   cargarCatalogos(context);
 
     return Scaffold(
-      body: Container(
-        child: Column(
-          children: <Widget>[
-            CircularProgressIndicator(),
-            Text('Actualizado...')
-          ],
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Container(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                CircularProgressIndicator(),
+                Text('Actualizando...') 
+              ],
+            ),
+          ),
         ),
       ),
     );
