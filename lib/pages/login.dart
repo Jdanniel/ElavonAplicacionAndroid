@@ -1,5 +1,4 @@
 import 'package:date_format/date_format.dart';
-import 'package:elavonappmovil/preferencias_usuario/preferencias_usuario.dart';
 import 'package:flutter/material.dart';
 
 import 'package:elavonappmovil/bloc/provider.dart';
