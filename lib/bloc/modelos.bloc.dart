@@ -10,17 +10,15 @@ class ModelosBloc {
   //Stream
   final _modeloController = new BehaviorSubject<CmodelosModel>();
   final _allModeloController = new BehaviorSubject<List<CmodelosModel>>();
-  final _allModelHttpController = new BehaviorSubject<List<CmodelosModel>>();
 
   //Escuchar 
   Stream<CmodelosModel> get modeloStream => _modeloController.stream;
   Stream<List<CmodelosModel>> get allModeloStream => _allModeloController.stream;
-  Stream<List<CmodelosModel>> get allModelosStream => _allModelHttpController;  
 
   final catalogosProvider = new CatalogoProvider();
 
   //Insertar Servicios
-  void insertModel(CmodelosModel model) async{
+  Future insertModel(CmodelosModel model) async{
     await DBProvider.db.nuevoModelo(model);
   }
 
@@ -44,7 +42,6 @@ class ModelosBloc {
   dispose(){
     _modeloController?.close();
     _allModeloController?.close();
-    _allModelHttpController?.close();
   }
 
 

@@ -18,7 +18,7 @@ class ServiciosBloc {
   final catalogosProvider = CatalogoProvider();
   
   //Insertar Servicios
-  void insertServicios(ServiciosModel model) async{
+  Future insertServicios(ServiciosModel model) async{
     await DBProvider.db.nuevoServicio(model);
   }
 

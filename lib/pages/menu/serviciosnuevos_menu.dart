@@ -16,7 +16,7 @@ class _ServiciosNuevosPageState extends State<ServiciosNuevosPage> {
   @override
   Widget build(BuildContext context) {
     final odtbloc = Provider.odtsBloc(context);
-    odtbloc.cargarOdts();
+    odtbloc.selectAllOdts();
 
     return Scaffold(
       appBar: AppBar(
@@ -34,7 +34,7 @@ class _ServiciosNuevosPageState extends State<ServiciosNuevosPage> {
     double _height = MediaQuery.of(_context).size.height;
 
     return StreamBuilder(
-      stream: bloc.odtsStream,
+      stream: bloc.allodtsStream,
       builder: (BuildContext context, AsyncSnapshot<List<Odtmodel>> snapshot) {
         if (snapshot.hasData) {
           years = 0;

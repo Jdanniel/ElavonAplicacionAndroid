@@ -1,3 +1,4 @@
+import 'package:elavonappmovil/provider/db_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:elavonappmovil/models/odts_model.dart';
@@ -6,24 +7,41 @@ import 'package:elavonappmovil/provider/odt_provider.dart';
 class OdtsBloc{
 
   //Stream
-  final _odtsController = new BehaviorSubject<List<Odtmodel>>();
+  final _allodtsController = new BehaviorSubject<List<Odtmodel>>();
+  final _odtController = new BehaviorSubject<Odtmodel>();
   final _cargandoController = new BehaviorSubject<bool>();
 
   final _odtsProvider = new OdtProvider();
 
   //Escuchar Steams
-  Stream<List<Odtmodel>> get odtsStream => _odtsController.stream;
+  Stream<List<Odtmodel>> get allodtsStream => _allodtsController.stream;
+  Stream<Odtmodel> get odtStrem => _odtController.stream;
   Stream<bool> get cargando => _cargandoController.stream;
 
   //Insertar Metodos de Odts
-  void cargarOdts() async {
+
+  Future insertarOdts(Odtmodel model) async{
+    await DBProvider.db.nuevoArs(model);
+  }
+
+  void selectOdt(int id) async{
+    final odt = await DBProvider.db.getOdtsId(id);
+    _odtController.sink.add(odt);
+  }
+
+  void selectAllOdts() async{
+    final odts = await DBProvider.db.getAllArs();
+    _allodtsController.sink.add(odts);
+  }
+
+  Future<List<Odtmodel>> getAllOdtsHttp() async{
     final odts = await _odtsProvider.getOdts();
-    //insertar las odts en el stream
-    _odtsController.sink.add(odts);
+    return odts;
   }
 
   dispose(){
-    _odtsController?.close();
+    _allodtsController?.close();
+    _odtController?.close();
     _cargandoController?.close();
   }
 

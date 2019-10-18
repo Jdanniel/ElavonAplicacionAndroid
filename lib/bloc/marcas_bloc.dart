@@ -19,7 +19,7 @@ class MarcasBloc {
   var catalogosProvider = new CatalogoProvider();
   
   //Insertar Servicios
-  void insertMarcas(MarcasModel model) async{
+  Future insertMarcas(MarcasModel model) async{
     await DBProvider.db.nuevoMarcas(model);
   }
 

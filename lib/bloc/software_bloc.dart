@@ -18,7 +18,7 @@ class SoftwareBloc {
   var catalogosProvider = new CatalogoProvider();
   
   //Insertar Servicios
-  void insertSoftware(Softwaremodel model) async{
+  Future insertSoftware(Softwaremodel model) async{
     await DBProvider.db.nuevoSoftware(model);
   }
 

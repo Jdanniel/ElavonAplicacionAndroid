@@ -1,10 +1,13 @@
 import 'dart:io';
 
+import 'package:elavonappmovil/data/database_ars.dart';
 import 'package:elavonappmovil/models/cmodelos_model.dart';
 import 'package:elavonappmovil/models/conectividad_model.dart';
 import 'package:elavonappmovil/models/marcas_model.dart';
+import 'package:elavonappmovil/models/odts_model.dart';
 import 'package:elavonappmovil/models/servicios_model.dart';
 import 'package:elavonappmovil/models/software_model.dart';
+import 'package:elavonappmovil/models/totalodts_model.dart';
 import 'package:elavonappmovil/models/unidades_model.dart';
 import 'package:elavonappmovil/models/updates_model.dart';
 import 'package:path/path.dart';
@@ -44,9 +47,10 @@ class DBProvider {
     final path = join(documentDirectory.path, 'ElavonDB.db');
 
     //BORRAR BASE DE DATOS
-    // final bool isexistsDb = await databaseExists(path);
+    //final bool isexistsDb = await databaseExists(path);
     // if(isexistsDb) await deleteDatabase(path);
     await deleteDatabase(path);
+
     final String queryServicios = 'CREATE TABLE $tableservicios ( idservicio INTEGER NOT NULL, descservicio TEXT)';
     final String queryModelos = 'CREATE TABLE $tableModelos ( idmodelo INTEGER NOT NULL, descmodelo TEXT)';
     final String queryMarcas = 'CREATE TABLE $tableMarcas ( idmarca INTEGER NOT NULL, descmarca TEXT)';
@@ -54,6 +58,7 @@ class DBProvider {
     final String querySoftware = 'CREATE TABLE $tableSoftware ( idsoftware INTEGER NOT NULL, descsoftware TEXT)';
     final String queryUnidades = 'CREATE TABLE $tableUnidades (idunidad INTEGER NOT NULL, noserie TEXT, idmarca INTEGER, idmodelo INTEGER, idconectividad INTEGER, idaplicativo INTEGER)';
     final String queryUpdates = 'CREATE TABLE $tableUpdates ( idupdates INTEGER PRIMARY KEY, fecupdates TEXT)';
+    final String queryArs = 'CREATE TABLE ${BdArs.table} (${BdArs.columnID} INTEGER NOT NULL, ${BdArs.columnNOAR} TEXT, ${BdArs.columnIDNEGOCIO} INTEGER, ${BdArs.columnIDTIPOSERVICIO} INTEGER, ${BdArs.columnDESCNEGOCIO} TEXT, ${BdArs.columnNOAFILIACION} TEXT, ${BdArs.columnESTADO} TEXT, ${BdArs.columnCOLONIA} TEXT, ${BdArs.columnFECGARANTIA} TEXT, ${BdArs.columnLATITUD} REAL, ${BdArs.columnLONGITUD} REAL, ${BdArs.columnDAYS} INTEGER, ${BdArs.columnMONTHS} INTEGER, ${BdArs.columnYEARS} INTEGER, ${BdArs.columnNUMBERS} INTEGER)';
 
     return await openDatabase(path,
       version: 1,
@@ -66,6 +71,7 @@ class DBProvider {
         await db.execute(querySoftware);
         await db.execute(queryUnidades);
         await db.execute(queryUpdates);
+        await db.execute(queryArs);
         // await db.close();
       }
     );
@@ -156,6 +162,46 @@ class DBProvider {
     return res;
   }
 
+  nuevoArs(Odtmodel model) async {
+    final db = await database;
+
+    final res = await db.rawInsert(
+      "INSERT INTO ${BdArs.table}( " 
+      "${BdArs.columnID}," 
+      "${BdArs.columnNOAR}," 
+      "${BdArs.columnIDNEGOCIO}," 
+      "${BdArs.columnIDTIPOSERVICIO}," 
+      "${BdArs.columnDESCNEGOCIO}," 
+      "${BdArs.columnNOAFILIACION}," 
+      "${BdArs.columnESTADO}," 
+      "${BdArs.columnCOLONIA}," 
+      "${BdArs.columnFECGARANTIA}," 
+      "${BdArs.columnLATITUD}," 
+      "${BdArs.columnLONGITUD}," 
+      "${BdArs.columnDAYS}," 
+      "${BdArs.columnMONTHS}," 
+      "${BdArs.columnYEARS}," 
+      "${BdArs.columnNUMBERS}" 
+      ") VALUES(" 
+      "${model.idAr},"
+      "'${model.odt}',"
+      "${model.idNegocio},"
+      "${model.idTipoServicio},"
+      "'${model.negocio}',"
+      "'${model.noAfiliacion}',"
+      "'${model.estado}',"
+      "'${model.colonia}',"
+      "'${model.fecGarantia}',"
+      "${model.latitud},"
+      "${model.longitud},"
+      "${model.days},"
+      "${model.months},"
+      "${model.years},"
+      "${model.numbers})"
+    );
+    return res;
+  }
+
   //Seleccionar por id
 
   Future<ServiciosModel> getServicioId(int id) async{
@@ -203,6 +249,12 @@ class DBProvider {
     // await db.close();
     return res.isNotEmpty ? UnidadesModel.fromJson(res.first) : null;
   }    
+
+  Future<Odtmodel> getOdtsId(int id) async{
+    final db = await database;
+    final res = await db.query(BdArs.table, where: '${BdArs.columnID} = ?', whereArgs: [id]);
+    return res.isNotEmpty ? Odtmodel.fromJson(res.first) : null;
+  }
 
   Future<UpdatesModel> getLastUpdate() async{
     final db = await database;
@@ -277,6 +329,24 @@ class DBProvider {
     return list;
   }    
 
+  Future<List<Odtmodel>> getAllArs() async{
+    final db = await database;
+    final res = await db.query(BdArs.table);
+    List<Odtmodel> list = res.isNotEmpty
+                        ? res.map((s) => Odtmodel.fromJson(s)).toList()
+                        : [];
+    return list;
+  }
+
+  Future<TotalodtsModel> getTotalOdts() async{
+    //Agregar el ID del estatus ar para realizar el conteo
+    final db = await database;
+    final total = Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM ${BdArs.table}'));
+    TotalodtsModel model = new TotalodtsModel();
+    model.nuevas = total;
+    return model;
+  }
+
   //Actualizar
   Future<int> updateServicio(ServiciosModel nuevoServicio) async{
     final db = await database;
@@ -290,6 +360,12 @@ class DBProvider {
     final db = await database;
     final res = await db.delete(tableservicios, where: 'id = ?', whereArgs: [id]);
     // await db.close();
+    return res;
+  }
+
+  Future<int> deleteAr(int id) async {
+    final db = await database;
+    final res = await db.delete(BdArs.table, where: '${BdArs.columnID} = ?', whereArgs: [id]);
     return res;
   }
 

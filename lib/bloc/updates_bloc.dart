@@ -10,7 +10,7 @@ class UpdatesBloc{
   var catalogoProvider = new CatalogoProvider();
 
   //Insertar Servicios
-  void insertUpdates(UpdatesModel model) async{
+  Future insertUpdates(UpdatesModel model) async{
     await DBProvider.db.nuevoUpdate(model);
   }
 

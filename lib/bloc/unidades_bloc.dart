@@ -18,7 +18,7 @@ class UnidadesBloc {
   var catalogosProvider = new CatalogoProvider();
   
   //Insertar Servicios
-  void insertUnidad(UnidadesModel model) async{
+  Future insertUnidad(UnidadesModel model) async{
     await DBProvider.db.nuevoUnidad(model);
   }
 

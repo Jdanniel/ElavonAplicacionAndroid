@@ -29,7 +29,6 @@ class OdtProvider{
     }else{
       return odts;
     }
-
   }
 
   Future<List<Odtmodel>> getOdts() async {

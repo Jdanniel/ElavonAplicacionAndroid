@@ -18,7 +18,7 @@ class ConectividadBloc {
   var catalogosProvider = new CatalogoProvider();
 
   //Insertar Servicios
-  void insertConectividad(ConectividadModel model) async{
+  Future insertConectividad(ConectividadModel model) async{
     await DBProvider.db.nuevoConectividad(model);
   }
 

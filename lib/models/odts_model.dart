@@ -47,17 +47,17 @@ class Odtmodel {
         odt: json["NO_AR"],
         noAfiliacion: json["NO_AFILIACION"],
         fecGarantia: json["FEC_GARANTIA"],
-        negocio: json["NEGOCIO"],
+        negocio: json["DESC_NEGOCIO"],
         idAr: json["ID_AR"],
         idNegocio: json["ID_NEGOCIO"],
         idTipoServicio: json["ID_TIPO_SERVICIO"],
         estado: json["ESTADO"],
         colonia: json["COLONIA"],
-        latitud: json["LATITDUD"],
+        latitud: json["LATITUD"],
         longitud: json["LONGITUD"],
-        days:  json["DIA"],
-        months: json["MES"],
-        years: json["AA"],
+        days:  json["DAYS"],
+        months: json["MONTHS"],
+        years: json["YEARS"],
         numbers: json["NUMBER"]
     );
 
@@ -65,7 +65,7 @@ class Odtmodel {
         "NO_AR": odt,
         "NO_AFILIACION": noAfiliacion,
         "FEC_GARANTIA": fecGarantia,
-        "NEGOCIO": negocio,
+        "DESC_NEGOCIO": negocio,
         "ID_AR": idAr,
         "ID_NEGOCIO": idNegocio,
         "ID_TIPO_SERVICIO" : idTipoServicio,
@@ -73,9 +73,9 @@ class Odtmodel {
         "COLONIA": colonia,
         "LATITUD" : latitud,
         "LONGITUD" : longitud, 
-        "DIA": days,
-        "MES": months,
-        "AA": years,
+        "DAYS": days,
+        "MONTHS": months,
+        "YEARS": years,
         "NUMBER": numbers  
     };
 }

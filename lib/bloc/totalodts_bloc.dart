@@ -1,3 +1,4 @@
+import 'package:elavonappmovil/provider/db_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:elavonappmovil/models/totalodts_model.dart';
@@ -17,7 +18,7 @@ class TotalOdtsBloc{
 
   //Insertar Metodos de Odts
   Future<TotalodtsModel> cargarOdts() async {
-    final odts = await _odtsProvider.getTotales();
+    final odts = await DBProvider.db.getTotalOdts();
     //insertar las odts en el stream
     _odtsController.sink.add(odts);
     return odts;
