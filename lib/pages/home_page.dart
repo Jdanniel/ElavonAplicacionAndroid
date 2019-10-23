@@ -55,7 +55,8 @@ class _HomePageState extends State<HomePage> {
           _cardRedondeado('Servicios', 'Nuevos', Icons.new_releases, 1),
           _cardRedondeado('Servicios', 'Abiertos', Icons.lock_open, 2),
           _cardRedondeado('Servicios', 'Cerrados', Icons.lock, 3),
-          _cardRedondeado('Escanear', 'Series', Icons.scanner, 4),
+          _cardRedondeado('Unidades', 'Inventario', Icons.lock, 4),
+          _cardRedondeado('Escanear', 'Series', Icons.scanner, 5),
         ],
       ),
     );
@@ -217,6 +218,9 @@ class _HomePageState extends State<HomePage> {
         Navigator.pushNamed(context, 'cerradas');
         break;
       case 4:
+        Navigator.pushNamed(context, 'unidadesInvenario');
+        break;        
+      case 5:
         Navigator.pushNamed(context, 'scanner');
         break;
     }

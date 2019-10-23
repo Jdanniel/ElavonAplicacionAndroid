@@ -7,6 +7,7 @@ import 'package:elavonappmovil/pages/menu/scanner.dart';
 import 'package:elavonappmovil/pages/menu/serviciosabierto.menu.dart';
 import 'package:elavonappmovil/pages/menu/servicioscerrados_menu.dart';
 import 'package:elavonappmovil/pages/menu/serviciosnuevos_menu.dart';
+import 'package:elavonappmovil/pages/menu/unidadesinventario.dart';
 import 'package:flutter/material.dart';
 
 import 'package:elavonappmovil/bloc/provider.dart';
@@ -38,7 +39,8 @@ class MyApp extends StatelessWidget {
           'cerradas' : (BuildContext context) => ServiciosCerradosPage(),
           'detalleOdt' : (BuildContext context) => DetalleOdtPage(),
           'scanner' : (BuildContext context) => ScannerPage(),
-          'cargaCatalogos' : (BuildContext context) => CargaPage()
+          'cargaCatalogos' : (BuildContext context) => CargaPage(),
+          'unidadesInvenario' : (BuildContext context) => UnidadesInventarioPage()
         },
         theme: ThemeData(primaryColor: Colors.blueAccent),
       ),

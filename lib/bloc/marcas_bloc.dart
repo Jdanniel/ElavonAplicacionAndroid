@@ -7,12 +7,10 @@ import '../provider/db_provider.dart';
 class MarcasBloc {
 
   //Stream
-  final _marcaController = new BehaviorSubject<MarcasModel>();
   final _allMarcaController = new BehaviorSubject<List<MarcasModel>>();
   final _allMarcaHttpController = new BehaviorSubject<List<MarcasModel>>();
 
   //Escuchar 
-  Stream<MarcasModel> get marcaStream => _marcaController.stream;
   Stream<List<MarcasModel>> get allMarcaStream => _allMarcaController.stream;
   Stream<List<MarcasModel>> get allMarcasHttpStream => _allMarcaHttpController.stream;
 
@@ -24,9 +22,9 @@ class MarcasBloc {
   }
 
   //Seleccionar Servicios por id
-  void selectMarca(int id) async{
+  Future<String> selectMarca(int id) async{
     final marca = await DBProvider.db.getMarcasId(id);
-    _marcaController.sink.add(marca);
+    return marca.descMarca;
   }
 
   //Seleccionar Todos los servicios
@@ -41,7 +39,6 @@ class MarcasBloc {
   }
 
   dispose(){
-    _marcaController?.close();
     _allMarcaController?.close();
     _allMarcaHttpController?.close();
   }

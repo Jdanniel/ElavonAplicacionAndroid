@@ -8,11 +8,9 @@ import '../provider/db_provider.dart';
 class ModelosBloc {
 
   //Stream
-  final _modeloController = new BehaviorSubject<CmodelosModel>();
   final _allModeloController = new BehaviorSubject<List<CmodelosModel>>();
 
   //Escuchar 
-  Stream<CmodelosModel> get modeloStream => _modeloController.stream;
   Stream<List<CmodelosModel>> get allModeloStream => _allModeloController.stream;
 
   final catalogosProvider = new CatalogoProvider();
@@ -23,9 +21,9 @@ class ModelosBloc {
   }
 
   //Seleccionar Servicios por id
-  void selectModelo(int id) async{
+  Future<String> selectModelo(int id) async{
     final modelo = await DBProvider.db.getModeloId(id);
-    _modeloController.sink.add(modelo);
+    return modelo.descModelo;
   }
 
   //Seleccionar Todos los servicios
@@ -40,7 +38,6 @@ class ModelosBloc {
   }
 
   dispose(){
-    _modeloController?.close();
     _allModeloController?.close();
   }
 

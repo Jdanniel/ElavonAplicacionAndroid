@@ -4,9 +4,9 @@
 
 import 'dart:convert';
 
-List<UnidadesModel> unidadesModelFromJson(String str) => List<UnidadesModel>.from(json.decode(str).map((x) => UnidadesModel.fromJson(x)));
+UnidadesModel unidadesModelFromJson(String str) => UnidadesModel.fromJson(json.decode(str));
 
-String unidadesModelToJson(List<UnidadesModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String unidadesModelToJson(UnidadesModel data) => json.encode(data.toJson());
 
 class UnidadesModel {
     int idUnidad;

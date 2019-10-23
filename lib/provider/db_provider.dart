@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:elavonappmovil/data/database_ars.dart';
+import 'package:elavonappmovil/data/database_unidades.dart';
 import 'package:elavonappmovil/models/cmodelos_model.dart';
 import 'package:elavonappmovil/models/conectividad_model.dart';
 import 'package:elavonappmovil/models/marcas_model.dart';
@@ -56,7 +57,7 @@ class DBProvider {
     final String queryMarcas = 'CREATE TABLE $tableMarcas ( idmarca INTEGER NOT NULL, descmarca TEXT)';
     final String queryConectividad = 'CREATE TABLE $tableConectividad ( idconectividad INTEGER NOT NULL, descconectividad TEXT)';
     final String querySoftware = 'CREATE TABLE $tableSoftware ( idsoftware INTEGER NOT NULL, descsoftware TEXT)';
-    final String queryUnidades = 'CREATE TABLE $tableUnidades (idunidad INTEGER NOT NULL, noserie TEXT, idmarca INTEGER, idmodelo INTEGER, idconectividad INTEGER, idaplicativo INTEGER)';
+    final String queryUnidades = 'CREATE TABLE ${Bdunidades.table} (idunidad INTEGER NOT NULL, noserie TEXT, idmarca INTEGER, idmodelo INTEGER, idconectividad INTEGER, idaplicativo INTEGER)';
     final String queryUpdates = 'CREATE TABLE $tableUpdates ( idupdates INTEGER PRIMARY KEY, fecupdates TEXT)';
     final String queryArs = 'CREATE TABLE ${BdArs.table} (${BdArs.columnID} INTEGER NOT NULL, ${BdArs.columnNOAR} TEXT, ${BdArs.columnIDNEGOCIO} INTEGER, ${BdArs.columnIDTIPOSERVICIO} INTEGER, ${BdArs.columnDESCNEGOCIO} TEXT, ${BdArs.columnNOAFILIACION} TEXT, ${BdArs.columnESTADO} TEXT, ${BdArs.columnCOLONIA} TEXT, ${BdArs.columnFECGARANTIA} TEXT, ${BdArs.columnLATITUD} REAL, ${BdArs.columnLONGITUD} REAL, ${BdArs.columnDAYS} INTEGER, ${BdArs.columnMONTHS} INTEGER, ${BdArs.columnYEARS} INTEGER, ${BdArs.columnNUMBERS} INTEGER)';
 
