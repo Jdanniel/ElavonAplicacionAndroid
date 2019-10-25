@@ -144,7 +144,7 @@ class DBProvider {
     final db = await database;
 
     final res = await db.rawInsert(
-      "INSERT INTO $tableUnidades(idunidad,noserie,idmarca,idmodelo,idconectividad,idaplicativo)" +
+      "INSERT INTO ${Bdunidades.table}(${Bdunidades.columnID},${Bdunidades.columnNOSERIE},${Bdunidades.columnIDMARCA},${Bdunidades.columnIDMODELO},${Bdunidades.columnIDCONECTIVIDAD},${Bdunidades.columnIDAPLICATIVO})" +
       "VALUES (${nuevoUnidad.idUnidad},'${nuevoUnidad.noSerie}',${nuevoUnidad.idMarca},${nuevoUnidad.idModelo},${nuevoUnidad.idConectividad},${nuevoUnidad.idAplicativo})"
     );
     // await db.close();
