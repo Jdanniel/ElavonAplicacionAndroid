@@ -12,6 +12,8 @@ class BdArs {
   static final columnNOAFILIACION = 'NO_AFILIACION';
   static final columnESTADO = 'ESTADO';
   static final columnCOLONIA = 'COLONIA';
+  static final columnPOBLACION = 'POBLACION';
+  static final columnDIRECCION = 'DIRECCION';
   static final columnFECGARANTIA = 'FEC_GARANTIA';
   static final columnLATITUD = 'LATITUD';
   static final columnLONGITUD = 'LONGITUD';

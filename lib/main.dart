@@ -9,7 +9,7 @@ import 'package:elavonappmovil/pages/menu/servicioscerrados_menu.dart';
 import 'package:elavonappmovil/pages/menu/serviciosnuevos_menu.dart';
 import 'package:elavonappmovil/pages/menu/unidadesinventario.dart';
 import 'package:flutter/material.dart';
-
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:elavonappmovil/bloc/provider.dart';
 import 'package:elavonappmovil/preferencias_usuario/preferencias_usuario.dart';
 
@@ -17,7 +17,7 @@ void main() async {
   
   final prefs = new PreferenciasUsuario();
   await prefs.initPrefs();
-  runApp(MyApp());
+  initializeDateFormatting().then((_) => runApp(MyApp()));
 
 }
 

@@ -18,6 +18,8 @@ class Odtmodel {
     int idTipoServicio;
     String estado;
     String colonia;
+    String poblacion;
+    String direccion;
     double latitud;
     double longitud;
     int days;
@@ -35,6 +37,8 @@ class Odtmodel {
         this.idTipoServicio = 0,
         this.estado = '',
         this.colonia = '',
+        this.poblacion = '',
+        this.direccion = '',
         this.latitud = 0,
         this.longitud = 0,
         this.days = 0,
@@ -53,6 +57,8 @@ class Odtmodel {
         idTipoServicio: json["ID_TIPO_SERVICIO"],
         estado: json["ESTADO"],
         colonia: json["COLONIA"],
+        poblacion: json["POBLACION"],
+        direccion: json["DIRECCION"],
         latitud: json["LATITUD"],
         longitud: json["LONGITUD"],
         days:  json["DAYS"],
@@ -71,6 +77,8 @@ class Odtmodel {
         "ID_TIPO_SERVICIO" : idTipoServicio,
         "ESTADO": estado,
         "COLONIA": colonia,
+        "POBLACION": poblacion,
+        "DIRECCION": direccion,
         "LATITUD" : latitud,
         "LONGITUD" : longitud, 
         "DAYS": days,
