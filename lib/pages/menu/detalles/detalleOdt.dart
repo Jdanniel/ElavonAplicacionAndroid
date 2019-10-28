@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -13,7 +14,6 @@ class DetalleOdtPage extends StatefulWidget {
 }
 
 class _DetalleOdtPageState extends State<DetalleOdtPage> {
-  
   OdtsBloc odtBloc;
   Odtmodel odt = new Odtmodel();
   double lat = 0;
@@ -44,6 +44,7 @@ class _DetalleOdtPageState extends State<DetalleOdtPage> {
                     children: <Widget>[
                       SizedBox(height: _height * 0.10),
                       _crearCards(_height),
+                      _crearBotonMaps(odt),
                     ],
                   ),
                 ),
@@ -55,14 +56,13 @@ class _DetalleOdtPageState extends State<DetalleOdtPage> {
                     _regresar(context);
                   },
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0)
-                  ),
+                      borderRadius: BorderRadius.circular(10.0)),
                   child: Icon(
                     Icons.arrow_back,
                     size: 30.0,
                   ),
                 ),
-              ),              
+              ),
             ],
           ),
         ),
@@ -96,6 +96,17 @@ class _DetalleOdtPageState extends State<DetalleOdtPage> {
         ));
   }
 
+  Widget _crearBotonMaps(Odtmodel odt){
+    return Container(
+      child: RaisedButton(
+        onPressed: () => openGoogleMaps(odt),
+        child: Icon(
+          Icons.map
+        ),
+      ),
+    );
+  }
+
   Widget _crearCards(double _height) {
     return Card(
       elevation: 8.0,
@@ -106,18 +117,25 @@ class _DetalleOdtPageState extends State<DetalleOdtPage> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Text(
-              'Nuevo Servicio',
+              'Servicio',
               style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: _height * 0.05),
             _crearItems(context, 'ODT', odt.odt.trimRight()),
             _crearItems(context, 'Afiliación', odt.noAfiliacion.trimRight()),
             _crearItems(context, 'Negocio', odt.negocio.trimRight()),
-            //_crearItems(context, 'Dirección', odt.direccion.trimRight() +','+ odt.colonia.trimRight() + ','+ odt.poblacion.trimRight() + ',' + odt.estado.trimRight()),
-            _crearItems(context, 'Dirección', odt.direccion.trimRight()),
-            _crearItems(context, 'Latitud', odt.latitud == null ? lat.toString() : odt.latitud.toString()),
-            _crearItems(context, 'Longitud', odt.longitud == null ? lon.toString() : odt.longitud.toString()),
-            _crearItems(context, 'Fecha Garantía', odt.fecGarantia.trimRight()),
+            _crearItems(context, 'Dirección', odt.direccion.trimRight() +','+ odt.colonia.trimRight() + ','+ odt.poblacion.trimRight() + ',' + odt.estado.trimRight()),
+            //_crearItems(context, 'Direcci�n', odt.direccion.trimRight()),
+            _crearItems(context, 'Latitud',
+                odt.latitud == null ? lat.toString() : odt.latitud.toString()),
+            _crearItems(
+                context,
+                'Longitud',
+                odt.longitud == null
+                    ? lon.toString()
+                    : odt.longitud.toString()),
+            _crearItems(
+                context, 'Fecha Garantía', odt.fecGarantia.trimRight()),
           ],
         ),
       ),
@@ -129,14 +147,17 @@ class _DetalleOdtPageState extends State<DetalleOdtPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text(
-            '$titulo:',
-            style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.black),
+          Expanded(
+            child: Text(
+              '$titulo:',
+              style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
+                  textAlign: TextAlign.start,
+            ),
           ),
-          Text(contenido),
+            Expanded(child: Text(contenido, textAlign: TextAlign.right,)),
         ],
       ),
     );
@@ -146,29 +167,37 @@ class _DetalleOdtPageState extends State<DetalleOdtPage> {
     Navigator.pop(_context);
   }
 
-  void _accionesBottom(int index){
-    switch(index){
-      case 0: 
+  void _accionesBottom(int index) {
+    switch (index) {
+      case 0:
         break;
-      case 1: 
+      case 1:
         _coordenadas();
         break;
     }
   }
 
-  void _coordenadas(){
+  void _coordenadas() {
     var geolocator = Geolocator();
     var locationOptions = LocationOptions(accuracy: LocationAccuracy.best);
-    StreamSubscription<Position> positionStream = geolocator.getPositionStream(locationOptions).listen(
-      (Position position){
-        print(position == null ? 'Unknow' : position.latitude.toString() + ', ' + position.longitude.toString());
-        setState(() {
-          lat = position.latitude;
-          lon = position.longitude;
-        });
-      }
-    );
+    StreamSubscription<Position> positionStream = geolocator
+        .getPositionStream(locationOptions)
+        .listen((Position position) {
+      print(position == null
+          ? 'Unknow'
+          : position.latitude.toString() +
+              ', ' +
+              position.longitude.toString());
+      setState(() {
+        lat = position.latitude;
+        lon = position.longitude;
+      });
+    });
     //positionStream.cancel();
+  }
+
+  void openGoogleMaps(Odtmodel odt){
+    launch("https://www.google.com.mx/maps/search/?api=1&query=${odt.direccion},${odt.estado}");
   }
 
 }
