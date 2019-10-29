@@ -10,7 +10,7 @@ class ServiciosAbiertosPage extends StatefulWidget {
 
 class _ServiciosAbiertosPageState extends State<ServiciosAbiertosPage> {
 
-  AnimationController _animationController;
+
   CalendarController _calendarController;
   OdtsBloc odtbloc;
 
@@ -67,20 +67,30 @@ class _ServiciosAbiertosPageState extends State<ServiciosAbiertosPage> {
 
   Widget _botonRegresar(BuildContext _context){
     return Container(
-      padding: EdgeInsets.only(left: 5.0),
+      padding: EdgeInsets.only(left: 10.0),
       alignment: Alignment.topLeft,
-      child: RaisedButton(
-        onPressed: () {
-          _regresar(_context);
-        },
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0)
-        ),
-        child: Icon(
-          Icons.arrow_back,
-          size: 30.0,
-        ),
-      ),
+      child: Row(
+        children: <Widget>[
+          RaisedButton(
+            onPressed: () {
+              _regresar(_context);
+            },
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0)
+            ),
+            child: Icon(
+              Icons.arrow_back,
+              size: 30.0,
+            ),
+          ), 
+          Expanded(
+            child: Container(
+              alignment: Alignment.center,
+              child: Text("Servicios Abiertos", style: TextStyle(color: Colors.white, fontSize: 25.0, fontWeight: FontWeight.bold),),
+            ),
+          ) 
+        ],
+      )
     );
   }
 

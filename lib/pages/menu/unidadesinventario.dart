@@ -12,25 +12,36 @@ class UnidadesInventarioPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.blueAccent,
       body: SafeArea(
-        child: Stack(
+        child: Column(
           children: <Widget>[
-
-            _crearListado(context, unidadBloc),
-
+            SizedBox(height: 25.0,),
             Container(
-              child: RaisedButton(
-                onPressed: (){
-                  _regresar(context);
-                },
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0)
-                ),
-                child: Icon(
-                  Icons.arrow_back,
-                  size: 30.0,
-                ),
-              ),
-            )
+              padding: EdgeInsets.only(left: 10.0),
+              alignment: Alignment.topLeft,
+              child: Row(
+                children: <Widget>[
+                  RaisedButton(
+                    onPressed: (){
+                      _regresar(context);
+                    },
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0)
+                    ),
+                    child: Icon(
+                      Icons.arrow_back,
+                      size: 30.0,
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text("Unidades", style: TextStyle(color: Colors.white, fontSize: 25.0, fontWeight: FontWeight.bold),),
+                    ),
+                  )
+                ],
+              )
+            ),
+            _crearListado(context, unidadBloc),
           ],
         ),
       ),
@@ -45,6 +56,8 @@ class UnidadesInventarioPage extends StatelessWidget {
         if(snapshot.hasData){
           final unidades = snapshot.data;
           return ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
             itemCount: unidades.length,
             itemBuilder: (context,index){
               return _crearItems(context,unidades[index]);
@@ -85,10 +98,13 @@ class UnidadesInventarioPage extends StatelessWidget {
   Widget _makeListTile(BuildContext context, UnidadesModel unidad){
     
     final marcabloc = Provider.marcasBloc(context);
-    final textMarca = marcabloc.selectMarca(unidad.idUnidad);
+    final modelobloc = Provider.modelosBloc(context);   
 
-    final modelobloc = Provider.modelosBloc(context);
-    final textModelo = modelobloc.selectModelo(unidad.idUnidad);
+    String textMarca = '';
+    String textModelo = '';
+
+    marcabloc.selectMarca(unidad.idMarca).then((value) => textMarca = value);
+    modelobloc.selectModelo(unidad.idModelo).then((value) => textModelo = value);
 
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),

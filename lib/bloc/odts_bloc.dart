@@ -41,8 +41,18 @@ class OdtsBloc{
     _allodtsbyDateController.sink.add(odts);
   }
 
+  Future<List<Odtmodel>> selectAllOdtsbyDate2 (int day, int month, int year) async{
+    final odts = await DBProvider.db.getAllArsbyDate(day, month, year);
+    return odts;
+  }
+
   Future<List<Odtmodel>> getAllOdtsHttp() async{
     final odts = await _odtsProvider.getOdts();
+    return odts;
+  }
+
+  Future<List<Odtmodel>> getAllOdtsOrderbyDate() async{
+    final odts = await DBProvider.db.getAllArsGroupByDate();
     return odts;
   }
 

@@ -51,42 +51,78 @@ class _ScannerPageState extends State<ScannerPage> {
     double _width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-
-      body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            isImageLoaded 
-            ? Container(
-              width: _width,
-              height: _height * 0.4,
-              alignment: Alignment.center,
-              child: Image.file(imagenTomada),
-            )
-            : Container(
-              child: Image.asset('assets/images/no-image.png'),
-            ),
-            RaisedButton(
-              child: Text('Tomar Foto'),
-              onPressed: _tomarImagen,
-            ),
-            RaisedButton(
-              child: Text('Leer Texto'),
-              onPressed: _leerTexto,
-            ),
-            Expanded(
-              child: texto.length == 0
-              ? Container()
-              : Container(
-                child: ListView.builder(
-                  itemCount: texto.length,
-                  itemBuilder: (BuildContext ctxt, int index){
-                    return new Text(texto[index]);
-                  },
-                ),
+      backgroundColor: Colors.blueAccent,
+      body: SafeArea(
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(height: 25.0,),
+              Container(
+                padding: EdgeInsets.only(left: 10.0),
+                alignment: Alignment.topLeft,
+                child: Row(
+                  children: <Widget>[
+                    RaisedButton(
+                      onPressed: (){
+                        _regresar(context);
+                      },
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0)
+                      ),
+                      child: Icon(
+                        Icons.arrow_back,
+                        size: 30.0,
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text("Escanear", style: TextStyle(color: Colors.white, fontSize: 25.0, fontWeight: FontWeight.bold),),
+                      ),
+                    )
+                  ],
+                )
               ),
-            ) 
-          ],
-        ),
+              SizedBox(height: 25.0,),
+              isImageLoaded 
+              ? Container(
+                padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                width: _width,
+                height: _height * 0.4,
+                alignment: Alignment.center,
+                child: Image.file(imagenTomada),
+              )
+              : Container(
+                padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                child: Image.asset('assets/images/no-image.png'),
+              ),
+              RaisedButton(
+                child: Text('Tomar Foto'),
+                onPressed: _tomarImagen,
+              ),
+              RaisedButton(
+                child: Text('Leer Texto'),
+                onPressed: _leerTexto,
+              ),
+              Expanded(
+                child: texto.length == 0
+                ? Container()
+                : Container(
+                  padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                  child: ListView.builder(
+                    itemCount: texto.length,
+                    itemBuilder: (BuildContext ctxt, int index){
+                      return new Text(texto[index]);
+                    },
+                  ),
+                ),
+              ) 
+            ],
+          ),
+      ),
     );
+  }
+  void _regresar(BuildContext context){
+    Navigator.pop(context);
   }
 }

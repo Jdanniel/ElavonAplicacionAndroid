@@ -232,13 +232,7 @@ class _LoginPageState extends State<LoginPage> {
     Map info = await usuarioProvider.login(bloc.gusername, bloc.gpassword);
     
     if(info['res']){
-
-    final fechaActual = formatDate(DateTime.now(), [dd, '/', mm, '/', yyyy, ' ', HH, ':', nn]);
-    final updatesBloc = Provider.updatesBloc(context);
-    final fechaMovil = await updatesBloc.selectUpdate();
-      fechaActual != (fechaMovil != null ? fechaMovil.fecha : '') 
-      ? Navigator.pushReplacementNamed(context, 'cargaCatalogos') 
-      : Navigator.pushReplacementNamed(context, 'home');
+      Navigator.pushReplacementNamed(context, 'cargaCatalogos');
     }else{   
       mostraAlerta(context, info['msg']);
     }    

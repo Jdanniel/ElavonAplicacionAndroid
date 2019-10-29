@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:elavonappmovil/data/database_ars.dart';
+import 'package:elavonappmovil/data/database_marcas.dart';
 import 'package:elavonappmovil/data/database_unidades.dart';
 import 'package:elavonappmovil/models/cmodelos_model.dart';
 import 'package:elavonappmovil/models/conectividad_model.dart';
@@ -54,7 +55,7 @@ class DBProvider {
 
     final String queryServicios = 'CREATE TABLE $tableservicios ( idservicio INTEGER NOT NULL, descservicio TEXT)';
     final String queryModelos = 'CREATE TABLE $tableModelos ( idmodelo INTEGER NOT NULL, descmodelo TEXT)';
-    final String queryMarcas = 'CREATE TABLE $tableMarcas ( idmarca INTEGER NOT NULL, descmarca TEXT)';
+    final String queryMarcas = 'CREATE TABLE ${CMarcas.table} ( ${CMarcas.columnID} INTEGER NOT NULL, ${CMarcas.columnDESCMARCA} TEXT)';
     final String queryConectividad = 'CREATE TABLE $tableConectividad ( idconectividad INTEGER NOT NULL, descconectividad TEXT)';
     final String querySoftware = 'CREATE TABLE $tableSoftware ( idsoftware INTEGER NOT NULL, descsoftware TEXT)';
     final String queryUnidades = 'CREATE TABLE ${Bdunidades.table} (${Bdunidades.columnID} INTEGER NOT NULL, ${Bdunidades.columnNOSERIE} TEXT, ${Bdunidades.columnIDMARCA} INTEGER, ${Bdunidades.columnIDMODELO} INTEGER, ${Bdunidades.columnIDCONECTIVIDAD} INTEGER, ${Bdunidades.columnIDAPLICATIVO} INTEGER)';
@@ -108,7 +109,7 @@ class DBProvider {
     final db = await database;
 
     final res = await db.rawInsert(
-      "INSERT INTO $tableMarcas(idmarca,descmarca)" +
+      "INSERT INTO ${CMarcas.table}(${CMarcas.columnID},${CMarcas.columnDESCMARCA})" +
       "VALUES (${nuevoMarcas.idMarca},'${nuevoMarcas.descMarca}')"
     );
     // await db.close();
@@ -226,7 +227,7 @@ class DBProvider {
   Future<MarcasModel> getMarcasId(int id) async{
     final db = await database;
 
-    final res = await db.query(tableMarcas, where: 'idmarca = ?', whereArgs: [id]);
+    final res = await db.query(CMarcas.table, where: '${CMarcas.columnID} = ?', whereArgs: [id]);
     // await db.close();
     return res.isNotEmpty ? MarcasModel.fromJson(res.first) : null;
   }
@@ -337,6 +338,15 @@ class DBProvider {
   Future<List<Odtmodel>> getAllArs() async{
     final db = await database;
     final res = await db.query(BdArs.table);
+    List<Odtmodel> list = res.isNotEmpty
+                        ? res.map((s) => Odtmodel.fromJson(s)).toList()
+                        : [];
+    return list;
+  }
+
+  Future<List<Odtmodel>> getAllArsGroupByDate() async{
+    final db = await database;
+    final res = await db.rawQuery("SELECT ${BdArs.columnDAYS}, ${BdArs.columnMONTHS}, ${BdArs.columnYEARS} FROM ${BdArs.table} GROUP BY ${BdArs.columnDAYS}, ${BdArs.columnMONTHS}, ${BdArs.columnYEARS}");
     List<Odtmodel> list = res.isNotEmpty
                         ? res.map((s) => Odtmodel.fromJson(s)).toList()
                         : [];
