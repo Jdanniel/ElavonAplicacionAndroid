@@ -2,15 +2,12 @@ import 'package:elavonappmovil/provider/db_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:elavonappmovil/models/totalodts_model.dart';
-import 'package:elavonappmovil/provider/odt_provider.dart';
 
 class TotalOdtsBloc{
 
   //Stream
   final _odtsController = new BehaviorSubject<TotalodtsModel>();
   final _cargandoController = new BehaviorSubject<bool>();
-
-  final _odtsProvider = new OdtProvider();
 
   //Escuchar Steams
   Stream<TotalodtsModel> get odtsStream => _odtsController.stream;

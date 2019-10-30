@@ -45,4 +45,14 @@ class OdtProvider{
     return odtList;
   }
 
+  Future<int> updateStatusAr(int idusuario, int idstatusara, int idstatusarp, int idar) async{
+    final url = '$_url/UpdateStatusAr';
+    final resp = await http.put(url,
+      headers: headerJson,
+      body: '{"ID_STATUS_AR_A":$idstatusara,"ID_STATUS_AR_P":$idstatusarp,"ID_USUARIO":$idusuario,"ID_AR":$idar}'
+    );
+
+    return int.parse(resp.body);
+  }
+
 }

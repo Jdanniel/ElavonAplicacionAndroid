@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:elavonappmovil/data/database_ars.dart';
 import 'package:elavonappmovil/data/database_marcas.dart';
+import 'package:elavonappmovil/data/database_modelos.dart';
 import 'package:elavonappmovil/data/database_unidades.dart';
 import 'package:elavonappmovil/models/cmodelos_model.dart';
 import 'package:elavonappmovil/models/conectividad_model.dart';
@@ -54,13 +55,13 @@ class DBProvider {
     await deleteDatabase(path);
 
     final String queryServicios = 'CREATE TABLE $tableservicios ( idservicio INTEGER NOT NULL, descservicio TEXT)';
-    final String queryModelos = 'CREATE TABLE $tableModelos ( idmodelo INTEGER NOT NULL, descmodelo TEXT)';
+    final String queryModelos = 'CREATE TABLE ${CModelos.table} ( ${CModelos.columnID} INTEGER NOT NULL, ${CModelos.columnDESCMODELO} TEXT)';
     final String queryMarcas = 'CREATE TABLE ${CMarcas.table} ( ${CMarcas.columnID} INTEGER NOT NULL, ${CMarcas.columnDESCMARCA} TEXT)';
     final String queryConectividad = 'CREATE TABLE $tableConectividad ( idconectividad INTEGER NOT NULL, descconectividad TEXT)';
     final String querySoftware = 'CREATE TABLE $tableSoftware ( idsoftware INTEGER NOT NULL, descsoftware TEXT)';
     final String queryUnidades = 'CREATE TABLE ${Bdunidades.table} (${Bdunidades.columnID} INTEGER NOT NULL, ${Bdunidades.columnNOSERIE} TEXT, ${Bdunidades.columnIDMARCA} INTEGER, ${Bdunidades.columnIDMODELO} INTEGER, ${Bdunidades.columnIDCONECTIVIDAD} INTEGER, ${Bdunidades.columnIDAPLICATIVO} INTEGER)';
     final String queryUpdates = 'CREATE TABLE $tableUpdates ( idupdates INTEGER PRIMARY KEY, fecupdates TEXT)';
-    final String queryArs = 'CREATE TABLE ${BdArs.table} (${BdArs.columnID} INTEGER NOT NULL, ${BdArs.columnNOAR} TEXT, ${BdArs.columnIDNEGOCIO} INTEGER, ${BdArs.columnIDTIPOSERVICIO} INTEGER, ${BdArs.columnDESCNEGOCIO} TEXT, ${BdArs.columnNOAFILIACION} TEXT, ${BdArs.columnESTADO} TEXT, ${BdArs.columnCOLONIA} TEXT, ${BdArs.columnPOBLACION} TEXT, ${BdArs.columnDIRECCION} TEXT, ${BdArs.columnFECGARANTIA} TEXT, ${BdArs.columnLATITUD} REAL, ${BdArs.columnLONGITUD} REAL, ${BdArs.columnDAYS} INTEGER, ${BdArs.columnMONTHS} INTEGER, ${BdArs.columnYEARS} INTEGER, ${BdArs.columnNUMBERS} INTEGER)';
+    final String queryArs = 'CREATE TABLE ${BdArs.table} (${BdArs.columnID} INTEGER NOT NULL, ${BdArs.columnNOAR} TEXT, ${BdArs.columnIDNEGOCIO} INTEGER, ${BdArs.columnIDTIPOSERVICIO} INTEGER, ${BdArs.columnDESCNEGOCIO} TEXT, ${BdArs.columnNOAFILIACION} TEXT, ${BdArs.columnESTADO} TEXT, ${BdArs.columnCOLONIA} TEXT, ${BdArs.columnPOBLACION} TEXT, ${BdArs.columnDIRECCION} TEXT, ${BdArs.columnFECGARANTIA} TEXT, ${BdArs.columnLATITUD} REAL, ${BdArs.columnLONGITUD} REAL, ${BdArs.columnDAYS} INTEGER, ${BdArs.columnMONTHS} INTEGER, ${BdArs.columnYEARS} INTEGER, ${BdArs.columnNUMBERS} INTEGER, ${BdArs.columnIDSTATUSAR} INTEGER)';
 
     return await openDatabase(path,
       version: 1,
@@ -97,7 +98,7 @@ class DBProvider {
     final db = await database;
 
     final res = await db.rawInsert(
-      "INSERT INTO $tableModelos(idmodelo,descmodelo)" +
+      "INSERT INTO ${CModelos.table}(${CModelos.columnID},${CModelos.columnDESCMODELO})" +
       "VALUES (${nuevoModelo.idModelo},'${nuevoModelo.descModelo}')"
     );
     // await db.close();
@@ -185,7 +186,8 @@ class DBProvider {
       "${BdArs.columnDAYS}," 
       "${BdArs.columnMONTHS}," 
       "${BdArs.columnYEARS}," 
-      "${BdArs.columnNUMBERS}" 
+      "${BdArs.columnNUMBERS}," 
+      "${BdArs.columnIDSTATUSAR}" 
       ") VALUES(" 
       "${model.idAr},"
       "'${model.odt}',"
@@ -203,7 +205,9 @@ class DBProvider {
       "${model.days},"
       "${model.months},"
       "${model.years},"
-      "${model.numbers})"
+      "${model.numbers},"
+      "${model.idStatusAr}"
+      ")"
     );
     return res;
   }
@@ -219,7 +223,7 @@ class DBProvider {
 
   Future<CmodelosModel> getModeloId(int id) async{
     final db = await database;
-    final res = await db.query(tableModelos, where: 'idmodelo = ?', whereArgs: [id]);
+    final res = await db.query(CModelos.table, where: '${CModelos.columnID} = ?', whereArgs: [id]);
     // await db.close();
     return res.isNotEmpty ? CmodelosModel.fromJson(res.first) : null;
   }

@@ -21,6 +21,7 @@ class BdArs {
   static final columnMONTHS = 'MONTHS';
   static final columnYEARS = 'YEARS';
   static final columnNUMBERS = 'NUMBER';
+  static final columnIDSTATUSAR = 'ID_STATUS_AR';
 
 
 }

@@ -96,15 +96,9 @@ class UnidadesInventarioPage extends StatelessWidget {
   }
 
   Widget _makeListTile(BuildContext context, UnidadesModel unidad){
-    
-    final marcabloc = Provider.marcasBloc(context);
-    final modelobloc = Provider.modelosBloc(context);   
 
-    String textMarca = '';
-    String textModelo = '';
-
-    marcabloc.selectMarca(unidad.idMarca).then((value) => textMarca = value);
-    modelobloc.selectModelo(unidad.idModelo).then((value) => textModelo = value);
+    MarcasBloc marca = new MarcasBloc();
+    ModelosBloc modelo = new ModelosBloc();
 
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
@@ -122,11 +116,37 @@ class UnidadesInventarioPage extends StatelessWidget {
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text("Marca: $textMarca"),
-          Text("Modelo: $textModelo")
+          FutureBuilder(
+            future: marca.selectMarca(unidad.idMarca),
+            builder: (BuildContext _context, AsyncSnapshot<String> snapshot){
+              if(snapshot.hasData){
+                String marca = snapshot.data;
+                return Text("Marca: $marca");
+              }else{
+                return Text("");
+              }
+            },
+          ),
+          FutureBuilder(
+            future: modelo.selectModelo(unidad.idModelo),
+            builder: (BuildContext _context, AsyncSnapshot<String> snapshot){
+              if(snapshot.hasData){
+                String modelo = snapshot.data;
+                return Text("Modelo: $modelo");
+              }else{
+                return Text("");
+              }
+            },
+          ),
         ],
       ),
     );
+  }
+
+  Future<String> getMarca(int id)async{
+    MarcasBloc bloc = new MarcasBloc();
+    String marca = await bloc.selectMarca(id);
+    return marca;
   }
 
   void _regresar(BuildContext context){

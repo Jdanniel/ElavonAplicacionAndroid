@@ -11,6 +11,7 @@ class OdtsBloc{
   final _allodtsbyDateController = new BehaviorSubject<List<Odtmodel>>();
   final _odtController = new BehaviorSubject<Odtmodel>();
   final _cargandoController = new BehaviorSubject<bool>();
+  final _updateStatusController = new BehaviorSubject<int>();
 
   final _odtsProvider = new OdtProvider();
 
@@ -41,6 +42,11 @@ class OdtsBloc{
     _allodtsbyDateController.sink.add(odts);
   }
 
+  void updateStatusAr(int idusuario, int idstatusara, int idstatusarp, int idar) async{
+    final status = await _odtsProvider.updateStatusAr(idusuario,idstatusara,idstatusarp,idar);
+    print(status);
+  }
+
   Future<List<Odtmodel>> selectAllOdtsbyDate2 (int day, int month, int year) async{
     final odts = await DBProvider.db.getAllArsbyDate(day, month, year);
     return odts;
@@ -61,6 +67,7 @@ class OdtsBloc{
     _allodtsController?.close();
     _odtController?.close();
     _cargandoController?.close();
+    _updateStatusController?.close();
   }
 
 }

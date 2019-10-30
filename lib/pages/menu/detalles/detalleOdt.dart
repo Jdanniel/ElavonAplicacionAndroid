@@ -24,7 +24,6 @@ class _DetalleOdtPageState extends State<DetalleOdtPage> {
     odtBloc = Provider.odtsBloc(context);
     final Odtmodel odtData = ModalRoute.of(context).settings.arguments;
     final double _height = MediaQuery.of(context).size.height;
-    final double _width = MediaQuery.of(context).size.width;
 
     if (odtData != null) {
       odt = odtData;
@@ -44,6 +43,32 @@ class _DetalleOdtPageState extends State<DetalleOdtPage> {
                     children: <Widget>[
                       SizedBox(height: _height * 0.10),
                       _crearCards(_height),
+                      Row(
+                        children: <Widget>[
+                          Expanded( 
+                            child: RaisedButton(
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.0)
+                              ),
+                              onPressed: (){_updateStatusAr(odt);},
+                              child: Text("Cambio Estatus", textAlign: TextAlign.center,),
+                            ),
+                          ),
+                          Expanded(
+                            child: RaisedButton(
+                              onPressed: (){},
+                              child: Text("Cambio Estatus"),
+                            ),
+                          ),
+                          Expanded(
+                            child: RaisedButton(
+                              onPressed: (){},
+                              child: Text("Cambio Estatus"),
+                            ),
+                          ),
+                        ],
+                      ),
                       _crearBotonMaps(odt),
                     ],
                   ),
@@ -165,6 +190,24 @@ class _DetalleOdtPageState extends State<DetalleOdtPage> {
 
   void _regresar(BuildContext _context) {
     Navigator.pop(_context);
+  }
+
+  void _updateStatusAr(Odtmodel model){
+
+    int idstatusarp = 0;
+    switch (model.idStatusAr) {
+      case 3:
+        idstatusarp = 13;
+        break;
+      case 4:
+        idstatusarp = 5;
+        break;
+      case 6:
+        idstatusarp = 7;
+        break;       
+      default: 
+    }
+    odtBloc.updateStatusAr(model.idAr, model.idStatusAr, idstatusarp, model.idAr);
   }
 
   void _accionesBottom(int index) {

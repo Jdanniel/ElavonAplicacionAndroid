@@ -26,6 +26,7 @@ class Odtmodel {
     int months;
     int years;
     int numbers;
+    int idStatusAr;
 
     Odtmodel({
         this.odt = '',
@@ -44,7 +45,8 @@ class Odtmodel {
         this.days = 0,
         this.months = 0,
         this.years = 0,
-        this.numbers
+        this.numbers = 0,
+        this.idStatusAr = 0
     });
 
     factory Odtmodel.fromJson(Map<String, dynamic> json) => Odtmodel(
@@ -64,7 +66,8 @@ class Odtmodel {
         days:  json["DAYS"],
         months: json["MONTHS"],
         years: json["YEARS"],
-        numbers: json["NUMBER"]
+        numbers: json["NUMBER"],
+        idStatusAr: json["ID_STATUS_AR"]
     );
 
     Map<String, dynamic> toJson() => {
@@ -84,6 +87,7 @@ class Odtmodel {
         "DAYS": days,
         "MONTHS": months,
         "YEARS": years,
-        "NUMBER": numbers  
+        "NUMBER": numbers,
+        "ID_STATUS_AR": idStatusAr  
     };
 }
