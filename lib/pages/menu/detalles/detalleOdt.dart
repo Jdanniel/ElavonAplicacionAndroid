@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:elavonappmovil/utils/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:flutter/material.dart';
@@ -14,10 +15,13 @@ class DetalleOdtPage extends StatefulWidget {
 }
 
 class _DetalleOdtPageState extends State<DetalleOdtPage> {
+
+  StreamSubscription<Position> positionStream;
   OdtsBloc odtBloc;
   Odtmodel odt = new Odtmodel();
   double lat = 0;
   double lon = 0;
+  bool ismensaje = false;
 
   @override
   Widget build(BuildContext context) {
@@ -43,32 +47,6 @@ class _DetalleOdtPageState extends State<DetalleOdtPage> {
                     children: <Widget>[
                       SizedBox(height: _height * 0.10),
                       _crearCards(_height),
-                      Row(
-                        children: <Widget>[
-                          Expanded( 
-                            child: RaisedButton(
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.0)
-                              ),
-                              onPressed: (){_updateStatusAr(odt);},
-                              child: Text("Cambio Estatus", textAlign: TextAlign.center,),
-                            ),
-                          ),
-                          Expanded(
-                            child: RaisedButton(
-                              onPressed: (){},
-                              child: Text("Cambio Estatus"),
-                            ),
-                          ),
-                          Expanded(
-                            child: RaisedButton(
-                              onPressed: (){},
-                              child: Text("Cambio Estatus"),
-                            ),
-                          ),
-                        ],
-                      ),
                       _crearBotonMaps(odt),
                     ],
                   ),
@@ -116,7 +94,7 @@ class _DetalleOdtPageState extends State<DetalleOdtPage> {
             ),
           ],
           onTap: (index) {
-            _accionesBottom(index);
+            _accionesBottom(index,odt);
           },
         ));
   }
@@ -192,7 +170,7 @@ class _DetalleOdtPageState extends State<DetalleOdtPage> {
     Navigator.pop(_context);
   }
 
-  void _updateStatusAr(Odtmodel model){
+  void _updateStatusAr(Odtmodel model) async {
 
     int idstatusarp = 0;
     switch (model.idStatusAr) {
@@ -207,23 +185,27 @@ class _DetalleOdtPageState extends State<DetalleOdtPage> {
         break;       
       default: 
     }
-    odtBloc.updateStatusAr(model.idAr, model.idStatusAr, idstatusarp, model.idAr);
+    int isupdate = await odtBloc.updateStatusAr(model.idAr, model.idStatusAr, idstatusarp, model.idAr);
+    isupdate == 1 ? mostrarAlertDatosActualizado(context, 'El estatus de la Odt se ha actualizado') : mostrarAlertDatosActualizado(context, 'No se logro actualizar la Odt');
   }
 
-  void _accionesBottom(int index) {
+  void _accionesBottom(int index, Odtmodel odt) {
     switch (index) {
       case 0:
         break;
       case 1:
         _coordenadas();
         break;
+      case 2:
+        _updateStatusAr(odt);
+        break; 
     }
   }
 
   void _coordenadas() {
-    var geolocator = Geolocator();
-    var locationOptions = LocationOptions(accuracy: LocationAccuracy.best);
-    StreamSubscription<Position> positionStream = geolocator
+    final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
+    var locationOptions = LocationOptions(accuracy: LocationAccuracy.bestForNavigation);
+    positionStream = geolocator
         .getPositionStream(locationOptions)
         .listen((Position position) {
       print(position == null
@@ -241,6 +223,13 @@ class _DetalleOdtPageState extends State<DetalleOdtPage> {
 
   void openGoogleMaps(Odtmodel odt){
     launch("https://www.google.com.mx/maps/search/?api=1&query=${odt.direccion},${odt.estado}");
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    positionStream?.cancel();
+    super.dispose();
   }
 
 }

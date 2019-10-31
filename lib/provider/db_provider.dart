@@ -339,9 +339,9 @@ class DBProvider {
     return list;
   }    
 
-  Future<List<Odtmodel>> getAllArs() async{
+  Future<List<Odtmodel>> getAllArs(int idstatus) async{
     final db = await database;
-    final res = await db.query(BdArs.table);
+    final res = await db.query(BdArs.table, where: "${BdArs.columnIDSTATUSAR} = ?", whereArgs: [idstatus]);
     List<Odtmodel> list = res.isNotEmpty
                         ? res.map((s) => Odtmodel.fromJson(s)).toList()
                         : [];
@@ -357,12 +357,12 @@ class DBProvider {
     return list;
   }
 
-  Future<List<Odtmodel>> getAllArsbyDate(int day, int month, int year) async{
+  Future<List<Odtmodel>> getAllArsbyDate(int day, int month, int year, int idstatus) async{
     final db = await database;
     final res = await db.query(
       BdArs.table, 
-      where: "${BdArs.columnDAYS} = ? AND ${BdArs.columnMONTHS} = ? AND ${BdArs.columnYEARS} = ?", 
-      whereArgs: [day,month,year]
+      where: "${BdArs.columnDAYS} = ? AND ${BdArs.columnMONTHS} = ? AND ${BdArs.columnYEARS} = ? AND ${BdArs.columnIDSTATUSAR} = ? ", 
+      whereArgs: [day,month,year,idstatus]
     );
 
     List<Odtmodel> list = res.isNotEmpty

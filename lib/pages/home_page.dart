@@ -57,6 +57,7 @@ class _HomePageState extends State<HomePage> {
           _cardRedondeado('Servicios', 'Cerrados', Icons.lock, 3),
           _cardRedondeado('Unidades', 'Inventario', Icons.lock, 4),
           _cardRedondeado('Escanear', 'Series', Icons.scanner, 5),
+          _cardRedondeado('Editar', 'Imagen', Icons.image, 6),
         ],
       ),
     );
@@ -223,6 +224,10 @@ class _HomePageState extends State<HomePage> {
       case 5:
         Navigator.pushNamed(context, 'scanner');
         break;
+      case 6:
+        Navigator.pushNamed(context, 'editImage');
+        break;  
+        default:
     }
   }
 

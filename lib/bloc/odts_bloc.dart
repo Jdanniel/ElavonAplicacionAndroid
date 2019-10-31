@@ -32,23 +32,23 @@ class OdtsBloc{
     _odtController.sink.add(odt);
   }
 
-  void selectAllOdts() async{
-    final odts = await DBProvider.db.getAllArs();
+  void selectAllOdts(int idstatus) async{
+    final odts = await DBProvider.db.getAllArs(idstatus);
     _allodtsController.sink.add(odts);
   }
 
-  void selectAllOdtsbyDate(int day, int month, int year) async{
-    final odts = await DBProvider.db.getAllArsbyDate(day, month, year);
+  void selectAllOdtsbyDate(int day, int month, int year, int idstatus) async{
+    final odts = await DBProvider.db.getAllArsbyDate(day, month, year, idstatus);
     _allodtsbyDateController.sink.add(odts);
   }
 
-  void updateStatusAr(int idusuario, int idstatusara, int idstatusarp, int idar) async{
+  Future<int> updateStatusAr(int idusuario, int idstatusara, int idstatusarp, int idar) async{
     final status = await _odtsProvider.updateStatusAr(idusuario,idstatusara,idstatusarp,idar);
-    print(status);
+    return status;
   }
 
-  Future<List<Odtmodel>> selectAllOdtsbyDate2 (int day, int month, int year) async{
-    final odts = await DBProvider.db.getAllArsbyDate(day, month, year);
+  Future<List<Odtmodel>> selectAllOdtsbyDate2 (int day, int month, int year, int idstatus) async{
+    final odts = await DBProvider.db.getAllArsbyDate(day, month, year, idstatus);
     return odts;
   }
 

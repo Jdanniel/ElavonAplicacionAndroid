@@ -3,6 +3,7 @@ import 'package:elavonappmovil/pages/carga_page.dart';
 import 'package:elavonappmovil/pages/home_page.dart';
 import 'package:elavonappmovil/pages/login.dart';
 import 'package:elavonappmovil/pages/menu/detalles/detalleOdt.dart';
+import 'package:elavonappmovil/pages/menu/editImage.dart';
 import 'package:elavonappmovil/pages/menu/scanner.dart';
 import 'package:elavonappmovil/pages/menu/serviciosabierto.menu.dart';
 import 'package:elavonappmovil/pages/menu/servicioscerrados_menu.dart';
@@ -40,7 +41,8 @@ class MyApp extends StatelessWidget {
           'detalleOdt' : (BuildContext context) => DetalleOdtPage(),
           'scanner' : (BuildContext context) => ScannerPage(),
           'cargaCatalogos' : (BuildContext context) => CargaPage(),
-          'unidadesInvenario' : (BuildContext context) => UnidadesInventarioPage()
+          'unidadesInvenario' : (BuildContext context) => UnidadesInventarioPage(),
+          'editImage' : (BuildContext context) => EditImage()
         },
         theme: ThemeData(primaryColor: Colors.blueAccent),
       ),

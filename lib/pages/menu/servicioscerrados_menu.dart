@@ -82,7 +82,7 @@ class _ServiciosCerradosPageState extends State<ServiciosCerradosPage>
       //_events = [];
       for(int i = 0; i < listodts.length; i++){
         //print(listodts[i].days.toString()+'/'+listodts[i].months.toString()+'/'+listodts[i].years.toString());
-        List<Odtmodel> datosbyDate = await odt.selectAllOdtsbyDate2(listodts[i].days, listodts[i].months, listodts[i].years);
+        List<Odtmodel> datosbyDate = await odt.selectAllOdtsbyDate2(listodts[i].days, listodts[i].months, listodts[i].years,6);
         eventos = {
           DateTime(listodts[i].years, listodts[i].months, listodts[i].days) : datosbyDate
         };
