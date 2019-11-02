@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:elavonappmovil/provider/db_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -60,6 +62,10 @@ class OdtsBloc{
   Future<List<Odtmodel>> getAllOdtsOrderbyDate() async{
     final odts = await DBProvider.db.getAllArsGroupByDate();
     return odts;
+  }
+
+  Future sendPhoto(File imagen, String noar)async{
+    await _odtsProvider.sendPhoto(imagen, noar);
   }
 
   dispose(){
