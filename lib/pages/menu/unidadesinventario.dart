@@ -12,37 +12,39 @@ class UnidadesInventarioPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.blueAccent,
       body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            SizedBox(height: 25.0,),
-            Container(
-              padding: EdgeInsets.only(left: 10.0),
-              alignment: Alignment.topLeft,
-              child: Row(
-                children: <Widget>[
-                  RaisedButton(
-                    onPressed: (){
-                      _regresar(context);
-                    },
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0)
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              SizedBox(height: 25.0,),
+              Container(
+                padding: EdgeInsets.only(left: 10.0),
+                alignment: Alignment.topLeft,
+                child: Row(
+                  children: <Widget>[
+                    RaisedButton(
+                      onPressed: (){
+                        _regresar(context);
+                      },
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0)
+                      ),
+                      child: Icon(
+                        Icons.arrow_back,
+                        size: 30.0,
+                      ),
                     ),
-                    child: Icon(
-                      Icons.arrow_back,
-                      size: 30.0,
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: Text("Unidades", style: TextStyle(color: Colors.white, fontSize: 25.0, fontWeight: FontWeight.bold),),
-                    ),
-                  )
-                ],
-              )
-            ),
-            _crearListado(context, unidadBloc),
-          ],
+                    Expanded(
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text("Unidades", style: TextStyle(color: Colors.white, fontSize: 25.0, fontWeight: FontWeight.bold),),
+                      ),
+                    )
+                  ],
+                )
+              ),
+              _crearListado(context, unidadBloc),
+            ],
+          ),
         ),
       ),
     );

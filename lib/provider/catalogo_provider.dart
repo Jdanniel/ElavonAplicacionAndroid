@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:elavonappmovil/models/negocios_model.dart';
 import 'package:elavonappmovil/models/odts_model.dart';
 import 'package:http/http.dart' as http;
@@ -20,10 +21,11 @@ class CatalogoProvider{
 
   Future<List<CmodelosModel>> getModelos() async {
     final url = '$_url/modelos';
-    final resp = await http.get(url,
-      headers: headerJson
-    );
-    final decodeData = json.decode(resp.body) as List;
+    var dio = Dio();
+    final resp = await dio.get(url,
+        options: Options(contentType: 'application/json'));
+
+    final decodeData = resp.data as List;
     final modelosList = decodeData.map((map) => CmodelosModel.fromJson(map)).toList();
     if(decodeData == null) return[];
     return modelosList;
@@ -31,10 +33,10 @@ class CatalogoProvider{
 
   Future<List<MarcasModel>> getMarcas() async{
     final url = '$_url/marcas';
-    final resp = await http.get(url,
-      headers: headerJson
-    );
-    final decodeData = json.decode(resp.body) as List;
+    var dio = Dio();
+    final resp = await dio.get(url,
+        options: Options(contentType: 'application/json'));
+    final decodeData = resp.data as List;
     final marcasList = decodeData.map((map) => MarcasModel.fromJson(map)).toList();
     if(decodeData == null) return[];
     return marcasList;
@@ -42,10 +44,10 @@ class CatalogoProvider{
 
   Future<List<ServiciosModel>> getServicios() async{
     final url = '$_url/servicios';
-    final resp = await http.get(url,
-      headers: headerJson
-    );
-    final decodeData = json.decode(resp.body) as List;
+    var dio = Dio();
+    final resp = await dio.get(url,
+        options: Options(contentType: 'application/json'));
+    final decodeData = resp.data as List;
     final servicioList = decodeData.map((map) => ServiciosModel.fromJson(map)).toList();
     if(decodeData == null) return[];
     return servicioList;
@@ -53,10 +55,10 @@ class CatalogoProvider{
 
   Future<List<ConectividadModel>> getConectividades() async{
     final url = '$_url/conectividades';
-    final resp = await http.get(url,
-      headers: headerJson
-    );
-    final decodeData = json.decode(resp.body) as List;
+    var dio = Dio();
+    final resp = await dio.get(url,
+        options: Options(contentType: 'application/json'));
+    final decodeData = resp.data as List;
     final conectividadList = decodeData.map((map) => ConectividadModel.fromJson(map)).toList();
     if(decodeData == null) return[];
     return conectividadList;
@@ -64,10 +66,10 @@ class CatalogoProvider{
 
   Future<List<Softwaremodel>> getSoftwares() async{
     final url = '$_url/softwares';
-    final resp = await http.get(url,
-      headers: headerJson
-    );
-    final decodeData = json.decode(resp.body) as List;
+    var dio = Dio();
+    final resp = await dio.get(url,
+        options: Options(contentType: 'application/json'));
+    final decodeData = resp.data as List;
     final softwareList = decodeData.map((map) => Softwaremodel.fromJson(map)).toList();
     if(decodeData == null) return[];
     return softwareList;
@@ -75,10 +77,10 @@ class CatalogoProvider{
 
   Future<List<UnidadesModel>> getUnidades() async{
     final url = '$_url/unidades/${_prefs.idUsuario}';
-    final resp = await http.get(url,
-      headers: headerJson
-    );
-    final decodeData = json.decode(resp.body) as List;
+    var dio = Dio();
+    final resp = await dio.get(url,
+        options: Options(contentType: 'application/json'));
+    final decodeData = resp.data as List;
     final unidadesList = decodeData.map((map) => UnidadesModel.fromJson(map)).toList();
     if(decodeData == null) return[];
     return unidadesList;
@@ -86,10 +88,10 @@ class CatalogoProvider{
   
   Future<List<Odtmodel>> getOdts() async {
     final url = '$_url/getodtstecnico/${_prefs.idUsuario}';
-    final resp = await http.get(url,
-      headers: headerJson
-    );
-    final decodeData = json.decode(resp.body) as List;
+    var dio = Dio();
+    final resp = await dio.get(url,
+        options: Options(contentType: 'application/json'));
+    final decodeData = resp.data as List;
     final odtList = decodeData.map((map) => Odtmodel.fromJson(map)).toList(); 
     if(decodeData == null) return [];
     return odtList;

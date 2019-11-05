@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
-import 'package:mime/mime.dart';
+import 'package:path/path.dart' as path;
 import 'package:elavonappmovil/models/odts_model.dart';
 import 'package:elavonappmovil/models/totalodts_model.dart';
 import 'package:elavonappmovil/preferencias_usuario/preferencias_usuario.dart';
@@ -15,20 +16,21 @@ class OdtProvider{
     'content-type' : 'application/json'
   };
 
-  Future sendPhoto(File imagen, String noar) async {
+  Future<int> sendPhoto(File imagen, String noar) async {
 
-    final mimeTypeData = lookupMimeType(imagen.path, headerBytes: [0xFF,0xD8]).split('/');
-    print(mimeTypeData);
-    final imageUploadRequest = http.MultipartRequest('POST', Uri.parse(_urlphotos));
-    //final file = await http.MultipartFile.fromPath('imagen', imagen.path, contentType: MediaType(mimeTypeData[0], mimeTypeData[1]));
-    String base64Image = base64Encode(imagen.readAsBytesSync());
-/*
-    final resp = await http.post(_urlphotos,
-    body:{
-      "archivos" : base64Image,
+    int resultado = 0;
+    var dio = Dio();
+    FormData formData = new FormData.fromMap({
+      "archivos" : await MultipartFile.fromFile(imagen.path, filename: path.basename(imagen.path)),
       "noar": noar
     });
-    print(resp.body);*/
+    final resp = await dio.post(_urlphotos, data: formData, onSendProgress: (int sent, int total){
+      print("$sent $total");
+    });
+    if(resp.data == 'Carga completada'){
+      resultado = 1;
+    }
+    return resultado;
   }
 
   Future<TotalodtsModel> getTotales() async {
@@ -65,12 +67,9 @@ class OdtProvider{
 
   Future<int> updateStatusAr(int idusuario, int idstatusara, int idstatusarp, int idar) async{
     final url = '$_url/UpdateStatusAr';
-    final resp = await http.put(url,
-      headers: headerJson,
-      body: '{"ID_STATUS_AR_A":$idstatusara,"ID_STATUS_AR_P":$idstatusarp,"ID_USUARIO":$idusuario,"ID_AR":$idar}'
-    );
-
-    return int.parse(resp.body);
+    var dio = Dio();
+    final resp = await dio.put(url, data: {"ID_STATUS_AR_A": idstatusara,"ID_STATUS_AR_P": idstatusarp,"ID_USUARIO": idusuario,"ID_AR": idar});
+    return resp.data;
   }
 
 }

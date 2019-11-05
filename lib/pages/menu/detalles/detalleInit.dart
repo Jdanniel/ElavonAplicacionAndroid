@@ -5,6 +5,7 @@ import 'package:elavonappmovil/models/odts_model.dart';
 import 'package:elavonappmovil/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:load/load.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DetalleInit extends StatefulWidget {
@@ -33,37 +34,14 @@ class _DetalleInitState extends State<DetalleInit> {
     return Scaffold(
       backgroundColor: Colors.blueAccent,
       body: SafeArea(
-        child: Stack(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(
-                  top: 25.0, left: 10.0, right: 10.0, bottom: 5.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    SizedBox(height: _height * 0.10),
-                    _crearCards(_height),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.only(
-                  top: 25.0, left: 15.0, right: 10.0, bottom: 25.0),
-              child: RaisedButton(
-                onPressed: () {
-                  _regresar(context);
-                },
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
-                child: Icon(
-                  Icons.arrow_back,
-                  size: 30.0,
-                ),
-              ),
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              SizedBox(height: 10.0,),
+              _botonRegresar(context),
+              _crearCards(_height)
+            ],
+          ),
         ),
       ),
       floatingActionButton: Row(
@@ -82,7 +60,9 @@ class _DetalleInitState extends State<DetalleInit> {
             label: Icon(Icons.update),
             onPressed: () => _updateStatusAr(odt),
           ),
-          SizedBox(width: 5.0,),
+          SizedBox(
+            width: 5.0,
+          ),
           FloatingActionButton.extended(
             heroTag: UniqueKey(),
             backgroundColor: Colors.red,
@@ -94,8 +74,42 @@ class _DetalleInitState extends State<DetalleInit> {
     );
   }
 
+  Widget _botonRegresar(BuildContext _context) {
+    return Container(
+        padding: EdgeInsets.only(left: 10.0, top: 25.0),
+        alignment: Alignment.topLeft,
+        child: Row(
+          children: <Widget>[
+            RaisedButton(
+              onPressed: () {
+                _regresar(_context);
+              },
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0)),
+              child: Icon(
+                Icons.arrow_back,
+                size: 30.0,
+              ),
+            ),
+            Expanded(
+              child: Container(
+                alignment: Alignment.center,
+                child: Text(
+                  "",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 25.0,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            )
+          ],
+        ));
+  }
+
   Widget _crearCards(double _height) {
     return Card(
+      margin: EdgeInsets.only(left: 10.0, right: 10.0),
       elevation: 8.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       child: Padding(
@@ -173,6 +187,7 @@ class _DetalleInitState extends State<DetalleInit> {
 
   void _updateStatusAr(Odtmodel model) async {
     int idstatusarp = 0;
+    String msg = "";
     switch (model.idStatusAr) {
       case 3:
         idstatusarp = 13;
@@ -185,13 +200,34 @@ class _DetalleInitState extends State<DetalleInit> {
         break;
       default:
     }
+    showCustomLoadingWidget(Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          CircularProgressIndicator(),
+          SizedBox(height: 1.0,),
+          Text("Actualizando...")
+        ],
+      )
+    ));  
     int isupdate = await odtBloc.updateStatusAr(
         model.idAr, model.idStatusAr, idstatusarp, model.idAr);
-    isupdate == 1
-        ? mostrarAlertDatosActualizado(
-            context, 'El estatus de la Odt se ha actualizado')
-        : mostrarAlertDatosActualizado(
-            context, 'No se logro actualizar la Odt');
+    // isupdate == 1
+    //     ? mostrarAlertDatosActualizado(
+    //         context, 'El estatus de la Odt se ha actualizado')
+    //     : mostrarAlertDatosActualizado(
+    //         context, 'No se logro actualizar la Odt');
+    hideLoadingDialog();
+
+    if(isupdate == 1){
+      msg = 'Odt Actulizada';
+    }else{
+      msg = 'La Odt no se ha actualizado';
+    }
+    final snackbar = SnackBar(
+      content: Text(msg),
+    );
+    Scaffold.of(context).showSnackBar(snackbar);
   }
 
   void _coordenadas() {

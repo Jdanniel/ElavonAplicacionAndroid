@@ -4,6 +4,7 @@ import 'package:elavonappmovil/bloc/provider.dart';
 import 'package:elavonappmovil/provider/usuario_provider.dart';
 import 'package:elavonappmovil/shapes/dibujarCurva0.dart';
 import 'package:elavonappmovil/utils/utils.dart';
+import 'package:load/load.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -224,20 +225,26 @@ class _LoginPageState extends State<LoginPage> {
 
   _login(LoginBloc bloc, BuildContext context) async {
     
-    setState(() {
-      _initProgressBar = true;
-    });
+    showCustomLoadingWidget(Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          CircularProgressIndicator(),
+          SizedBox(height: 1.0,),
+          Text("Comprobando Datos")
+        ],
+      )
+    ));
 
     Map info = await usuarioProvider.login(bloc.gusername, bloc.gpassword);
     
+
     if(info['res']){
       Navigator.pushReplacementNamed(context, 'cargaCatalogos');
     }else{   
       mostraAlerta(context, info['msg']);
     }    
-    setState(() {
-      _initProgressBar = false;
-    });   
+    hideLoadingDialog();
   }
 
 }

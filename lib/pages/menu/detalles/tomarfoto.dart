@@ -4,6 +4,7 @@ import 'package:elavonappmovil/bloc/provider.dart';
 import 'package:elavonappmovil/models/odts_model.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:load/load.dart';
 
 class TomarFoto extends StatefulWidget {
   @override
@@ -11,7 +12,6 @@ class TomarFoto extends StatefulWidget {
 }
 
 class _TomarFotoState extends State<TomarFoto> {
-  
   File _image;
   bool _ismageloaded = false;
   bool _enviadoPhoto = false;
@@ -49,22 +49,19 @@ class _TomarFotoState extends State<TomarFoto> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0)),
                     child: Center(
-                        child:
-                            _ismageloaded ? Image.file(_image) : Text("Imagen")),
+                        child: _ismageloaded
+                            ? Image.file(_image)
+                            : Text("Imagen")),
                   ),
                 ),
               ),
-              _enviadoPhoto ? Container(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Text("Enviando"),
-                    CircularProgressIndicator()
-                  ],
-                ),
-              ) : IconButton(
-                onPressed: () {sendPhoto(odt, _image);},
+              FlatButton.icon(
+                color: Colors.white,
                 icon: Icon(Icons.send),
+                label: Text('Enviar'),
+                onPressed: () {
+                  sendPhoto(odt, _image);
+                },
               )
             ],
           ),
@@ -101,12 +98,14 @@ class _TomarFotoState extends State<TomarFoto> {
 
   Widget _botonRegresar(BuildContext _context) {
     return Container(
-        padding: EdgeInsets.only(left: 10.0),
+        padding: EdgeInsets.only(left: 10.0, top: 25.0),
         alignment: Alignment.topLeft,
         child: Row(
           children: <Widget>[
             RaisedButton(
-              onPressed: () {},
+              onPressed: () {
+                _regresar(_context);
+              },
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0)),
               child: Icon(
@@ -130,19 +129,40 @@ class _TomarFotoState extends State<TomarFoto> {
         ));
   }
 
+  void _regresar(BuildContext _context) {
+    Navigator.pop(_context);
+  }
+
   getImageFile(ImageSource source) async {
     var image = await ImagePicker.pickImage(source: source);
-    setState(() {
-      _image = image;
-      _ismageloaded = true;
-    });
+    if(image != null){
+      setState(() {
+        _image = image;
+        _ismageloaded = true;
+      });
+    }
   }
 
   sendPhoto(Odtmodel model, File imagen) async {
-    if(imagen != null){
-      _enviadoPhoto = true;
-      bloc.sendPhoto(imagen, model.odt);
-      _enviadoPhoto = false;
+    if (imagen != null) {
+      showCustomLoadingWidget(Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            CircularProgressIndicator(),
+            SizedBox(height: 1.0,),
+            Text("Enviando...")
+          ],
+        )
+      ));   
+      int resultado = await bloc.sendPhoto(imagen, model.odt);
+      if (resultado == 1) {
+        hideLoadingDialog();
+        final snackbar = SnackBar(
+          content: Text("Envio completado"),
+        );
+        Scaffold.of(context).showSnackBar(snackbar);
+      }
     }
   }
 }

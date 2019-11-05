@@ -64,8 +64,9 @@ class OdtsBloc{
     return odts;
   }
 
-  Future sendPhoto(File imagen, String noar)async{
-    await _odtsProvider.sendPhoto(imagen, noar);
+  Future<int> sendPhoto(File imagen, String noar)async{
+    int resultado = await _odtsProvider.sendPhoto(imagen, noar);
+    return resultado;
   }
 
   dispose(){
