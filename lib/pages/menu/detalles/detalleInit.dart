@@ -1,8 +1,7 @@
-import 'dart:async';
-
 import 'package:elavonappmovil/bloc/provider.dart';
+import 'package:elavonappmovil/models/negocios_model.dart';
 import 'package:elavonappmovil/models/odts_model.dart';
-import 'package:elavonappmovil/utils/utils.dart';
+import 'package:elavonappmovil/provider/negocios_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:load/load.dart';
@@ -14,7 +13,8 @@ class DetalleInit extends StatefulWidget {
 }
 
 class _DetalleInitState extends State<DetalleInit> {
-  StreamSubscription<Position> positionStream;
+  //StreamSubscription<Position> positionStream;
+  Position position;
 
   OdtsBloc odtBloc;
   Odtmodel odt = new Odtmodel();
@@ -37,7 +37,9 @@ class _DetalleInitState extends State<DetalleInit> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              SizedBox(height: 10.0,),
+              SizedBox(
+                height: 10.0,
+              ),
               _botonRegresar(context),
               _crearCards(_height)
             ],
@@ -144,7 +146,8 @@ class _DetalleInitState extends State<DetalleInit> {
                 odt.longitud == null
                     ? lon.toString()
                     : odt.longitud.toString()),
-            _crearItems(context, 'Fecha Garantía', odt.fecGarantia.trimRight()),
+            _crearItems(
+                context, 'Fecha Garantía', odt.fecGarantia.trimRight()),
           ],
         ),
       ),
@@ -201,15 +204,16 @@ class _DetalleInitState extends State<DetalleInit> {
       default:
     }
     showCustomLoadingWidget(Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          CircularProgressIndicator(),
-          SizedBox(height: 1.0,),
-          Text("Actualizando...")
-        ],
-      )
-    ));  
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        CircularProgressIndicator(),
+        SizedBox(
+          height: 1.0,
+        ),
+        Text("Actualizando...")
+      ],
+    )));
     int isupdate = await odtBloc.updateStatusAr(
         model.idAr, model.idStatusAr, idstatusarp, model.idAr);
     // isupdate == 1
@@ -219,9 +223,9 @@ class _DetalleInitState extends State<DetalleInit> {
     //         context, 'No se logro actualizar la Odt');
     hideLoadingDialog();
 
-    if(isupdate == 1){
+    if (isupdate == 1) {
       msg = 'Odt Actulizada';
-    }else{
+    } else {
       msg = 'La Odt no se ha actualizado';
     }
     final snackbar = SnackBar(
@@ -230,11 +234,24 @@ class _DetalleInitState extends State<DetalleInit> {
     Scaffold.of(context).showSnackBar(snackbar);
   }
 
-  void _coordenadas() {
-    final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
-    var locationOptions =
-        LocationOptions(accuracy: LocationAccuracy.bestForNavigation);
-    positionStream = geolocator
+  void _coordenadas() async{
+
+    showCustomLoadingWidget(Container(
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        CircularProgressIndicator(),
+        SizedBox(
+          height: 1.0,
+        ),
+        Text("Actualizando...")
+      ],
+    )));
+
+    final Geolocator geolocator = Geolocator()
+      ..forceAndroidLocationManager = true;
+    //var locationOptions = LocationOptions(accuracy: LocationAccuracy.best);
+    /*positionStream = geolocator
         .getPositionStream(locationOptions)
         .listen((Position position) {
       print(position == null
@@ -246,14 +263,33 @@ class _DetalleInitState extends State<DetalleInit> {
         lat = position.latitude;
         lon = position.longitude;
       });
+    });*/
+    position = await geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+    //print(position.latitude.toString()+" "+position.longitude.toString());
+    setState(() {
+      lat = position.latitude;
+      lon = position.longitude;
     });
+    NegociosProvider negocio = new NegociosProvider();
+    NegociosModel model = new NegociosModel();
+    model.idNegocio = odt.idNegocio;
+    model.latitud = position.latitude;
+    model.longitud = position.longitude;
+    int r = await negocio.updateCoordenadas(model);
+    String msg = "";
+    r == 1 ? msg = 'Coordenadas Actualizadas' : msg = 'Favor de intentarlo despues';
+    final snackbar = SnackBar(
+      content: Text(msg),
+    );
+    Scaffold.of(context).showSnackBar(snackbar);
+    hideLoadingDialog();
     //positionStream.cancel();
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
-    positionStream?.cancel();
+    //position?.cancel();
     super.dispose();
   }
 }

@@ -1,8 +1,5 @@
-import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:elavonappmovil/models/negocios_model.dart';
 import 'package:elavonappmovil/models/odts_model.dart';
-import 'package:http/http.dart' as http;
 import 'package:elavonappmovil/models/software_model.dart';
 import 'package:elavonappmovil/models/unidades_model.dart';
 import 'package:elavonappmovil/models/conectividad_model.dart';
