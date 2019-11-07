@@ -72,4 +72,24 @@ class OdtProvider{
     return resp.data;
   }
 
+  Future<int> agregarComentario(String comentario, int idAar) async {
+
+    try{
+      final url = '$_url/AgregarComentario';
+      var dio = Dio();
+      final resp = await dio.post(url, data: {
+        "ID_AR": idAar,
+        "COMENTARIO": comentario,
+        "ID_USUARIO": _prefs.idUsuario
+      }, options: Options(contentType: 'application/json'));
+
+      return resp.data;
+    } on DioError catch(error){
+      print("$error");
+      return 0;
+    }
+
+
+  }
+
 }

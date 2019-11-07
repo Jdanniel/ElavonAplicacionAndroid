@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:load/load.dart';
 import 'package:elavonappmovil/bloc/provider.dart';
@@ -13,11 +14,13 @@ import 'package:elavonappmovil/pages/menu/serviciosabierto.menu.dart';
 import 'package:elavonappmovil/pages/menu/servicioscerrados_menu.dart';
 import 'package:elavonappmovil/pages/menu/serviciosnuevos_menu.dart';
 import 'package:elavonappmovil/pages/menu/unidadesinventario.dart';
+import 'package:elavonappmovil/pages/menu/detalles/agregarcomentarios.dart';
 
 void main() async {
   
   final prefs = new PreferenciasUsuario();
   await prefs.initPrefs();
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   initializeDateFormatting().then((_) => runApp(MyApp()));
 
 }
@@ -43,7 +46,8 @@ class MyApp extends StatelessWidget {
             'scanner' : (BuildContext context) => ScannerPage(),
             'cargaCatalogos' : (BuildContext context) => CargaPage(),
             'unidadesInvenario' : (BuildContext context) => UnidadesInventarioPage(),
-            'editImage' : (BuildContext context) => EditImage()
+            'editImage' : (BuildContext context) => EditImage(),
+            'agregarComentario' : (BuildContext context) => AgregarComentario()
           },
           theme: ThemeData(primaryColor: Colors.blueAccent),
         ),

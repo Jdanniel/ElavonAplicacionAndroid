@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'package:date_format/date_format.dart';
 import 'package:dio/dio.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:elavonappmovil/preferencias_usuario/preferencias_usuario.dart';
 

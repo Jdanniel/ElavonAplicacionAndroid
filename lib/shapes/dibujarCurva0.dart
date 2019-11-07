@@ -5,7 +5,6 @@ class DibujarCurva0 extends CustomPainter{
 
   @override
   void paint(Canvas canvas, Size size) {
-    // TODO: implement paint
     var paint = Paint();
 
     paint.color = Color.fromRGBO(37, 176, 232, 0.91);
@@ -37,7 +36,6 @@ class DibujarCurva0 extends CustomPainter{
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
-    // TODO: implement shouldRepaint
     return true;
   }
 

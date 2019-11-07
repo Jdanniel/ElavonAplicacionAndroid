@@ -14,7 +14,6 @@ class TomarFoto extends StatefulWidget {
 class _TomarFotoState extends State<TomarFoto> {
   File _image;
   bool _ismageloaded = false;
-  bool _enviadoPhoto = false;
   OdtsBloc bloc;
   Odtmodel odt = new Odtmodel();
 

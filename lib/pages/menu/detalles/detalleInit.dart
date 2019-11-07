@@ -41,6 +41,9 @@ class _DetalleInitState extends State<DetalleInit> {
                 height: 10.0,
               ),
               _botonRegresar(context),
+              SizedBox(
+                height: 10.0,
+              ),              
               _crearCards(_height)
             ],
           ),
@@ -288,7 +291,6 @@ class _DetalleInitState extends State<DetalleInit> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     //position?.cancel();
     super.dispose();
   }

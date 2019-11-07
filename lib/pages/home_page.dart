@@ -58,6 +58,7 @@ class _HomePageState extends State<HomePage> {
           _cardRedondeado('Unidades', 'Inventario', Icons.lock, 4),
           _cardRedondeado('Escanear', 'Series', Icons.scanner, 5),
           _cardRedondeado('Editar', 'Imagen', Icons.image, 6),
+          _cardRedondeado('Agregar', 'Comentario', Icons.image, 7),
         ],
       ),
     );
@@ -226,7 +227,10 @@ class _HomePageState extends State<HomePage> {
         break;
       case 6:
         Navigator.pushNamed(context, 'editImage');
-        break;  
+        break;
+      case 7:
+        Navigator.pushNamed(context, 'agregarComentario');
+        break;          
         default:
     }
   }

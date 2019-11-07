@@ -9,13 +9,14 @@ class NegociosProvider{
   Future<int> updateCoordenadas(NegociosModel model) async{
 
     try{
-      String url = "$_url/coordenadas";
+      String url = "$_url/UpdateCoordenadas";
       var dio = Dio();
 
       final resp = await dio.put(url, data: {
         "ID_NEGOCIO": model.idNegocio,
         "LATITUD": model.latitud,
-        "LONGITUD": model.longitud
+        "LONGITUD": model.longitud,
+        "ID_USUARIO" : _prefs.idUsuario
       });
       return resp.data;
     } on DioError catch(error){

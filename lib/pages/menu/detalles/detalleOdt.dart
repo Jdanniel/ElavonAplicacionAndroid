@@ -1,3 +1,4 @@
+import 'package:elavonappmovil/pages/menu/detalles/agregarcomentarios.dart';
 import 'package:elavonappmovil/pages/menu/detalles/detalleInit.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -11,6 +12,7 @@ class DetalleOdtPage extends StatefulWidget {
 class _DetalleOdtPageState extends State<DetalleOdtPage> {
   final TomarFoto _tomarFoto = new TomarFoto();
   final DetalleInit _init = new DetalleInit();
+  final AgregarComentario _comentario = new AgregarComentario();
 
   Widget _showPage = new DetalleInit();
 
@@ -47,6 +49,10 @@ class _DetalleOdtPageState extends State<DetalleOdtPage> {
               Icons.add_a_photo,
               size: 30,
             ),
+            Icon(
+              Icons.edit,
+              size: 30,
+            )
           ],
           onTap: (index) {
             setState(() {
@@ -63,6 +69,9 @@ class _DetalleOdtPageState extends State<DetalleOdtPage> {
         break;
       case 4:
         return _tomarFoto;
+        break;
+      case 5:
+        return _comentario;
         break;
       default:
         return Container(

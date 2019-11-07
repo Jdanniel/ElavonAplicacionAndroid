@@ -69,6 +69,11 @@ class OdtsBloc{
     return resultado;
   }
 
+  Future<int> agregarComentario(int idar, String comentario)async{
+    int resultado = await _odtsProvider.agregarComentario(comentario, idar);
+    return resultado;
+  }
+
   dispose(){
     _allodtsbyDateController?.close();
     _allodtsController?.close();

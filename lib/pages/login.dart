@@ -12,10 +12,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   final usuarioProvider = new UsuarioProvider();
   bool _obscureText = true;
-  bool _initProgressBar = false;  
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +22,13 @@ class _LoginPageState extends State<LoginPage> {
       body: Stack(
         children: <Widget>[
           _crearFondo(context),
-          _crearForm(context,bloc),
+          _crearForm(context, bloc),
         ],
       ),
     );
   }
 
-  Widget _crearForm(BuildContext context, LoginBloc bloc){
-
+  Widget _crearForm(BuildContext context, LoginBloc bloc) {
     final size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Column(
@@ -46,26 +43,33 @@ class _LoginPageState extends State<LoginPage> {
             margin: EdgeInsets.symmetric(vertical: 30.0),
             padding: EdgeInsets.symmetric(vertical: 50.0),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                  color: Colors.black38,
-                  blurRadius: 3.0,
-                  spreadRadius: 3.0,
-                  offset: Offset(0.0,0.5)
-                )
-              ]
-            ),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.0),
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                      color: Colors.black38,
+                      blurRadius: 3.0,
+                      spreadRadius: 3.0,
+                      offset: Offset(0.0, 0.5))
+                ]),
             child: Column(
               children: <Widget>[
-                Text('Bienvenido', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
-                SizedBox(height: 30.0,),
+                Text(
+                  'Bienvenido',
+                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: 30.0,
+                ),
                 _crearTextFormFieldUsuario(bloc),
-                SizedBox(height: 30.0,),
+                SizedBox(
+                  height: 30.0,
+                ),
                 _crearTextFormFieldPassword(bloc),
-                SizedBox(height: 30.0,),
-                _crearBotonSubmit(bloc,context)
+                SizedBox(
+                  height: 30.0,
+                ),
+                _crearBotonSubmit(bloc, context)
               ],
             ),
           ),
@@ -75,19 +79,10 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _crearBotonSubmit(LoginBloc bloc, BuildContext context){
-
+  Widget _crearBotonSubmit(LoginBloc bloc, BuildContext context) {
     return StreamBuilder(
-      stream: bloc.formValidStream,
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if(_initProgressBar){
-          return Column(
-            children: <Widget>[
-              Text('Comprobando Datos...'),
-              CircularProgressIndicator()
-            ],
-          );
-        }else{
+        stream: bloc.formValidStream,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
           return RaisedButton(
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
@@ -101,86 +96,79 @@ class _LoginPageState extends State<LoginPage> {
             textColor: Colors.white,
             onPressed: snapshot.hasData ? () => _login(bloc, context) : null,
           );
-        }
-      }
-    );
+        });
   }
 
-  Widget _crearRecuperarPassword(){
+  Widget _crearRecuperarPassword() {
     return FlatButton(
-      child: Text('Olvide mi contraseña', style: TextStyle(color: Colors.black, fontSize: 18.0),),
-      onPressed: (){},
+      child: Text(
+        'Olvide mi contraseña',
+        style: TextStyle(color: Colors.black, fontSize: 18.0),
+      ),
+      onPressed: () {},
     );
   }
 
-  Widget _crearTextFormFieldUsuario(LoginBloc bloc){
-
+  Widget _crearTextFormFieldUsuario(LoginBloc bloc) {
     return StreamBuilder(
-      stream: bloc.usernameStream,
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        return Container(
-          padding: EdgeInsets.symmetric(horizontal: 25.0),
-          child: TextField(
-            onChanged: (v)=> setState((){bloc.changeUserName(v);}),
-            decoration: InputDecoration(
-              labelText: 'Nombre de Usuario',
-              fillColor: Colors.white,
-              errorText: snapshot.error,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25.0),
-                borderSide: BorderSide(),
-              )
-            ),
-          ),
-
-        );
-      }
-    );
-
-  }
-
-  Widget _crearTextFormFieldPassword(LoginBloc bloc){
-
-    return StreamBuilder(
-      stream: bloc.passwordStream,
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        return Container(
-          padding: EdgeInsets.symmetric(horizontal: 25.0),
-          child: Column(
-            children: <Widget>[
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Password',
+        stream: bloc.usernameStream,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          return Container(
+            padding: EdgeInsets.symmetric(horizontal: 25.0),
+            child: TextField(
+              onChanged: (v) => setState(() {
+                bloc.changeUserName(v);
+              }),
+              decoration: InputDecoration(
+                  labelText: 'Nombre de Usuario',
                   fillColor: Colors.white,
                   errorText: snapshot.error,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(25.0),
-                    borderSide: BorderSide()
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscureText
-                      ? Icons.visibility
-                      : Icons.visibility_off,
-                      color: Theme.of(context).primaryColorDark,
+                    borderSide: BorderSide(),
+                  )),
+            ),
+          );
+        });
+  }
+
+  Widget _crearTextFormFieldPassword(LoginBloc bloc) {
+    return StreamBuilder(
+        stream: bloc.passwordStream,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          return Container(
+            padding: EdgeInsets.symmetric(horizontal: 25.0),
+            child: Column(
+              children: <Widget>[
+                TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    fillColor: Colors.white,
+                    errorText: snapshot.error,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                        borderSide: BorderSide()),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.visibility : Icons.visibility_off,
+                        color: Theme.of(context).primaryColorDark,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
                     ),
-                    onPressed: (){
-                      setState(() {
-                       _obscureText = !_obscureText; 
-                      });
-                    },
                   ),
-                ),
-                obscureText: _obscureText,  
-                onChanged: (v) => setState((){bloc.changePassword(v);}),              
-              )
-            ],
-          ),
-
-        );
-      }
-    );
-
+                  obscureText: _obscureText,
+                  onChanged: (v) => setState(() {
+                    bloc.changePassword(v);
+                  }),
+                )
+              ],
+            ),
+          );
+        });
   }
 
   Widget _crearFondo(BuildContext context) {
@@ -197,10 +185,9 @@ class _LoginPageState extends State<LoginPage> {
     final fondoAzul = Container(
       height: height,
       width: width,
-      color: Color.fromRGBO(54,146,255,1.0),
+      color: Color.fromRGBO(54, 146, 255, 1.0),
       child: ola0,
     );
-
 
     return Stack(
       children: <Widget>[
@@ -224,27 +211,27 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _login(LoginBloc bloc, BuildContext context) async {
-    
-    showCustomLoadingWidget(Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          CircularProgressIndicator(),
-          SizedBox(height: 1.0,),
-          Text("Comprobando Datos")
-        ],
-      )
-    ));
+    showCustomLoadingWidget(
+        Container(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            CircularProgressIndicator(),
+            SizedBox(
+              height: 1.0,
+            ),
+            Text("Comprobando Datos")
+          ],
+        )),
+        tapDismiss: false);
 
     Map info = await usuarioProvider.login(bloc.gusername, bloc.gpassword);
-    
 
-    if(info['res']){
+    if (info['res']) {
       Navigator.pushReplacementNamed(context, 'cargaCatalogos');
-    }else{   
+    } else {
       mostraAlerta(context, info['msg']);
-    }    
+    }
     hideLoadingDialog();
   }
-
 }
