@@ -1,3 +1,4 @@
+import 'package:elavonappmovil/pages/menu/detalles/pruebadetalle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -37,17 +38,18 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           initialRoute: 'login',
           routes: {
-            'login' : (BuildContext context) => LoginPage(),
-            'home' : (BuildContext context) => HomePage(),
-            'nuevas' : (BuildContext context) => ServiciosNuevosPage(),
-            'abiertas' : (BuildContext context) => ServiciosAbiertosPage(),
-            'cerradas' : (BuildContext context) => ServiciosCerradosPage(),
-            'detalleOdt' : (BuildContext context) => DetalleOdtPage(),
-            'scanner' : (BuildContext context) => ScannerPage(),
-            'cargaCatalogos' : (BuildContext context) => CargaPage(),
-            'unidadesInvenario' : (BuildContext context) => UnidadesInventarioPage(),
-            'editImage' : (BuildContext context) => EditImage(),
-            'agregarComentario' : (BuildContext context) => AgregarComentario()
+            'login' : (context) => LoginPage(),
+            'home' : (context) => HomePage(),
+            'nuevas' : (context) => ServiciosNuevosPage(),
+            'abiertas' : (context) => ServiciosAbiertosPage(),
+            'cerradas' : (context) => ServiciosCerradosPage(),
+            'detalleOdt' : (context) => DetalleOdtPage(),
+            'scanner' : (context) => ScannerPage(),
+            'cargaCatalogos' : (context) => CargaPage(),
+            'unidadesInvenario' : (context) => UnidadesInventarioPage(),
+            'editImage' : (context) => EditImage(),
+            'agregarComentario' : (context) => AgregarComentario(),
+            'pruebaDetalle' : (context) => PruebaDetalle()
           },
           theme: ThemeData(primaryColor: Colors.blueAccent),
         ),

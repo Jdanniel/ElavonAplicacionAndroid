@@ -39,21 +39,20 @@ class DBProvider {
     if(_database != null){
       return _database;
     }
-    _database = await initDB();
+
+    final path = await getPath();
+    _database = await initDB(path);
     return _database;
   }
 
-  initDB() async{
-
-    //DEFINIR PATH
+  Future<String> getPath() async{
     Directory documentDirectory = await getApplicationDocumentsDirectory();
     final path = join(documentDirectory.path, 'ElavonDB.db');
+    return path;
+  }
 
-    //BORRAR BASE DE DATOS
-    //final bool isexistsDb = await databaseExists(path);
-    // if(isexistsDb) await deleteDatabase(path);
+  initDB(String path) async{
     await deleteDatabase(path);
-
     final String queryServicios = 'CREATE TABLE $tableservicios ( idservicio INTEGER NOT NULL, descservicio TEXT)';
     final String queryModelos = 'CREATE TABLE ${CModelos.table} ( ${CModelos.columnID} INTEGER NOT NULL, ${CModelos.columnDESCMODELO} TEXT)';
     final String queryMarcas = 'CREATE TABLE ${CMarcas.table} ( ${CMarcas.columnID} INTEGER NOT NULL, ${CMarcas.columnDESCMARCA} TEXT)';
@@ -65,6 +64,7 @@ class DBProvider {
 
     return await openDatabase(path,
       version: 1,
+      readOnly: false,
       onOpen: (db){},
       onCreate: (Database db, int version) async {
         await db.execute(queryServicios);
@@ -85,11 +85,10 @@ class DBProvider {
   nuevoServicio(ServiciosModel nuevoServicio) async{
     final db = await database;
 
-    final res = await db.rawInsert(
-      "INSERT INTO $tableservicios(idservicio,descservicio)" +
-      "VALUES (${nuevoServicio.idServicio},'${nuevoServicio.descServicio}')"
-    );
-    // await db.close();
+    final res = await db.transaction((txn) async {
+      var query = "INSERT INTO $tableservicios(idservicio,descservicio) VALUES (${nuevoServicio.idServicio},'${nuevoServicio.descServicio}')";
+      return await txn.rawInsert(query);
+    });
     return res;
   }
 
@@ -385,6 +384,12 @@ class DBProvider {
     final db = await database;
     final res = await db.update(tableservicios, nuevoServicio.toJson(), where: 'id = ?', whereArgs: [nuevoServicio.idServicio]);
     // await db.close();
+    return res;
+  }
+
+  Future<int> updateOdt(int idar, String noar) async{
+    final db = await database;
+    final res = await db.rawUpdate("UPDATE ${BdArs.table} SET ${BdArs.columnNOAR} = '$noar' WHERE ${BdArs.columnID} = $idar");
     return res;
   }
 

@@ -46,30 +46,67 @@ class _EditImageState extends State<EditImage> {
 
     setState(() {
       _image = croppedFile;
-      print(_image.lengthSync());
+      //print(_image.lengthSync());
     });
+    _detector(_image);
+    // FirebaseVisionImage miImagen = FirebaseVisionImage.fromFile(_image);
+    // TextRecognizer reconocerTexto = FirebaseVision.instance.textRecognizer();
+    // VisionText leerTexto = await reconocerTexto.processImage(miImagen);
 
-    FirebaseVisionImage miImagen = FirebaseVisionImage.fromFile(_image);
+    // for (TextBlock block in leerTexto.blocks) {
+    //   for (TextLine line in block.lines) {
+    //     print("Line: ${line.text}");
+    //     setState(() {
+    //       _controller = new TextEditingController(text: line.text.trim());
+    //     });
+    //     /*
+    //     for(TextElement word in line.elements){
+    //       print("Word: ${word.text}");
+    //       setState(() {
+    //         texto.add(word.text);
+    //       });
+    //     }
+    //     */
+    //   }
+    // }
+    // reconocerTexto.close();
+  }
+
+  Future _detector(File imagenTomada) async {
+    FirebaseVisionImage miImagen = FirebaseVisionImage.fromFile(imagenTomada);
+    final BarcodeDetector barcodeDetector = FirebaseVision.instance.barcodeDetector();
+    List<Barcode> codigoBarras = await barcodeDetector.detectInImage(miImagen);
+    if(codigoBarras.length > 0){
+      _leerCodigoBarras(miImagen,codigoBarras);
+    }else{
+      _leerTexto(miImagen);
+    }
+    barcodeDetector.close();
+  }
+
+  Future _leerTexto(FirebaseVisionImage miImagen) async{
     TextRecognizer reconocerTexto = FirebaseVision.instance.textRecognizer();
     VisionText leerTexto = await reconocerTexto.processImage(miImagen);
 
-    for (TextBlock block in leerTexto.blocks) {
-      for (TextLine line in block.lines) {
-        print("Line: ${line.text}");
+    for(TextBlock block in leerTexto.blocks){
+      for(TextLine line in block.lines){
         setState(() {
           _controller = new TextEditingController(text: line.text.trim());
         });
-        /*
-        for(TextElement word in line.elements){
-          print("Word: ${word.text}");
-          setState(() {
-            texto.add(word.text);
-          });
-        }
-        */
       }
     }
     reconocerTexto.close();
+  }
+
+  Future _leerCodigoBarras(FirebaseVisionImage miImagen, List<Barcode> lista) async{
+    texto = [];
+    for(Barcode barcode in lista){
+      //var ll = barcode.rawValue.toString();
+      setState(() {
+        _controller = new TextEditingController(text: barcode.rawValue.toString());
+      });
+
+    }
   }
 
   @override

@@ -49,17 +49,21 @@ class _HomePageState extends State<HomePage> {
 
   Widget _contenedorCards(BuildContext _context) {
     return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          _cardRedondeado('Servicios', 'Nuevos', Icons.new_releases, 1),
-          _cardRedondeado('Servicios', 'Abiertos', Icons.lock_open, 2),
-          _cardRedondeado('Servicios', 'Cerrados', Icons.lock, 3),
-          _cardRedondeado('Unidades', 'Inventario', Icons.lock, 4),
-          _cardRedondeado('Escanear', 'Series', Icons.scanner, 5),
-          _cardRedondeado('Editar', 'Imagen', Icons.image, 6),
-          _cardRedondeado('Agregar', 'Comentario', Icons.image, 7),
-        ],
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            _cardRedondeado('Servicios', 'Nuevos', Icons.new_releases, 1),
+            _cardRedondeado('Servicios', 'Abiertos', Icons.lock_open, 2),
+            _cardRedondeado('Servicios', 'Cerrados', Icons.lock, 3),
+            _cardRedondeado('Unidades', 'Inventario', Icons.lock, 4),
+            _cardRedondeado('Escanear', 'Series', Icons.scanner, 5),
+            _cardRedondeado('Editar', 'Imagen', Icons.image, 6),
+            _cardRedondeado('Agregar', 'Comentario', Icons.image, 7),
+          ],
+        ),
       ),
     );
   }
@@ -72,7 +76,7 @@ class _HomePageState extends State<HomePage> {
         width: 400.0,
         child: Card(
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           elevation: 10.0,
           child: Column(
             mainAxisSize: MainAxisSize.min,

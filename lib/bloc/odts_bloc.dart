@@ -14,6 +14,7 @@ class OdtsBloc{
   final _odtController = new BehaviorSubject<Odtmodel>();
   final _cargandoController = new BehaviorSubject<bool>();
   final _updateStatusController = new BehaviorSubject<int>();
+  final _odtNuevoController = new BehaviorSubject<Odtmodel>();
 
   final _odtsProvider = new OdtProvider();
 
@@ -22,6 +23,7 @@ class OdtsBloc{
   Stream<List<Odtmodel>> get allodtsStream => _allodtsController.stream;
   Stream<Odtmodel> get odtStrem => _odtController.stream;
   Stream<bool> get cargando => _cargandoController.stream;
+  Stream<Odtmodel> get odtnuevoStream => _odtNuevoController.stream;
 
   //Insertar Metodos de Odts
 
@@ -42,6 +44,10 @@ class OdtsBloc{
   void selectAllOdtsbyDate(int day, int month, int year, int idstatus) async{
     final odts = await DBProvider.db.getAllArsbyDate(day, month, year, idstatus);
     _allodtsbyDateController.sink.add(odts);
+  }
+
+  void nuevoOdt(Odtmodel odt) async{
+    _odtNuevoController.sink.add(odt);
   }
 
   Future<int> updateStatusAr(int idusuario, int idstatusara, int idstatusarp, int idar) async{
@@ -74,12 +80,17 @@ class OdtsBloc{
     return resultado;
   }
 
+  void updateOdt(int idar, String noar)async{
+    await DBProvider.db.updateOdt(idar, noar);
+  }
+
   dispose(){
     _allodtsbyDateController?.close();
     _allodtsController?.close();
     _odtController?.close();
     _cargandoController?.close();
     _updateStatusController?.close();
+    _odtNuevoController?.close();
   }
 
 }

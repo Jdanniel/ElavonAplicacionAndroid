@@ -2,6 +2,8 @@ import 'package:elavonappmovil/bloc/odts_bloc.dart';
 import 'package:elavonappmovil/bloc/provider.dart';
 import 'package:elavonappmovil/models/odts_model.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:load/load.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class ServiciosCerradosPage extends StatefulWidget {
@@ -11,7 +13,6 @@ class ServiciosCerradosPage extends StatefulWidget {
 
 class _ServiciosCerradosPageState extends State<ServiciosCerradosPage>
     with TickerProviderStateMixin {
-
   OdtsBloc odt;
   bool _init = false;
 
@@ -21,7 +22,7 @@ class _ServiciosCerradosPageState extends State<ServiciosCerradosPage>
   CalendarController _calendarController;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _events = {};
     initEvents();
@@ -37,7 +38,7 @@ class _ServiciosCerradosPageState extends State<ServiciosCerradosPage>
 
   @override
   void dispose() {
-    _animationController.dispose();
+    //_animationController.dispose();
     _calendarController.dispose();
     super.dispose();
   }
@@ -56,12 +57,12 @@ class _ServiciosCerradosPageState extends State<ServiciosCerradosPage>
 
   @override
   Widget build(BuildContext context) {
-
-    odt = Provider.odtsBloc(context);  
+    odt = Provider.odtsBloc(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("Pruebas"),
       ),
+      backgroundColor: Colors.blueAccent,
       body: Column(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
@@ -73,26 +74,42 @@ class _ServiciosCerradosPageState extends State<ServiciosCerradosPage>
     );
   }
 
-  void initEvents() async{
-      DateTime _selectedDay = DateTime.now();
-      _selectedDay = DateTime(_selectedDay.year,_selectedDay.month,_selectedDay.day);
-      OdtsBloc bloc = new OdtsBloc();
-      List<Odtmodel> listodts = await bloc.getAllOdtsOrderbyDate();
-      Map<DateTime, List<Odtmodel>> eventos;
-      //_events = [];
-      for(int i = 0; i < listodts.length; i++){
-        //print(listodts[i].days.toString()+'/'+listodts[i].months.toString()+'/'+listodts[i].years.toString());
-        List<Odtmodel> datosbyDate = await odt.selectAllOdtsbyDate2(listodts[i].days, listodts[i].months, listodts[i].years,6);
-        eventos = {
-          DateTime(listodts[i].years, listodts[i].months, listodts[i].days) : datosbyDate
-        };
-        _events.addAll(eventos);
-        //_events = {DateTime(listodts[i].years, listodts[i].months, listodts[i].days) : datosbyDate};
-      }
-      _selectedEvents = _events[_selectedDay] ?? [];
-      setState(() {
-        _init = true;
-      });
+  void initEvents() async {
+    showCustomLoadingWidget(Container(
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        CircularProgressIndicator(),
+        SizedBox(
+          height: 1.0,
+        ),
+        Text("Cargando...")
+      ],
+    )));
+
+    DateTime _selectedDay = DateTime.now();
+    _selectedDay =
+        DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day);
+    OdtsBloc bloc = new OdtsBloc();
+    List<Odtmodel> listodts = await bloc.getAllOdtsOrderbyDate();
+    Map<DateTime, List<Odtmodel>> eventos;
+    //_events = [];
+    for (int i = 0; i < listodts.length; i++) {
+      //print(listodts[i].days.toString()+'/'+listodts[i].months.toString()+'/'+listodts[i].years.toString());
+      List<Odtmodel> datosbyDate = await odt.selectAllOdtsbyDate2(
+          listodts[i].days, listodts[i].months, listodts[i].years, 6);
+      eventos = {
+        DateTime(listodts[i].years, listodts[i].months, listodts[i].days):
+            datosbyDate
+      };
+      _events.addAll(eventos);
+      //_events = {DateTime(listodts[i].years, listodts[i].months, listodts[i].days) : datosbyDate};
+    }
+    _selectedEvents = _events[_selectedDay] ?? [];
+    setState(() {
+      _init = true;
+    });
+    hideLoadingDialog();
   }
 
   Widget _buildTableCalendar() {
@@ -100,15 +117,29 @@ class _ServiciosCerradosPageState extends State<ServiciosCerradosPage>
       calendarController: _calendarController,
       events: _events,
       startingDayOfWeek: StartingDayOfWeek.monday,
+      locale: 'es_MX',
       calendarStyle: CalendarStyle(
-        selectedColor: Colors.deepOrange[400],
-        todayColor: Colors.deepOrange[200],
-        markersColor: Colors.brown[700],
-        outsideDaysVisible: false,
-      ),
+          weekendStyle: TextStyle(
+              color: Colors.white, fontWeight: FontWeight.w300, fontSize: 16.0),
+          weekdayStyle: TextStyle(
+              color: Colors.white, fontWeight: FontWeight.w300, fontSize: 16.0),
+          selectedColor: Colors.deepOrangeAccent,
+          todayColor: Colors.deepOrange[200],
+          markersColor: Colors.brown[700],
+          outsideDaysVisible: false),
       headerStyle: HeaderStyle(
+        titleTextBuilder: (date, locale) =>
+            DateFormat.yMMMM(locale).format(date),
+        titleTextStyle: TextStyle(color: Colors.white, fontSize: 30.0),
         centerHeaderTitle: true,
+        formatButtonShowsNext: false,
         formatButtonVisible: false,
+      ),
+      daysOfWeekStyle: DaysOfWeekStyle(
+        weekendStyle:
+            TextStyle(color: Colors.white, fontWeight: FontWeight.w900),
+        weekdayStyle:
+            TextStyle(color: Colors.white, fontWeight: FontWeight.w900),
       ),
       onDaySelected: _onDaySelected,
       onVisibleDaysChanged: _onVisibleDaysChanged,
@@ -120,17 +151,59 @@ class _ServiciosCerradosPageState extends State<ServiciosCerradosPage>
       children: _selectedEvents
           .map((event) => Container(
                 decoration: BoxDecoration(
+                  color: Colors.white,
                   border: Border.all(width: 0.8),
                   borderRadius: BorderRadius.circular(12.0),
                 ),
                 margin:
                     const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                child: ListTile(
-                  title: Text(event.odt),
-                  onTap: () => print('$event tapped!'),
-                ),
+                child: _makeListTile(event)
               ))
           .toList(),
     );
+  }
+
+  _makeListTile(Odtmodel model) {
+    IconData icono;
+
+    switch (model.idTipoServicio) {
+      case 1:
+        icono = Icons.arrow_upward;
+        break;
+      case 2:
+        icono = Icons.casino;
+        break;
+      case 3:
+        icono = Icons.camera_roll;
+        break;
+    }
+
+    return ListTile(
+        contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+        leading: Container(
+          height: 50.0,
+          padding: EdgeInsets.only(right: 12.0),
+          decoration: BoxDecoration(
+              border: Border(
+                  right: new BorderSide(width: 1.0, color: Colors.black26))),
+          child: Icon(
+            icono,
+            color: Colors.black,
+          ),
+        ),
+        title: Text(
+          "ODT: ${model.odt}",
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            SelectableText("Negocio: ${model.negocio}"),
+            Text("Afiliacion: ${model.noAfiliacion}"),
+            Text("Fecha garantía: ${model.fecGarantia}")
+          ],
+        ),
+        onTap: (){Navigator.pushNamed(context, 'pruebaDetalle', arguments: model); odt.nuevoOdt(model);},
+        );
   }
 }

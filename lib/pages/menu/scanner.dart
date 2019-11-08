@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
@@ -24,10 +25,9 @@ class _ScannerPageState extends State<ScannerPage> {
     });
   }
 
-  Future _leerTexto() async{
+  Future _leerTexto(FirebaseVisionImage miImagen) async{
 
     texto = [];
-    FirebaseVisionImage miImagen = FirebaseVisionImage.fromFile(imagenTomada);
     TextRecognizer reconocerTexto = FirebaseVision.instance.textRecognizer();
     VisionText leerTexto = await reconocerTexto.processImage(miImagen);
 
@@ -41,6 +41,25 @@ class _ScannerPageState extends State<ScannerPage> {
       }
     }
     reconocerTexto.close();
+  }
+
+  Future _leerCodigoBarras(FirebaseVisionImage miImagen, List<Barcode> lista) async{
+    texto = [];
+    for(Barcode barcode in lista){
+      var ll = barcode.rawValue.toString();
+      print(ll);
+
+    }
+  }
+
+  Future _detector() async {
+    FirebaseVisionImage miImagen = FirebaseVisionImage.fromFile(imagenTomada);
+    List<Barcode> codigoBarras = await FirebaseVision.instance.barcodeDetector().detectInImage(miImagen);
+    if(codigoBarras.length > 0){
+      _leerCodigoBarras(miImagen,codigoBarras);
+    }else{
+      _leerTexto(miImagen);
+    }
   }
 
 
@@ -102,7 +121,7 @@ class _ScannerPageState extends State<ScannerPage> {
               ),
               RaisedButton(
                 child: Text('Leer Texto'),
-                onPressed: _leerTexto,
+                onPressed: _detector,
               ),
               Expanded(
                 child: texto.length == 0
