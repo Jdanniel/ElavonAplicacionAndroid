@@ -1,3 +1,4 @@
+import 'package:elavonappmovil/provider/push_notifications_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:elavonappmovil/bloc/provider.dart';
 import 'package:elavonappmovil/models/totalodts_model.dart';
@@ -11,8 +12,24 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   final prefs = new PreferenciasUsuario();
   int nuevas = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    final pushProvider = new PushNotificationProvider();
+
+    pushProvider.initNotifiations();
+
+    pushProvider.mensajes.listen((argumento){
+
+    });
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +167,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
+/*
   Widget _botonesIniciales(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
     return Container(
@@ -211,7 +228,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
+*/
   _openNuevaVentana(int tipo) {
     switch (tipo) {
       case 1:

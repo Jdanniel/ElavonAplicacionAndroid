@@ -1,4 +1,3 @@
-import 'package:elavonappmovil/pages/menu/detalles/pruebadetalle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -16,6 +15,8 @@ import 'package:elavonappmovil/pages/menu/servicioscerrados_menu.dart';
 import 'package:elavonappmovil/pages/menu/serviciosnuevos_menu.dart';
 import 'package:elavonappmovil/pages/menu/unidadesinventario.dart';
 import 'package:elavonappmovil/pages/menu/detalles/agregarcomentarios.dart';
+import 'package:elavonappmovil/pages/menu/detalles/pruebadetalle.dart';
+import 'package:elavonappmovil/provider/push_notifications_provider.dart';
 
 void main() async {
   
@@ -26,17 +27,24 @@ void main() async {
 
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  _MyAppState createState() => _MyAppState();
+}
 
+class _MyAppState extends State<MyApp> {
+  @override
+  Widget build(BuildContext context) {
+    
+    final _prefs = new PreferenciasUsuario();
+    print(_prefs.idUsuario);
     return Provider(
       child: LoadingProvider(
         child: MaterialApp(
           title: 'Microformas',
           debugShowCheckedModeBanner: false,
-          initialRoute: 'login',
+          initialRoute: _prefs.idUsuario != 0 ? 'cargaCatalogos' : 'login',
           routes: {
             'login' : (context) => LoginPage(),
             'home' : (context) => HomePage(),

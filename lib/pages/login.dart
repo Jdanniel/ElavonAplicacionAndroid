@@ -19,13 +19,13 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final bloc = Provider.of(context);
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          _crearFondo(context),
-          _crearForm(context, bloc),
-        ],
-      ),
-    );
+            body: Stack(
+              children: <Widget>[
+                _crearFondo(context),
+                _crearForm(context, bloc),
+              ],
+            ),
+          );
   }
 
   Widget _crearForm(BuildContext context, LoginBloc bloc) {
