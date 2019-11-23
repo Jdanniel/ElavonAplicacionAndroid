@@ -73,6 +73,13 @@ class _DetalleInitState extends State<DetalleInit> {
             backgroundColor: Colors.red,
             label: Icon(Icons.map),
             onPressed: () => _openGoogleMaps(odt),
+          ),
+          SizedBox(width: 5.0),
+          FloatingActionButton.extended(
+            heroTag: UniqueKey(),
+            backgroundColor: Colors.red,
+            label: Icon(Icons.close),
+            onPressed: () => _openCierres(odt),
           )
         ],
       ),
@@ -185,6 +192,10 @@ class _DetalleInitState extends State<DetalleInit> {
   void _openGoogleMaps(Odtmodel odt) {
     launch(
         "https://www.google.com.mx/maps/search/?api=1&query=${odt.direccion},${odt.estado}");
+  }
+
+  void _openCierres(Odtmodel odt){
+    Navigator.pushNamed(context, 'cierres', arguments: odt);
   }
 
   void _regresar(BuildContext _context) {

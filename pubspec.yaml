@@ -36,12 +36,14 @@ dependencies:
   geolocator: ^5.1.4+1
   collection: ^1.14.11
   table_calendar: ^2.1.0
-  intl: ^0.16.0
+  intl: ^0.15.8
   url_launcher: ^5.2.5
   image_cropper: ^1.1.0
   dio: ^3.0.4
   load: ^0.1.5+1
   firebase_messaging: ^5.1.8 
+  flutter_local_notifications: ^0.8.4+3
+  datetime_picker_formfield: ^0.4.3
 
 dev_dependencies:
   flutter_test:

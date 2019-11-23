@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
 
     final pushProvider = new PushNotificationProvider();
 
-    pushProvider.initNotifiations();
+    pushProvider.initNotifiations(prefs.idUsuario);
 
     pushProvider.mensajes.listen((argumento){
 

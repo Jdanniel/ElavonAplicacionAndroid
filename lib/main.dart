@@ -1,3 +1,4 @@
+import 'package:elavonappmovil/pages/menu/detalles/cierres.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -57,7 +58,8 @@ class _MyAppState extends State<MyApp> {
             'unidadesInvenario' : (context) => UnidadesInventarioPage(),
             'editImage' : (context) => EditImage(),
             'agregarComentario' : (context) => AgregarComentario(),
-            'pruebaDetalle' : (context) => PruebaDetalle()
+            'pruebaDetalle' : (context) => PruebaDetalle(),
+            'cierres' : (context) => Cierres()
           },
           theme: ThemeData(primaryColor: Colors.blueAccent),
         ),
