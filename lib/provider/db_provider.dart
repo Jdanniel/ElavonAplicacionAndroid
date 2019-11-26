@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:elavonappmovil/data/database_ars.dart';
+import 'package:elavonappmovil/data/database_conectividades.dart';
 import 'package:elavonappmovil/data/database_marcas.dart';
 import 'package:elavonappmovil/data/database_modelos.dart';
+import 'package:elavonappmovil/data/database_software.dart';
 import 'package:elavonappmovil/data/database_unidades.dart';
 import 'package:elavonappmovil/models/cmodelos_model.dart';
 import 'package:elavonappmovil/models/conectividad_model.dart';
@@ -56,8 +58,8 @@ class DBProvider {
     final String queryServicios = 'CREATE TABLE $tableservicios ( idservicio INTEGER NOT NULL, descservicio TEXT)';
     final String queryModelos = 'CREATE TABLE ${CModelos.table} ( ${CModelos.columnID} INTEGER NOT NULL, ${CModelos.columnDESCMODELO} TEXT)';
     final String queryMarcas = 'CREATE TABLE ${CMarcas.table} ( ${CMarcas.columnID} INTEGER NOT NULL, ${CMarcas.columnDESCMARCA} TEXT)';
-    final String queryConectividad = 'CREATE TABLE $tableConectividad ( idconectividad INTEGER NOT NULL, descconectividad TEXT)';
-    final String querySoftware = 'CREATE TABLE $tableSoftware ( idsoftware INTEGER NOT NULL, descsoftware TEXT)';
+    final String queryConectividad = 'CREATE TABLE ${CConectividades.table} ( ${CConectividades.columnID} INTEGER NOT NULL, ${CConectividades.columnDESCCONECTIVIDAD} TEXT)';
+    final String querySoftware = 'CREATE TABLE ${CSoftware.table} ( ${CSoftware.columnID} INTEGER NOT NULL, ${CSoftware.columnDESCSOFTWARE} TEXT)';
     final String queryUnidades = 'CREATE TABLE ${Bdunidades.table} (${Bdunidades.columnID} INTEGER NOT NULL, ${Bdunidades.columnNOSERIE} TEXT, ${Bdunidades.columnIDMARCA} INTEGER, ${Bdunidades.columnIDMODELO} INTEGER, ${Bdunidades.columnIDCONECTIVIDAD} INTEGER, ${Bdunidades.columnIDAPLICATIVO} INTEGER)';
     final String queryUpdates = 'CREATE TABLE $tableUpdates ( idupdates INTEGER PRIMARY KEY, fecupdates TEXT)';
     final String queryArs = 'CREATE TABLE ${BdArs.table} (${BdArs.columnID} INTEGER NOT NULL, ${BdArs.columnNOAR} TEXT, ${BdArs.columnIDNEGOCIO} INTEGER, ${BdArs.columnIDTIPOSERVICIO} INTEGER, ${BdArs.columnDESCNEGOCIO} TEXT, ${BdArs.columnNOAFILIACION} TEXT, ${BdArs.columnESTADO} TEXT, ${BdArs.columnCOLONIA} TEXT, ${BdArs.columnPOBLACION} TEXT, ${BdArs.columnDIRECCION} TEXT, ${BdArs.columnFECGARANTIA} TEXT, ${BdArs.columnLATITUD} REAL, ${BdArs.columnLONGITUD} REAL, ${BdArs.columnDAYS} INTEGER, ${BdArs.columnMONTHS} INTEGER, ${BdArs.columnYEARS} INTEGER, ${BdArs.columnNUMBERS} INTEGER, ${BdArs.columnIDSTATUSAR} INTEGER)';
@@ -121,7 +123,7 @@ class DBProvider {
     final db = await database;
 
     final res = await db.rawInsert(
-      "INSERT INTO $tableConectividad(idconectividad,descconectividad)" +
+      "INSERT INTO ${CConectividades.table}(${CConectividades.columnID},${CConectividades.columnDESCCONECTIVIDAD})" +
       "VALUES (${nuevoConectividad.idConectividad},'${nuevoConectividad.descConectividad}')"
     );
     // await db.close();
@@ -133,7 +135,7 @@ class DBProvider {
     final db = await database;
 
     final res = await db.rawInsert(
-      "INSERT INTO $tableSoftware(idsoftware,descsoftware)" +
+      "INSERT INTO ${CSoftware.table}(${CSoftware.columnID},${CSoftware.columnDESCSOFTWARE})" +
       "VALUES (${nuevoSoftware.idSoftware},'${nuevoSoftware.descSoftware}')"
     );
     // await db.close();
@@ -238,7 +240,7 @@ class DBProvider {
   Future<ConectividadModel> getConectividadId(int id) async{
     final db = await database;
 
-    final res = await db.query(tableConectividad, where: 'idconectividad = ?', whereArgs: [id]);
+    final res = await db.query(CConectividades.table, where: '${CConectividades.columnID} = ?', whereArgs: [id]);
     // await db.close();
     return res.isNotEmpty ? ConectividadModel.fromJson(res.first) : null;
   }
@@ -246,7 +248,7 @@ class DBProvider {
   Future<Softwaremodel> getSoftwareId(int id) async{
     final db = await database;
 
-    final res = await db.query(tableSoftware, where: 'idsoftware = ?', whereArgs: [id]);
+    final res = await db.query(CSoftware.table, where: '${CSoftware.columnID} = ?', whereArgs: [id]);
     // await db.close();
     return res.isNotEmpty ? Softwaremodel.fromJson(res.first) : null;
   }
@@ -307,7 +309,7 @@ class DBProvider {
 
   Future<List<ConectividadModel>> getAllConectividad() async{
     final db = await database;
-    final res = await db.query(tableConectividad);
+    final res = await db.query(CConectividades.table);
 
     List<ConectividadModel> list = res.isNotEmpty 
                               ? res.map((s) => ConectividadModel.fromJson(s)).toList()
@@ -318,7 +320,7 @@ class DBProvider {
 
   Future<List<Softwaremodel>> getAllSoftware() async{
     final db = await database;
-    final res = await db.query(tableSoftware);
+    final res = await db.query(CSoftware.table);
 
     List<Softwaremodel> list = res.isNotEmpty 
                               ? res.map((s) => Softwaremodel.fromJson(s)).toList()
@@ -329,7 +331,7 @@ class DBProvider {
 
   Future<List<UnidadesModel>> getAllUnidades() async{
     final db = await database;
-    final res = await db.query(tableUnidades);
+    final res = await db.query(Bdunidades.table);
 
     List<UnidadesModel> list = res.isNotEmpty 
                               ? res.map((s) => UnidadesModel.fromJson(s)).toList()
