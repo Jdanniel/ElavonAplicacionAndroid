@@ -12,7 +12,6 @@ class Cierres extends StatefulWidget {
 }
 
 class _CierresState extends State<Cierres> {
-
   final GlobalKey<FormState> _formkey = new GlobalKey<FormState>();
 
   List<DropdownMenuItem<String>> listaAplicativos;
@@ -23,6 +22,13 @@ class _CierresState extends State<Cierres> {
   String valueConectividad;
   String valueAplicativo;
   String valueAbc;
+
+  bool switchBateria = true;
+  bool switchEliminador = true;
+  bool switchTapa = true;
+  bool switchCableac = true;
+  bool switchBase = true;
+  bool chkIsAmex = false;
 
   bool tswitch = true;
 
@@ -61,9 +67,13 @@ class _CierresState extends State<Cierres> {
               _crearDropDownButtonSerie(),
               SizedBox(height: 15.0),
               _crearDropDownButtonConectividad(),
-              SizedBox(height: 15.0,),
+              SizedBox(
+                height: 15.0,
+              ),
               _crearDropDownButtonAplicativo(),
-              SizedBox(height: 15.0,),
+              SizedBox(
+                height: 15.0,
+              ),
               TextFormField(
                 decoration: InputDecoration(
                     icon: Icon(Icons.gamepad),
@@ -73,35 +83,227 @@ class _CierresState extends State<Cierres> {
                         borderRadius: BorderRadius.circular(32.0))),
                 keyboardType: TextInputType.numberWithOptions(),
               ),
-              SizedBox(height: 5.0,),
+              SizedBox(
+                height: 5.0,
+              ),
               Container(
-                child: Text('Accesorios',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-              ),),
-              SizedBox(height: 5.0,),
+                child: Text(
+                  'Accesorios',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                ),
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text("Batería"),
                   Switch(
-                    value: tswitch,
+                    value: switchBateria,
                     onChanged: (value) {
                       setState(() {
-                        tswitch = value;
+                        switchBateria = value;
                       });
                     },
                   ),
-                  Text("Batería"),
+                  Text("Eliminador"),
                   Switch(
-                    value: tswitch,
+                    value: switchEliminador,
                     onChanged: (value) {
                       setState(() {
-                        tswitch = value;
+                        switchEliminador = value;
                       });
                     },
-                  )
+                  ),
                 ],
+              ),
+              Row(
+                children: <Widget>[
+                  Text("Tapa"),
+                  Switch(
+                    value: switchTapa,
+                    onChanged: (value) {
+                      setState(() {
+                        switchTapa = value;
+                      });
+                    },
+                  ),
+                  Text("Cable Ac"),
+                  Switch(
+                    value: switchCableac,
+                    onChanged: (value) {
+                      setState(() {
+                        switchCableac = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Text("Base"),
+                  Switch(
+                    value: switchBase,
+                    onChanged: (value) {
+                      setState(() {
+                        switchBase = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
+              Container(
+                child: Text(
+                  'Datos Amex',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                ),
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
+              Row(
+                children: <Widget>[
+                  Text('Es Amex'),
+                  Checkbox(
+                    value: chkIsAmex,
+                    onChanged: (value) {
+                      setState(() {
+                        chkIsAmex = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              chkIsAmex
+                  ? TextFormField(
+                      decoration: InputDecoration(
+                          icon: Icon(Icons.gamepad),
+                          labelText: 'Id Amex',
+                          contentPadding:
+                              EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(32.0))),
+                      keyboardType: TextInputType.numberWithOptions(),
+                    )
+                  : Container(),
+              chkIsAmex
+                  ? SizedBox(
+                      height: 5.0,
+                    )
+                  : Container(),
+              chkIsAmex
+                  ? TextFormField(
+                      decoration: InputDecoration(
+                          icon: Icon(Icons.gamepad),
+                          labelText: 'Afiliación Amex',
+                          contentPadding:
+                              EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(32.0))),
+                      keyboardType: TextInputType.numberWithOptions(),
+                    )
+                  : Container(),
+              chkIsAmex
+                  ? SizedBox(
+                      height: 5.0,
+                    )
+                  : Container(),
+              chkIsAmex
+                  ? TextFormField(
+                      decoration: InputDecoration(
+                          icon: Icon(Icons.gamepad),
+                          labelText: 'Conclusiones Amex',
+                          contentPadding:
+                              EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(32.0))),
+                      keyboardType: TextInputType.text,
+                    )
+                  : Container(),
+              SizedBox(
+                height: 5.0,
+              ),
+              Container(
+                child: Text(
+                  'Mi Comercio',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                ),
+              ),
+              Row(
+                children: <Widget>[
+                  Text("Notificado"),
+                  Switch(
+                    value: switchBase,
+                    onChanged: (value) {
+                      setState(() {
+                        switchBase = value;
+                      });
+                    },
+                  ),
+                  Text("Promociones"),
+                  Switch(
+                    value: switchBase,
+                    onChanged: (value) {
+                      setState(() {
+                        switchBase = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text("Se Descarga App"),
+                  Switch(
+                    value: switchBase,
+                    onChanged: (value) {
+                      setState(() {
+                        switchBase = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
+              TextFormField(
+                decoration: InputDecoration(
+                    icon: Icon(Icons.phone),
+                    labelText: 'Teléfono 1',
+                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(32.0))),
+                keyboardType: TextInputType.phone,
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
+              TextFormField(
+                decoration: InputDecoration(
+                    icon: Icon(Icons.phone),
+                    labelText: 'Teléfono 2',
+                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(32.0))),
+                keyboardType: TextInputType.phone,
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
+              Container(
+                child: Text(
+                  'Datos del Servicio',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                ),
               ),
               DateTimeField(
                 format: DateFormat('dd/MM/yyyy'),
@@ -112,9 +314,101 @@ class _CierresState extends State<Cierres> {
                       initialDate: currentValue ?? DateTime.now(),
                       lastDate: DateTime(2100));
                 },
+                decoration: InputDecoration(
+                    labelText: 'Fecha Cierre',
+                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(32.0))),
               ),
               SizedBox(
-                height: 10.0,
+                height: 5.0,
+              ),
+              TextFormField(
+                decoration: InputDecoration(
+                    icon: Icon(Icons.phone),
+                    labelText: 'Atiende',
+                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(32.0))),
+                keyboardType: TextInputType.text,
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
+              TextFormField(
+                decoration: InputDecoration(
+                    icon: Icon(Icons.phone),
+                    labelText: 'Otorgante VOBO',
+                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(32.0))),
+                keyboardType: TextInputType.text,
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text("Tipo de Atención"),
+                  Switch(
+                    value: switchBase,
+                    onChanged: (value) {
+                      setState(() {
+                        switchBase = value;
+                      });
+                    },
+                  ),
+                  Text("Técnico"),
+                  Switch(
+                    value: switchBase,
+                    onChanged: (value) {
+                      setState(() {
+                        switchBase = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
+              TextFormField(
+                decoration: InputDecoration(
+                    icon: Icon(Icons.phone),
+                    labelText: 'Rollos Instalados',
+                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(32.0))),
+                keyboardType: TextInputType.number,
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
+              Row(
+                children: <Widget>[
+                  Text('Discover'),
+                  Checkbox(
+                    value: chkIsAmex,
+                    onChanged: (value) {
+                      setState(() {
+                        chkIsAmex = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
+              TextFormField(
+                decoration: InputDecoration(
+                    icon: Icon(Icons.phone),
+                    labelText: 'Caja',
+                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(32.0))),
+                keyboardType: TextInputType.number,
               ),
             ],
           ),
@@ -135,24 +429,24 @@ class _CierresState extends State<Cierres> {
     });
   }
 
-  initDropDownButtonConectividad(){
+  initDropDownButtonConectividad() {
     listaConectividades = [];
-    DBProvider.db.getAllConectividad().then((conectividades){
-      conectividades.map((map){
+    DBProvider.db.getAllConectividad().then((conectividades) {
+      conectividades.map((map) {
         return getDropDownWidgetConectividades(map);
-      }).forEach((dropdownItem){
+      }).forEach((dropdownItem) {
         listaConectividades.add(dropdownItem);
       });
       setState(() {});
     });
   }
 
-  initDropDownButtonAplicativo(){
+  initDropDownButtonAplicativo() {
     listaAplicativos = [];
-    DBProvider.db.getAllSoftware().then((softwares){
-      softwares.map((map){
+    DBProvider.db.getAllSoftware().then((softwares) {
+      softwares.map((map) {
         return getDropDownWidgetAplicativos(map);
-      }).forEach((dropdownItem){
+      }).forEach((dropdownItem) {
         listaAplicativos.add(dropdownItem);
       });
       setState(() {});
@@ -162,21 +456,37 @@ class _CierresState extends State<Cierres> {
   DropdownMenuItem<String> getDropDownWidgetSeries(UnidadesModel model) {
     return DropdownMenuItem<String>(
       value: model.noSerie,
-      child: Text(model.noSerie, style: TextStyle(fontSize: 12.0),),
+      child: Text(
+        model.noSerie,
+        style: TextStyle(fontSize: 12.0),
+      ),
     );
   }
 
-  DropdownMenuItem<String> getDropDownWidgetConectividades(ConectividadModel model){
+  DropdownMenuItem<String> getDropDownWidgetConectividades(
+      ConectividadModel model) {
     return DropdownMenuItem<String>(
       value: model.descConectividad,
-      child: SizedBox(child: Text(model.descConectividad.trimRight(), style: TextStyle(fontSize: 12.0),), width: 200.0,),
+      child: SizedBox(
+        child: Text(
+          model.descConectividad.trimRight(),
+          style: TextStyle(fontSize: 12.0),
+        ),
+        width: 200.0,
+      ),
     );
   }
 
-  DropdownMenuItem<String> getDropDownWidgetAplicativos(Softwaremodel model){
+  DropdownMenuItem<String> getDropDownWidgetAplicativos(Softwaremodel model) {
     return DropdownMenuItem<String>(
       value: model.descSoftware,
-      child: SizedBox(child: Text(model.descSoftware.trimRight(), style: TextStyle(fontSize: 12.0),), width: 200.0,),
+      child: SizedBox(
+        child: Text(
+          model.descSoftware.trimRight(),
+          style: TextStyle(fontSize: 12.0),
+        ),
+        width: 200.0,
+      ),
     );
   }
 
