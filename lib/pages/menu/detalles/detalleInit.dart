@@ -76,9 +76,9 @@ class _DetalleInitState extends State<DetalleInit> {
           ),
           SizedBox(width: 5.0),
           FloatingActionButton.extended(
-            heroTag: UniqueKey(),
+            //heroTag: UniqueKey(),
             backgroundColor: Colors.red,
-            label: Icon(Icons.close),
+            label: Icon(Icons.check),
             onPressed: () => _openCierres(odt),
           )
         ],
@@ -195,7 +195,7 @@ class _DetalleInitState extends State<DetalleInit> {
   }
 
   void _openCierres(Odtmodel odt){
-    Navigator.pushNamed(context, 'cierres', arguments: odt);
+    Navigator.pushNamed(context, 'cierreInstalacion', arguments: odt);
   }
 
   void _regresar(BuildContext _context) {

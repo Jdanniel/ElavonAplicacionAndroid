@@ -203,7 +203,7 @@ class _ServiciosCerradosPageState extends State<ServiciosCerradosPage>
             Text("Fecha garantía: ${model.fecGarantia}")
           ],
         ),
-        onTap: (){Navigator.pushNamed(context, 'pruebaDetalle', arguments: model); odt.nuevoOdt(model);},
+        onTap: (){Navigator.pushNamed(context, 'detalleOdt', arguments: model); odt.nuevoOdt(model);},
         );
   }
 }

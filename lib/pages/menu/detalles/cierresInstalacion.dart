@@ -1,19 +1,35 @@
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'package:elavonappmovil/bloc/provider.dart';
+import 'package:elavonappmovil/models/cierresInstalacionrequest_model.dart';
 import 'package:elavonappmovil/models/conectividad_model.dart';
 import 'package:elavonappmovil/models/software_model.dart';
 import 'package:elavonappmovil/models/unidades_model.dart';
 import 'package:elavonappmovil/provider/db_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
 import 'package:load/load.dart';
 
-class Cierres extends StatefulWidget {
+class CierresInstalacion extends StatefulWidget {
   @override
-  _CierresState createState() => _CierresState();
+  _CierresInstalacionState createState() => _CierresInstalacionState();
 }
 
-class _CierresState extends State<Cierres> {
+class _CierresInstalacionState extends State<CierresInstalacion> {
+  
   final GlobalKey<FormState> _formkey = new GlobalKey<FormState>();
+
+  CierresInstalacionBloc bloc;
+
+  TextEditingController textVersion = new TextEditingController();
+  TextEditingController textIdamex = new TextEditingController();
+  TextEditingController textAfilAmex = new TextEditingController();
+  TextEditingController textConcAmex = new TextEditingController();
+  TextEditingController textTelefono1 = new TextEditingController();
+  TextEditingController textTelefono2 = new TextEditingController();
+  TextEditingController textAtiende = new TextEditingController();
+  TextEditingController textVOBO = new TextEditingController();
+  TextEditingController textComentarios = new TextEditingController();
+  TextEditingController textFechaCierre = new TextEditingController();
 
   List<DropdownMenuItem<String>> listaAplicativos;
   List<DropdownMenuItem<String>> listaSeries;
@@ -41,27 +57,16 @@ class _CierresState extends State<Cierres> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    showCustomLoadingWidget(
-      Container(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          CircularProgressIndicator(),
-          SizedBox(
-            height: 1.0,
-          ),
-          Text("Comprobando Datos")
-        ],
-      )),
-    );
     initDropDownButtonSeries();
     initDropDownButtonConectividad();
     initDropDownButtonAplicativo();
-    hideLoadingDialog();
   }
 
   @override
   Widget build(BuildContext context) {
+    
+    bloc = Provider.cierresInstalBloc(context);
+
     return Scaffold(
       body: SafeArea(
         child: Form(
@@ -94,12 +99,18 @@ class _CierresState extends State<Cierres> {
                 height: 15.0,
               ),
               TextFormField(
+                controller: textVersion,
                 decoration: InputDecoration(
                     icon: Icon(Icons.gamepad),
                     labelText: 'Versión',
                     contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(32.0))),
+                onChanged: (newValue){
+                  setState(() {
+                    bloc.changeVersion(newValue);
+                  });
+                },
                 keyboardType: TextInputType.numberWithOptions(),
               ),
               SizedBox(
@@ -122,6 +133,7 @@ class _CierresState extends State<Cierres> {
                     value: switchBateria,
                     onChanged: (value) {
                       setState(() {
+                        bloc.changeBateria(value);
                         switchBateria = value;
                       });
                     },
@@ -131,6 +143,7 @@ class _CierresState extends State<Cierres> {
                     value: switchEliminador,
                     onChanged: (value) {
                       setState(() {
+                        bloc.changeEliminador(value);
                         switchEliminador = value;
                       });
                     },
@@ -144,6 +157,7 @@ class _CierresState extends State<Cierres> {
                     value: switchTapa,
                     onChanged: (value) {
                       setState(() {
+                        bloc.changeTapa(value);
                         switchTapa = value;
                       });
                     },
@@ -153,6 +167,7 @@ class _CierresState extends State<Cierres> {
                     value: switchCableac,
                     onChanged: (value) {
                       setState(() {
+                        bloc.changeCableAc(value);
                         switchCableac = value;
                       });
                     },
@@ -166,6 +181,7 @@ class _CierresState extends State<Cierres> {
                     value: switchBase,
                     onChanged: (value) {
                       setState(() {
+                        bloc.changeBase(value);
                         switchBase = value;
                       });
                     },
@@ -192,6 +208,7 @@ class _CierresState extends State<Cierres> {
                     value: chkIsAmex,
                     onChanged: (value) {
                       setState(() {
+                        bloc.changeIsAmex(value);
                         chkIsAmex = value;
                       });
                     },
@@ -200,6 +217,7 @@ class _CierresState extends State<Cierres> {
               ),
               chkIsAmex
                   ? TextFormField(
+                    controller: textIdamex,
                       decoration: InputDecoration(
                           icon: Icon(Icons.gamepad),
                           labelText: 'Id Amex',
@@ -207,6 +225,11 @@ class _CierresState extends State<Cierres> {
                               EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(32.0))),
+                      onChanged: (newValue){
+                        setState(() {
+                          bloc.changeIdAmex(newValue);
+                        });
+                      },
                       keyboardType: TextInputType.numberWithOptions(),
                     )
                   : Container(),
@@ -217,6 +240,7 @@ class _CierresState extends State<Cierres> {
                   : Container(),
               chkIsAmex
                   ? TextFormField(
+                    controller: textAfilAmex,
                       decoration: InputDecoration(
                           icon: Icon(Icons.gamepad),
                           labelText: 'Afiliación Amex',
@@ -224,6 +248,11 @@ class _CierresState extends State<Cierres> {
                               EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(32.0))),
+                              onChanged: (newValue){
+                                setState(() {
+                                  bloc.changeAfilAmex(newValue);
+                                });
+                              },
                       keyboardType: TextInputType.numberWithOptions(),
                     )
                   : Container(),
@@ -234,6 +263,7 @@ class _CierresState extends State<Cierres> {
                   : Container(),
               chkIsAmex
                   ? TextFormField(
+                    controller: textConcAmex,
                       decoration: InputDecoration(
                           icon: Icon(Icons.gamepad),
                           labelText: 'Conclusiones Amex',
@@ -241,6 +271,11 @@ class _CierresState extends State<Cierres> {
                               EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(32.0))),
+                              onChanged: (newValue){
+                                setState(() {
+                                  bloc.changeConclusionesAmex(newValue);
+                                });
+                              },
                       keyboardType: TextInputType.text,
                     )
                   : Container(),
@@ -261,6 +296,7 @@ class _CierresState extends State<Cierres> {
                     value: switchNotificado,
                     onChanged: (value) {
                       setState(() {
+                        bloc.changeNotificado(value);
                         switchNotificado = value;
                       });
                     },
@@ -270,6 +306,7 @@ class _CierresState extends State<Cierres> {
                     value: switchPromociones,
                     onChanged: (value) {
                       setState(() {
+                        bloc.changePromociones(value);
                         switchPromociones = value;
                       });
                     },
@@ -284,6 +321,7 @@ class _CierresState extends State<Cierres> {
                     value: switchDescargar,
                     onChanged: (value) {
                       setState(() {
+                        bloc.changeDescargarApp(value);
                         switchDescargar = value;
                       });
                     },
@@ -294,24 +332,36 @@ class _CierresState extends State<Cierres> {
                 height: 15.0,
               ),
               TextFormField(
+                controller: textTelefono1,
                 decoration: InputDecoration(
                     icon: Icon(Icons.phone),
                     labelText: 'Teléfono 1',
                     contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(32.0))),
+                        onChanged: (value){
+                          setState(() {
+                            bloc.changeTelefono1(value);
+                          });
+                        },
                 keyboardType: TextInputType.phone,
               ),
               SizedBox(
                 height: 15.0,
               ),
               TextFormField(
+                controller: textTelefono2,
                 decoration: InputDecoration(
                     icon: Icon(Icons.phone),
                     labelText: 'Teléfono 2',
                     contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(32.0))),
+                        onChanged: (value){
+                          setState(() {
+                            bloc.changeTelefono2(value);
+                          });
+                        },
                 keyboardType: TextInputType.phone,
               ),
               SizedBox(
@@ -325,6 +375,7 @@ class _CierresState extends State<Cierres> {
                 ),
               ),
               DateTimeField(
+                controller: textFechaCierre,
                 format: DateFormat('dd/MM/yyyy'),
                 onShowPicker: (context, currentValue) {
                   return showDatePicker(
@@ -339,29 +390,46 @@ class _CierresState extends State<Cierres> {
                     contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(32.0))),
+                        onChanged: (value){
+                          setState(() {
+                            bloc.changeFechaCierre(value);
+                          });
+                        },
               ),
               SizedBox(
                 height: 15.0,
               ),
               TextFormField(
+                controller: textAtiende,
                 decoration: InputDecoration(
                     icon: Icon(Icons.phone),
                     labelText: 'Atiende',
                     contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(32.0))),
+                        onChanged: (value){
+                          setState(() {
+                            bloc.changeAtiende(value);
+                          });
+                        },
                 keyboardType: TextInputType.text,
               ),
               SizedBox(
                 height: 15.0,
               ),
               TextFormField(
+                controller: textVOBO,
                 decoration: InputDecoration(
                     icon: Icon(Icons.phone),
                     labelText: 'Otorgante VOBO',
                     contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(32.0))),
+                        onChanged: (value){
+                          setState(() {
+                            bloc.changeOtorgante(value);
+                          });
+                        },
                 keyboardType: TextInputType.text,
               ),
               SizedBox(
@@ -373,11 +441,16 @@ class _CierresState extends State<Cierres> {
               ),
               TextFormField(
                 decoration: InputDecoration(
-                    icon: Icon(Icons.phone),
+                    icon: Icon(Icons.camera_roll),
                     labelText: 'Rollos Instalados',
                     contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(32.0))),
+                        onChanged: (value){
+                          setState(() {
+                            bloc.changeRollos(int.parse(value));
+                          });
+                        },
                 keyboardType: TextInputType.number,
               ),
               SizedBox(
@@ -395,6 +468,7 @@ class _CierresState extends State<Cierres> {
                     groupValue: radiodiscover,
                     onChanged: (value) {
                       setState(() {
+                        bloc.changeDiscover(value);
                         radiodiscover = value;
                       });
                     },
@@ -408,6 +482,7 @@ class _CierresState extends State<Cierres> {
                     groupValue: radiodiscover,
                     onChanged: (value) {
                       setState(() {
+                        bloc.changeDiscover(value);
                         radiodiscover = value;
                       });
                     },
@@ -416,19 +491,6 @@ class _CierresState extends State<Cierres> {
                     'No',
                     style: TextStyle(fontSize: 16.0),
                   )
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  Text('Discover'),
-                  Checkbox(
-                    value: chkIsAmex,
-                    onChanged: (value) {
-                      setState(() {
-                        chkIsAmex = value;
-                      });
-                    },
-                  ),
                 ],
               ),
               SizedBox(
@@ -441,6 +503,11 @@ class _CierresState extends State<Cierres> {
                     contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(32.0))),
+                        onChanged: (value){
+                          setState(() {
+                            bloc.changeCaja(int.parse(value));
+                          });
+                        },
                 keyboardType: TextInputType.number,
               ),
               SizedBox(
@@ -457,6 +524,7 @@ class _CierresState extends State<Cierres> {
                 height: 15.0,
               ),
               TextFormField(
+                controller: textComentarios,
                 maxLines: 5,
                 decoration: InputDecoration(
                     icon: Icon(Icons.text_fields),
@@ -464,7 +532,22 @@ class _CierresState extends State<Cierres> {
                     contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(32.0))),
+                        onChanged: (value){
+                          setState(() {
+                            bloc.changeComentarios(value);
+                          });
+                        },
                 keyboardType: TextInputType.multiline,
+              ),
+
+              //Boton de Submit
+              RaisedButton(
+                onPressed: () {
+                  if (_formkey.currentState.validate()) {
+                    _enviarDatosCierreInstalacion();
+                  }
+                },
+                child: Text('Aceptar'),
               )
             ],
           ),
@@ -552,6 +635,7 @@ class _CierresState extends State<Cierres> {
       value: valueNoSerie,
       onChanged: (newvalue) {
         setState(() {
+          bloc.changeNoserie(newvalue);
           valueNoSerie = newvalue;
         });
       },
@@ -569,6 +653,7 @@ class _CierresState extends State<Cierres> {
       value: valueConectividad,
       onChanged: (newvalue) {
         setState(() {
+          bloc.changeConectividad(newvalue);
           valueConectividad = newvalue;
         });
       },
@@ -586,6 +671,7 @@ class _CierresState extends State<Cierres> {
       value: valueAplicativo,
       onChanged: (newvalue) {
         setState(() {
+          bloc.changeAplicativo(newvalue);
           valueAplicativo = newvalue;
         });
       },
@@ -622,6 +708,7 @@ class _CierresState extends State<Cierres> {
       value: valueTipoAtencion,
       onChanged: (newValue) {
         setState(() {
+          bloc.changeTipoAtencion(newValue);
           valueTipoAtencion = newValue;
         });
       },
@@ -632,4 +719,53 @@ class _CierresState extends State<Cierres> {
           labelText: 'Tipo de Atención'),
     );
   }
+
+  _enviarDatosCierreInstalacion(){
+
+        showCustomLoadingWidget(
+        Container(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            CircularProgressIndicator(),
+            SizedBox(
+              height: 1.0,
+            ),
+            Text("Comprobando Datos")
+          ],
+        )),);
+        CierresInstalacionModel model = new CierresInstalacionModel();
+        model.noSerie = bloc.getNoSerie;
+        model.conectividad = bloc.getConectividad;
+        model.aplicativo = bloc.getAplicativo;
+        model.version = bloc.getVersion;
+        model.bateria = bloc.getBateria;
+        model.eliminador = bloc.getEliminador;
+        model.tapa = bloc.getTapa;
+        model.cableAc = bloc.getCableAc;
+        model.base = bloc.getBase;
+        model.isAmex = bloc.getIsAmex;
+        if(bloc.getIsAmex == true){
+          model.idAmex = bloc.getIdAmex;
+          model.afiliacionAmex = bloc.getAfilAmex;
+          model.conclusionesAmex = bloc.getConclusionesAmex;
+        }
+        model.notificado = bloc.getNotificado;
+        model.promociones = bloc.getPromociones;
+        model.descargaApp = bloc.getDescargarApp;
+        model.telefono1 = bloc.getTelefono1;
+        model.telefono2 = bloc.getTelefono2;
+        model.fechaCierre = bloc.getFechaCierre;
+        model.atiende = bloc.getAtiende;
+        model.otorganteVobo = bloc.getOtorgante;
+        model.tipoAtencion = bloc.getTipoAtencion;
+        model.rollos = bloc.getRollos;
+        model.discover = bloc.getDiscover;
+        model.caja = bloc.getCaja;
+        model.comentario = bloc.getComentarios;
+
+        Navigator.pop(context);
+        hideLoadingDialog();
+  }
+
 }

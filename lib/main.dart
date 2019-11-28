@@ -1,4 +1,5 @@
 import 'package:elavonappmovil/pages/menu/detalles/cierres.dart';
+import 'package:elavonappmovil/pages/menu/detalles/cierresInstalacion.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -17,7 +18,6 @@ import 'package:elavonappmovil/pages/menu/serviciosnuevos_menu.dart';
 import 'package:elavonappmovil/pages/menu/unidadesinventario.dart';
 import 'package:elavonappmovil/pages/menu/detalles/agregarcomentarios.dart';
 import 'package:elavonappmovil/pages/menu/detalles/pruebadetalle.dart';
-import 'package:elavonappmovil/provider/push_notifications_provider.dart';
 
 void main() async {
   
@@ -59,7 +59,8 @@ class _MyAppState extends State<MyApp> {
             'editImage' : (context) => EditImage(),
             'agregarComentario' : (context) => AgregarComentario(),
             'pruebaDetalle' : (context) => PruebaDetalle(),
-            'cierres' : (context) => Cierres()
+            'cierres' : (context) => Cierres(),
+            'cierreInstalacion' : (context) => CierresInstalacion()
           },
           theme: ThemeData(primaryColor: Colors.blueAccent),
         ),
