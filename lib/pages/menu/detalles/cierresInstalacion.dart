@@ -7,7 +7,8 @@ import 'package:elavonappmovil/models/unidades_model.dart';
 import 'package:elavonappmovil/provider/db_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:load/load.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+
 
 class CierresInstalacion extends StatefulWidget {
   @override
@@ -19,6 +20,8 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
   final GlobalKey<FormState> _formkey = new GlobalKey<FormState>();
 
   CierresInstalacionBloc bloc;
+
+  ProgressDialog pr;
 
   TextEditingController textVersion = new TextEditingController();
   TextEditingController textIdamex = new TextEditingController();
@@ -65,6 +68,9 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
   @override
   Widget build(BuildContext context) {
     
+    pr = new ProgressDialog(context, type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    createProgressDialog();    
+
     bloc = Provider.cierresInstalBloc(context);
 
     return Scaffold(
@@ -556,6 +562,20 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
     );
   }
 
+  createProgressDialog() {
+    pr.style(
+        message: 'Enviando Datos',
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        progressWidget: CircularProgressIndicator(),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progressTextStyle: TextStyle(
+            color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
+        messageTextStyle: TextStyle(
+            color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600));
+  }
+
   initDropDownButtonSeries() {
     listaSeries = [];
     DBProvider.db.getAllUnidades().then((unidades) {
@@ -721,38 +741,26 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
   }
 
   _enviarDatosCierreInstalacion(){
-
-        showCustomLoadingWidget(
-        Container(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            CircularProgressIndicator(),
-            SizedBox(
-              height: 1.0,
-            ),
-            Text("Comprobando Datos")
-          ],
-        )),);
+        pr.show();
         CierresInstalacionModel model = new CierresInstalacionModel();
         model.noSerie = bloc.getNoSerie;
         model.conectividad = bloc.getConectividad;
         model.aplicativo = bloc.getAplicativo;
         model.version = bloc.getVersion;
-        model.bateria = bloc.getBateria;
-        model.eliminador = bloc.getEliminador;
-        model.tapa = bloc.getTapa;
-        model.cableAc = bloc.getCableAc;
-        model.base = bloc.getBase;
-        model.isAmex = bloc.getIsAmex;
+        model.bateria = bloc.getBateria == null ? true : bloc.getBateria;
+        model.eliminador = bloc.getEliminador == null ? true: bloc.getEliminador;
+        model.tapa = bloc.getTapa == null ? true : bloc.getTapa;
+        model.cableAc = bloc.getCableAc == null ? true : bloc.getCableAc;
+        model.base = bloc.getBase == null ? true : bloc.getBase;
+        model.isAmex = bloc.getIsAmex == null ? false : bloc.getIsAmex;
         if(bloc.getIsAmex == true){
           model.idAmex = bloc.getIdAmex;
           model.afiliacionAmex = bloc.getAfilAmex;
           model.conclusionesAmex = bloc.getConclusionesAmex;
         }
-        model.notificado = bloc.getNotificado;
-        model.promociones = bloc.getPromociones;
-        model.descargaApp = bloc.getDescargarApp;
+        model.notificado = bloc.getNotificado == null ? true : bloc.getNotificado;
+        model.promociones = bloc.getPromociones == null ? true : bloc.getPromociones;
+        model.descargaApp = bloc.getDescargarApp == null ? true : bloc.getDescargarApp;
         model.telefono1 = bloc.getTelefono1;
         model.telefono2 = bloc.getTelefono2;
         model.fechaCierre = bloc.getFechaCierre;
@@ -760,12 +768,15 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
         model.otorganteVobo = bloc.getOtorgante;
         model.tipoAtencion = bloc.getTipoAtencion;
         model.rollos = bloc.getRollos;
-        model.discover = bloc.getDiscover;
+        model.discover = bloc.getDiscover == null ? 0 : bloc.getDiscover;
         model.caja = bloc.getCaja;
         model.comentario = bloc.getComentarios;
-
-        Navigator.pop(context);
-        hideLoadingDialog();
+        print(model.discover);
+        Future.delayed(Duration(seconds: 15)).then((value){
+          pr.hide().whenComplete((){
+            Navigator.pop(context);
+          });
+        });
   }
 
 }

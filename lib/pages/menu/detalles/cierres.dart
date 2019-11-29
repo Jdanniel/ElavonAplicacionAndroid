@@ -5,7 +5,7 @@ import 'package:elavonappmovil/provider/db_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
-import 'package:load/load.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class Cierres extends StatefulWidget {
   @override
@@ -14,6 +14,8 @@ class Cierres extends StatefulWidget {
 
 class _CierresState extends State<Cierres> {
   final GlobalKey<FormState> _formkey = new GlobalKey<FormState>();
+
+  ProgressDialog pr;
 
   List<DropdownMenuItem<String>> listaAplicativos;
   List<DropdownMenuItem<String>> listaSeries;
@@ -41,27 +43,19 @@ class _CierresState extends State<Cierres> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    showCustomLoadingWidget(
-      Container(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          CircularProgressIndicator(),
-          SizedBox(
-            height: 1.0,
-          ),
-          Text("Comprobando Datos")
-        ],
-      )),
-    );
+
     initDropDownButtonSeries();
     initDropDownButtonConectividad();
     initDropDownButtonAplicativo();
-    hideLoadingDialog();
+    
   }
 
   @override
   Widget build(BuildContext context) {
+    //pr = new ProgressDialog(context);
+    pr = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false, showLogs: true);
+    createProgressDialog();
     return Scaffold(
       body: SafeArea(
         child: Form(
@@ -465,12 +459,37 @@ class _CierresState extends State<Cierres> {
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(32.0))),
                 keyboardType: TextInputType.multiline,
+              ),
+              RaisedButton(
+                child: Text('Prueba'),
+                onPressed: () {
+                  pr.show();
+                  Future.delayed(Duration(seconds: 10)).then((value){
+                    pr.hide().whenComplete((){
+                      Navigator.pop(context);
+                    });
+                  });
+                },
               )
             ],
           ),
         ),
       ),
     );
+  }
+
+  createProgressDialog() {
+    pr.style(
+        message: 'Enviando Datos',
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        progressWidget: CircularProgressIndicator(),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progressTextStyle: TextStyle(
+            color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
+        messageTextStyle: TextStyle(
+            color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600));
   }
 
   initDropDownButtonSeries() {
