@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:elavonappmovil/models/movimientoInventarioServicioFalla_model.dart';
 import 'package:elavonappmovil/models/odts_model.dart';
 import 'package:elavonappmovil/models/software_model.dart';
 import 'package:elavonappmovil/models/unidades_model.dart';
@@ -92,5 +93,16 @@ class CatalogoProvider{
     final odtList = decodeData.map((map) => Odtmodel.fromJson(map)).toList(); 
     if(decodeData == null) return [];
     return odtList;
+  }
+
+  Future<List<MovimientoInventarioSF>> getMovInventarioSF() async {
+    final url =  '$_url/movinventariosf';
+    var dio = Dio();
+    final resp = await dio.get(url,
+        options: Options(contentType: 'application/json'));
+    final decodeData = resp.data as List;
+    final movsList = decodeData.map((map) => MovimientoInventarioSF.fromJson(map)).toList();
+    if(decodeData == null) return [];
+    return movsList;
   }
 }

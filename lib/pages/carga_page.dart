@@ -1,3 +1,5 @@
+import 'package:elavonappmovil/provider/catalogo_provider.dart';
+import 'package:elavonappmovil/provider/db_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:date_format/date_format.dart';
 import 'package:elavonappmovil/bloc/provider.dart';
@@ -30,6 +32,7 @@ class CargaPage extends StatelessWidget {
   }
 
   void cargarCatalogos(BuildContext context) async{
+    CatalogoProvider catalogo = new CatalogoProvider();
     final dn = formatDate(DateTime.now(), [dd, '/', mm, '/', yyyy, ' ', HH, ':', nn]);
     final updatesBloc = Provider.updatesBloc(context);
 
@@ -70,7 +73,11 @@ class CargaPage extends StatelessWidget {
       final odtList = await odtBloc.getAllOdtsHttp();
       for(var odt in odtList){
         await odtBloc.insertarOdts(odt);
-      }  
+      }
+      final movsList = await catalogo.getMovInventarioSF();
+      for(var mov in movsList){
+        await DBProvider.db.nuevoMovInv(mov);
+      }
       final up = new UpdatesModel();
       up.fecha = dn;
       await updatesBloc.insertUpdates(up);

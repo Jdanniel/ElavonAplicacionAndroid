@@ -1,6 +1,10 @@
+import 'package:elavonappmovil/bloc/detalleinit_bloc.dart';
 import 'package:elavonappmovil/bloc/provider.dart';
+import 'package:elavonappmovil/models/movimientoInventarioServicioFalla_model.dart';
 import 'package:elavonappmovil/models/negocios_model.dart';
 import 'package:elavonappmovil/models/odts_model.dart';
+
+import 'package:elavonappmovil/provider/db_provider.dart';
 import 'package:elavonappmovil/provider/negocios_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -17,7 +21,10 @@ class _DetalleInitState extends State<DetalleInit> {
   Position position;
 
   OdtsBloc odtBloc;
+  DetalleInitBloc detalleBloc;
+
   Odtmodel odt = new Odtmodel();
+  
   double lat = 0;
   double lon = 0;
 
@@ -194,8 +201,18 @@ class _DetalleInitState extends State<DetalleInit> {
         "https://www.google.com.mx/maps/search/?api=1&query=${odt.direccion},${odt.estado}");
   }
 
-  void _openCierres(Odtmodel odt){
-    Navigator.pushNamed(context, 'cierreInstalacion', arguments: odt);
+  void _openCierres(Odtmodel odt) async {
+    MovimientoInventarioSF model = await detalleBloc.getMovInventariosf(1,2);  
+    switch (model.idMovInventario){
+      case 1:
+        Navigator.pushNamed(context, 'cierreInstalacion', arguments: odt);
+        break;
+      case 2:
+        Navigator.pushNamed(context, 'cierreRetiro', arguments: odt);
+        break;
+      case 3:
+        Navigator.pushNamed(context, 'cierreSustitucion', arguments: odt);  
+    }
   }
 
   void _regresar(BuildContext _context) {

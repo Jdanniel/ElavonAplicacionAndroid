@@ -1,4 +1,3 @@
-
 import 'package:elavonappmovil/bloc/updates_bloc.dart';
 import 'package:flutter/material.dart';
 
@@ -32,6 +31,9 @@ export 'package:elavonappmovil/bloc/unidades_bloc.dart';
 import 'package:elavonappmovil/bloc/cierresInstalacion_bloc.dart';
 export 'package:elavonappmovil/bloc/cierresInstalacion_bloc.dart';
 
+import 'package:elavonappmovil/bloc/cierresRetiro_bloc.dart';
+export 'package:elavonappmovil/bloc/cierresRetiro_bloc.dart';
+
 class Provider extends InheritedWidget{
   
   final _loginBloc = new LoginBloc();
@@ -55,6 +57,8 @@ class Provider extends InheritedWidget{
   final _updatesBloc = new UpdatesBloc();
 
   final _cierresInstalacionBloc = new CierresInstalacionBloc();
+
+  final _cierresRetiroBloc = new CierresRetiroBloc();
 
   static Provider _instancia;
 
@@ -115,4 +119,7 @@ class Provider extends InheritedWidget{
     return(context.inheritFromWidgetOfExactType(Provider) as Provider)._cierresInstalacionBloc;
   }
 
+  static CierresRetiroBloc cierresRetiroBloc(BuildContext context){
+    return(context.inheritFromWidgetOfExactType(Provider) as Provider)._cierresRetiroBloc;
+  }
 }

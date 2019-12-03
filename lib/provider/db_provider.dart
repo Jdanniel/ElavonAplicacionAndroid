@@ -4,11 +4,13 @@ import 'package:elavonappmovil/data/database_ars.dart';
 import 'package:elavonappmovil/data/database_conectividades.dart';
 import 'package:elavonappmovil/data/database_marcas.dart';
 import 'package:elavonappmovil/data/database_modelos.dart';
+import 'package:elavonappmovil/data/database_movimientoinventarioServicioFalla.dart';
 import 'package:elavonappmovil/data/database_software.dart';
 import 'package:elavonappmovil/data/database_unidades.dart';
 import 'package:elavonappmovil/models/cmodelos_model.dart';
 import 'package:elavonappmovil/models/conectividad_model.dart';
 import 'package:elavonappmovil/models/marcas_model.dart';
+import 'package:elavonappmovil/models/movimientoInventarioServicioFalla_model.dart';
 import 'package:elavonappmovil/models/odts_model.dart';
 import 'package:elavonappmovil/models/servicios_model.dart';
 import 'package:elavonappmovil/models/software_model.dart';
@@ -63,7 +65,8 @@ class DBProvider {
     final String queryUnidades = 'CREATE TABLE ${Bdunidades.table} (${Bdunidades.columnID} INTEGER NOT NULL, ${Bdunidades.columnNOSERIE} TEXT, ${Bdunidades.columnIDMARCA} INTEGER, ${Bdunidades.columnIDMODELO} INTEGER, ${Bdunidades.columnIDCONECTIVIDAD} INTEGER, ${Bdunidades.columnIDAPLICATIVO} INTEGER)';
     final String queryUpdates = 'CREATE TABLE $tableUpdates ( idupdates INTEGER PRIMARY KEY, fecupdates TEXT)';
     final String queryArs = 'CREATE TABLE ${BdArs.table} (${BdArs.columnID} INTEGER NOT NULL, ${BdArs.columnNOAR} TEXT, ${BdArs.columnIDNEGOCIO} INTEGER, ${BdArs.columnIDTIPOSERVICIO} INTEGER, ${BdArs.columnDESCNEGOCIO} TEXT, ${BdArs.columnNOAFILIACION} TEXT, ${BdArs.columnESTADO} TEXT, ${BdArs.columnCOLONIA} TEXT, ${BdArs.columnPOBLACION} TEXT, ${BdArs.columnDIRECCION} TEXT, ${BdArs.columnFECGARANTIA} TEXT, ${BdArs.columnLATITUD} REAL, ${BdArs.columnLONGITUD} REAL, ${BdArs.columnDAYS} INTEGER, ${BdArs.columnMONTHS} INTEGER, ${BdArs.columnYEARS} INTEGER, ${BdArs.columnNUMBERS} INTEGER, ${BdArs.columnIDSTATUSAR} INTEGER)';
-
+    final String queryMovInventarioSF = 'CREATE TABLE ${CmovimientoInventarioServicioFalla.table} (${CmovimientoInventarioServicioFalla.columnID} INTEGER NOT NULL, ${CmovimientoInventarioServicioFalla.columnIDSERVICIO} INT, ${CmovimientoInventarioServicioFalla.columnIDFALLA} INT, ${CmovimientoInventarioServicioFalla.columnIDMOVINVENTARIO} INT, ${CmovimientoInventarioServicioFalla.columnSTATUS} TEXT)';
+    
     return await openDatabase(path,
       version: 1,
       readOnly: false,
@@ -77,6 +80,7 @@ class DBProvider {
         await db.execute(queryUnidades);
         await db.execute(queryUpdates);
         await db.execute(queryArs);
+        await db.execute(queryMovInventarioSF);
         // await db.close();
       }
     );
@@ -213,6 +217,24 @@ class DBProvider {
     return res;
   }
 
+  nuevoMovInv(MovimientoInventarioSF model) async {
+    final db = await database;
+    final res = await db.rawInsert("INSERT INTO ${CmovimientoInventarioServicioFalla.table} "
+    "( "
+    "${CmovimientoInventarioServicioFalla.columnID}, "
+    "${CmovimientoInventarioServicioFalla.columnIDSERVICIO}, "
+    "${CmovimientoInventarioServicioFalla.columnIDFALLA}, "
+    "${CmovimientoInventarioServicioFalla.columnIDMOVINVENTARIO}, "
+    "${CmovimientoInventarioServicioFalla.columnSTATUS}"
+    ") VALUES ("
+    "${model.idValMovimientosInvServicioFalla}, "
+    "${model.idServicio}, "
+    "${model.idFalla}, "
+    "${model.idMovInventario}, "
+    "'${model.status}'"
+    );
+    return res;
+  }
   //Seleccionar por id
 
   Future<ServiciosModel> getServicioId(int id) async{
@@ -267,6 +289,12 @@ class DBProvider {
     return res.isNotEmpty ? Odtmodel.fromJson(res.first) : null;
   }
 
+  Future<MovimientoInventarioSF> getMovInventarioSF(int idservicio, int idfalla) async {
+    final db = await database;
+    final res = await db.query(CmovimientoInventarioServicioFalla.table, where: '${CmovimientoInventarioServicioFalla.columnIDSERVICIO} = ? AND ${CmovimientoInventarioServicioFalla.columnIDFALLA} = ?', whereArgs: [idservicio,idfalla]);
+    return res.isNotEmpty ? MovimientoInventarioSF.fromJson(res.first) : null;
+  }
+
   Future<UpdatesModel> getLastUpdate() async{
     final db = await database;
     final res = await db.query('$tableUpdates',orderBy: 'idupdates DESC', limit: 1);
@@ -298,7 +326,7 @@ class DBProvider {
 
   Future<List<MarcasModel>> getAllMarcas() async{
     final db = await database;
-    final res = await db.query(tableMarcas);
+    final res = await db.query(CMarcas.table);
 
     List<MarcasModel> list = res.isNotEmpty 
                               ? res.map((s) => MarcasModel.fromJson(s)).toList()
@@ -339,6 +367,15 @@ class DBProvider {
     // await db.close();                   
     return list;
   }    
+
+  Future<List<MovimientoInventarioSF>> getAllMovimientoInventarioSF() async{
+    final db = await database;
+    final res = await db.query(CmovimientoInventarioServicioFalla.table);
+    List<MovimientoInventarioSF> list = res.isNotEmpty
+                                        ? res.map((s) => MovimientoInventarioSF.fromJson(s)).toList()
+                                        : [];
+    return list;
+  }
 
   Future<List<Odtmodel>> getAllArs(int idstatus) async{
     final db = await database;

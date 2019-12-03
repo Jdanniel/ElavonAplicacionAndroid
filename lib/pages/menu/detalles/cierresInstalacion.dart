@@ -63,6 +63,7 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
     initDropDownButtonSeries();
     initDropDownButtonConectividad();
     initDropDownButtonAplicativo();
+    
   }
 
   @override
@@ -72,6 +73,7 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
     createProgressDialog();    
 
     bloc = Provider.cierresInstalBloc(context);
+    bloc.getVersion != null ? textVersion.text = bloc.getVersion : textVersion.text = '';
 
     return Scaffold(
       body: SafeArea(
@@ -382,13 +384,23 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
               ),
               DateTimeField(
                 controller: textFechaCierre,
-                format: DateFormat('dd/MM/yyyy'),
-                onShowPicker: (context, currentValue) {
-                  return showDatePicker(
+                format: DateFormat('dd/MM/yyyy HH:mm'),
+                onShowPicker: (context, currentValue) async {
+                  final date = await showDatePicker(
                       context: context,
                       firstDate: DateTime(1900),
                       initialDate: currentValue ?? DateTime.now(),
                       lastDate: DateTime(2100));
+                  if(date != null){
+                    final time = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                    );
+                    return DateTimeField.combine(date, time);
+                  }else{
+                    return currentValue;
+                  }
+
                 },
                 decoration: InputDecoration(
                     icon: Icon(Icons.calendar_today),
