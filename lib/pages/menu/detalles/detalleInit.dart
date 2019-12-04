@@ -21,7 +21,7 @@ class _DetalleInitState extends State<DetalleInit> {
   Position position;
 
   OdtsBloc odtBloc;
-  DetalleInitBloc detalleBloc;
+  DetalleInitBloc detalleBloc = new DetalleInitBloc();
 
   Odtmodel odt = new Odtmodel();
   
@@ -202,7 +202,7 @@ class _DetalleInitState extends State<DetalleInit> {
   }
 
   void _openCierres(Odtmodel odt) async {
-    MovimientoInventarioSF model = await detalleBloc.getMovInventariosf(1,2);  
+    final model = await detalleBloc.getMovInventariosf(odt.idServicio, odt.idFalla);  
     switch (model.idMovInventario){
       case 1:
         Navigator.pushNamed(context, 'cierreInstalacion', arguments: odt);

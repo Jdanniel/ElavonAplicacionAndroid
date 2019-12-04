@@ -64,7 +64,7 @@ class DBProvider {
     final String querySoftware = 'CREATE TABLE ${CSoftware.table} ( ${CSoftware.columnID} INTEGER NOT NULL, ${CSoftware.columnDESCSOFTWARE} TEXT)';
     final String queryUnidades = 'CREATE TABLE ${Bdunidades.table} (${Bdunidades.columnID} INTEGER NOT NULL, ${Bdunidades.columnNOSERIE} TEXT, ${Bdunidades.columnIDMARCA} INTEGER, ${Bdunidades.columnIDMODELO} INTEGER, ${Bdunidades.columnIDCONECTIVIDAD} INTEGER, ${Bdunidades.columnIDAPLICATIVO} INTEGER)';
     final String queryUpdates = 'CREATE TABLE $tableUpdates ( idupdates INTEGER PRIMARY KEY, fecupdates TEXT)';
-    final String queryArs = 'CREATE TABLE ${BdArs.table} (${BdArs.columnID} INTEGER NOT NULL, ${BdArs.columnNOAR} TEXT, ${BdArs.columnIDNEGOCIO} INTEGER, ${BdArs.columnIDTIPOSERVICIO} INTEGER, ${BdArs.columnDESCNEGOCIO} TEXT, ${BdArs.columnNOAFILIACION} TEXT, ${BdArs.columnESTADO} TEXT, ${BdArs.columnCOLONIA} TEXT, ${BdArs.columnPOBLACION} TEXT, ${BdArs.columnDIRECCION} TEXT, ${BdArs.columnFECGARANTIA} TEXT, ${BdArs.columnLATITUD} REAL, ${BdArs.columnLONGITUD} REAL, ${BdArs.columnDAYS} INTEGER, ${BdArs.columnMONTHS} INTEGER, ${BdArs.columnYEARS} INTEGER, ${BdArs.columnNUMBERS} INTEGER, ${BdArs.columnIDSTATUSAR} INTEGER)';
+    final String queryArs = 'CREATE TABLE ${BdArs.table} (${BdArs.columnID} INTEGER NOT NULL, ${BdArs.columnNOAR} TEXT, ${BdArs.columnIDNEGOCIO} INTEGER, ${BdArs.columnIDTIPOSERVICIO} INTEGER, ${BdArs.columnDESCNEGOCIO} TEXT, ${BdArs.columnNOAFILIACION} TEXT, ${BdArs.columnESTADO} TEXT, ${BdArs.columnCOLONIA} TEXT, ${BdArs.columnPOBLACION} TEXT, ${BdArs.columnDIRECCION} TEXT, ${BdArs.columnFECGARANTIA} TEXT, ${BdArs.columnLATITUD} REAL, ${BdArs.columnLONGITUD} REAL, ${BdArs.columnDAYS} INTEGER, ${BdArs.columnMONTHS} INTEGER, ${BdArs.columnYEARS} INTEGER, ${BdArs.columnNUMBERS} INTEGER, ${BdArs.columnIDSTATUSAR} INTEGER, ${BdArs.columnIDSERVICIO} INTEGER, ${BdArs.columnIDFALLA} INTEGER)';
     final String queryMovInventarioSF = 'CREATE TABLE ${CmovimientoInventarioServicioFalla.table} (${CmovimientoInventarioServicioFalla.columnID} INTEGER NOT NULL, ${CmovimientoInventarioServicioFalla.columnIDSERVICIO} INT, ${CmovimientoInventarioServicioFalla.columnIDFALLA} INT, ${CmovimientoInventarioServicioFalla.columnIDMOVINVENTARIO} INT, ${CmovimientoInventarioServicioFalla.columnSTATUS} TEXT)';
     
     return await openDatabase(path,
@@ -192,7 +192,9 @@ class DBProvider {
       "${BdArs.columnMONTHS}," 
       "${BdArs.columnYEARS}," 
       "${BdArs.columnNUMBERS}," 
-      "${BdArs.columnIDSTATUSAR}" 
+      "${BdArs.columnIDSTATUSAR}," 
+      "${BdArs.columnIDSERVICIO}," 
+      "${BdArs.columnIDFALLA}" 
       ") VALUES(" 
       "${model.idAr},"
       "'${model.odt}',"
@@ -211,7 +213,9 @@ class DBProvider {
       "${model.months},"
       "${model.years},"
       "${model.numbers},"
-      "${model.idStatusAr}"
+      "${model.idStatusAr},"
+      "${model.idServicio},"
+      "${model.idFalla}"
       ")"
     );
     return res;
@@ -231,7 +235,7 @@ class DBProvider {
     "${model.idServicio}, "
     "${model.idFalla}, "
     "${model.idMovInventario}, "
-    "'${model.status}'"
+    "'${model.status}' )"
     );
     return res;
   }
