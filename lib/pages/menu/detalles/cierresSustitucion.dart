@@ -965,32 +965,32 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
     switch (index) {
       case 0:
         if (_formkey0.currentState.validate()) {
-          return continues;
+          continues;
         }
         break;
       case 2:
         if (_formkey1.currentState.validate()) {
-          return continues;
+          continues;
         }
         break;
       case 3:
         if (_formkey2.currentState.validate()) {
-          return continues;
+          continues;
         }
         break;
       case 4:
         if (_formkey3.currentState.validate()) {
-          return continues;
+          continues;
         }
         break;
       case 5:
         if (_formkey4.currentState.validate()) {
-          return continues;
+          continues;
         }
         break;
       case 6:
         if (_formkey5.currentState.validate()) {
-          return continues;
+          continues;
         }
         break;
     }
