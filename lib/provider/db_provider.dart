@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:elavonappmovil/data/database_ars.dart';
+import 'package:elavonappmovil/data/database_causas.dart';
 import 'package:elavonappmovil/data/database_conectividades.dart';
 import 'package:elavonappmovil/data/database_marcas.dart';
 import 'package:elavonappmovil/data/database_modelos.dart';
@@ -66,7 +67,8 @@ class DBProvider {
     final String queryUpdates = 'CREATE TABLE $tableUpdates ( idupdates INTEGER PRIMARY KEY, fecupdates TEXT)';
     final String queryArs = 'CREATE TABLE ${BdArs.table} (${BdArs.columnID} INTEGER NOT NULL, ${BdArs.columnNOAR} TEXT, ${BdArs.columnIDNEGOCIO} INTEGER, ${BdArs.columnIDTIPOSERVICIO} INTEGER, ${BdArs.columnDESCNEGOCIO} TEXT, ${BdArs.columnNOAFILIACION} TEXT, ${BdArs.columnESTADO} TEXT, ${BdArs.columnCOLONIA} TEXT, ${BdArs.columnPOBLACION} TEXT, ${BdArs.columnDIRECCION} TEXT, ${BdArs.columnFECGARANTIA} TEXT, ${BdArs.columnLATITUD} REAL, ${BdArs.columnLONGITUD} REAL, ${BdArs.columnDAYS} INTEGER, ${BdArs.columnMONTHS} INTEGER, ${BdArs.columnYEARS} INTEGER, ${BdArs.columnNUMBERS} INTEGER, ${BdArs.columnIDSTATUSAR} INTEGER, ${BdArs.columnIDSERVICIO} INTEGER, ${BdArs.columnIDFALLA} INTEGER)';
     final String queryMovInventarioSF = 'CREATE TABLE ${CmovimientoInventarioServicioFalla.table} (${CmovimientoInventarioServicioFalla.columnID} INTEGER NOT NULL, ${CmovimientoInventarioServicioFalla.columnIDSERVICIO} INT, ${CmovimientoInventarioServicioFalla.columnIDFALLA} INT, ${CmovimientoInventarioServicioFalla.columnIDMOVINVENTARIO} INT, ${CmovimientoInventarioServicioFalla.columnSTATUS} TEXT)';
-    
+    final String queryCcausas = 'CREATE TABLE ${Causas.table} (${Causas.columnId} INTEGER NOT NULL, ${Causas.columnDESCCAUSA} TEXT,${Causas.columnDESCRIPCION} TEXT)';
+
     return await openDatabase(path,
       version: 1,
       readOnly: false,
@@ -81,6 +83,7 @@ class DBProvider {
         await db.execute(queryUpdates);
         await db.execute(queryArs);
         await db.execute(queryMovInventarioSF);
+        await db.execute(queryCcausas);
         // await db.close();
       }
     );

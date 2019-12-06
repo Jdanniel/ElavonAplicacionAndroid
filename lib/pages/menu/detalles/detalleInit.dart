@@ -1,10 +1,7 @@
 import 'package:elavonappmovil/bloc/detalleinit_bloc.dart';
 import 'package:elavonappmovil/bloc/provider.dart';
-import 'package:elavonappmovil/models/movimientoInventarioServicioFalla_model.dart';
 import 'package:elavonappmovil/models/negocios_model.dart';
 import 'package:elavonappmovil/models/odts_model.dart';
-
-import 'package:elavonappmovil/provider/db_provider.dart';
 import 'package:elavonappmovil/provider/negocios_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';

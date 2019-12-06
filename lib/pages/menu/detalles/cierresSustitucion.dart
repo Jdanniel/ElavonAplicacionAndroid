@@ -153,8 +153,8 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
   Step paso0() {
     return Step(
         title: Text("1"),
-        isActive: false,
-        state: StepState.editing,
+        isActive: currentStep > 0 ? true : false,
+        state: currentStep > 0 ? StepState.complete : StepState.editing,
         content: Form(
             key: _formkey0,
             child: Column(
@@ -202,8 +202,8 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
   Step paso1() {
     return Step(
         title: Text("2"),
-        isActive: true,
-        state: StepState.complete,
+        isActive: currentStep > 1 ? true : false,
+        state: currentStep > 1 ? StepState.complete : StepState.editing,
         content: Form(
             key: _formkey1,
             child: Column(
@@ -301,8 +301,8 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
   Step paso2() {
     return Step(
         title: Text("3"),
-        isActive: true,
-        state: StepState.complete,
+        isActive: currentStep > 2 ? true : false,
+        state: currentStep > 2 ? StepState.complete : StepState.editing,
         content: Form(
             key: _formkey2,
             child: Column(
@@ -401,8 +401,8 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
   Step paso3() {
     return Step(
         title: Text("4"),
-        isActive: true,
-        state: StepState.complete,
+        isActive: currentStep > 3 ? true : false,
+        state: currentStep > 3 ? StepState.complete : StepState.editing,
         content: Form(
             key: _formkey3,
             child: Column(
@@ -471,8 +471,8 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
   Step paso4() {
     return Step(
         title: Text("5"),
-        isActive: true,
-        state: StepState.complete,
+        isActive: currentStep > 4 ? true : false,
+        state: currentStep > 4 ? StepState.complete : StepState.editing,
         content: Form(
             key: _formkey4,
             child: Column(
@@ -570,8 +570,8 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
   Step paso5() {
     return Step(
         title: Text("6"),
-        isActive: true,
-        state: StepState.complete,
+        isActive: currentStep > 5 ? true : false,
+        state: currentStep > 5 ? StepState.complete : StepState.editing,
         content: Form(
             key: _formkey5,
             child: Column(
@@ -681,8 +681,8 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
   Step paso6() {
     return Step(
         title: Text("7"),
-        isActive: true,
-        state: StepState.complete,
+        isActive: currentStep > 6 ? true : false,
+        state: currentStep > 6 ? StepState.complete : StepState.editing,
         content: Form(
             key: _formkey6,
             child: Column(
@@ -888,8 +888,8 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
   Step paso7() {
     return Step(
         title: Text("8"),
-        isActive: true,
-        state: StepState.complete,
+        isActive: currentStep > 7 ? true : false,
+        state: currentStep > 7 ? StepState.complete : StepState.editing,
         content: Form(
             key: _formkey7,
             child: Column(
@@ -954,46 +954,60 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
               ),
             ),
             child: Text("Siguiente"),
-            onPressed: () {validaBotonSiguiente(continues,currentStep);},
+            onPressed: () {
+              if(validaBotonSiguiente()){
+                continues();
+              }
+            },
           ),
         )
       ],
     );
   }
 
-  validaBotonSiguiente(VoidCallback continues, int index) {
-    switch (index) {
+  bool validaBotonSiguiente() {
+    bool validate = false;
+    switch (currentStep) {
       case 0:
         if (_formkey0.currentState.validate()) {
-          continues;
+          validate = true;
+        }
+        break;
+      case 1:
+        if (_formkey1.currentState.validate()) {
+          validate = true;
         }
         break;
       case 2:
-        if (_formkey1.currentState.validate()) {
-          continues;
+        if (_formkey2.currentState.validate()) {
+          validate = true;
         }
         break;
       case 3:
-        if (_formkey2.currentState.validate()) {
-          continues;
+        if (_formkey3.currentState.validate()) {
+          validate = true;
         }
         break;
       case 4:
-        if (_formkey3.currentState.validate()) {
-          continues;
+        if (_formkey4.currentState.validate()) {
+          validate = true;
         }
         break;
       case 5:
-        if (_formkey4.currentState.validate()) {
-          continues;
+        if (_formkey5.currentState.validate()) {
+          validate = true;
         }
         break;
       case 6:
-        if (_formkey5.currentState.validate()) {
-          continues;
+        if(_formkey6.currentState.validate()){
+          validate = true;
         }
         break;
+      default:
+        validate = false;
+        break;
     }
+    return validate;
   }
 
   Widget _crearDropDownButtonSerie() {

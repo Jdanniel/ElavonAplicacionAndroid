@@ -41,7 +41,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     
     final _prefs = new PreferenciasUsuario();
-    print(_prefs.idUsuario);
+    //print(_prefs.idUsuario);
     return Provider(
       child: LoadingProvider(
         child: MaterialApp(
