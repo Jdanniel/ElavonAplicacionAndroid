@@ -12,7 +12,7 @@ class UpdatesModel {
     String fecha;
 
     UpdatesModel({
-        this.fecha,
+        this.fecha = '',
     });
 
     factory UpdatesModel.fromJson(Map<String, dynamic> json) => UpdatesModel(

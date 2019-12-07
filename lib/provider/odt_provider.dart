@@ -16,6 +16,31 @@ class OdtProvider{
     'content-type' : 'application/json'
   };
 
+  final _contentTypeJson = 'application/json';
+
+  Future<List<Odtmodel>> getNuevasOdts(String fechaU) async {
+    final url = '$_url/getnuevasodts';
+    var dio = Dio();
+
+    try{
+      final request = {
+        "ID_USUARIO" : _prefs.idUsuario,
+        "FEC_UPDATE" : fechaU
+      };
+
+      final resp =
+          await dio.post(url, data: request, options: Options(contentType: _contentTypeJson));
+      final decodeData = resp.data as List;
+      final odtsList = decodeData.map((map) => Odtmodel.fromJson(map)).toList();
+      if(decodeData == null) return []; 
+      return odtsList;
+    }on DioError catch(error){
+      return [];
+    }
+
+
+  }
+
   Future<int> sendPhoto(File imagen, String noar) async {
 
     int resultado = 0;

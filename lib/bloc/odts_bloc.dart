@@ -79,6 +79,16 @@ class OdtsBloc{
     int resultado = await _odtsProvider.agregarComentario(comentario, idar);
     return resultado;
   }
+  Future getNuevasOdts(String fechaU)async{
+    final odts = await _odtsProvider.getNuevasOdts(fechaU);
+    if(odts.length > 0){
+      for(var odt in odts){
+        if(await DBProvider.db.validateOdt(odt)){
+          await DBProvider.db.nuevoArs(odt);
+        }
+      }
+    }
+  }
 
   void updateOdt(int idar, String noar)async{
     await DBProvider.db.updateOdt(idar, noar);

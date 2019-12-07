@@ -1,4 +1,5 @@
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'package:elavonappmovil/models/ccausas_model.dart';
 import 'package:elavonappmovil/models/cmodelos_model.dart';
 import 'package:elavonappmovil/models/conectividad_model.dart';
 import 'package:elavonappmovil/models/marcas_model.dart';
@@ -60,11 +61,13 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
   List<DropdownMenuItem<String>> listaMarcasRetiros;
   List<DropdownMenuItem<String>> listaModeloRetiros;
   List<DropdownMenuItem<String>> listaAplicativosRetiros;
+  List<DropdownMenuItem<String>> listaCausas;
 
   String valuesMarcaRetiros;
   String valuesModeloRetiros;
   String valuesConectividadRetiros;
   String valuesAplicativoRetiros;
+  String valuesCausasRetiros;
 
   bool switchBateriaRetiro = true;
   bool switchEliminadorRetiro = true;
@@ -775,7 +778,11 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                 _crearDropDownButtonTipoAtencion(),
                 /*Agregar tabla de C_CAUSAS para tomar el criterio de cambio */
                 SizedBox(
-                  height: 5.0,
+                  height: 15.0,
+                ),
+                _crearDropDownButtonCausas(),
+                SizedBox(
+                  height: 15.0,
                 ),
                 TextFormField(
                   decoration: InputDecoration(
@@ -955,7 +962,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
             ),
             child: Text("Siguiente"),
             onPressed: () {
-              if(validaBotonSiguiente()){
+              if (validaBotonSiguiente()) {
                 continues();
               }
             },
@@ -999,7 +1006,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
         }
         break;
       case 6:
-        if(_formkey6.currentState.validate()){
+        if (_formkey6.currentState.validate()) {
           validate = true;
         }
         break;
@@ -1045,6 +1052,47 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
       child: Text(
         model.noSerie,
         style: TextStyle(fontSize: 12.0),
+      ),
+    );
+  }
+
+  Widget _crearDropDownButtonCausas() {
+    return DropdownButtonFormField(
+      items: listaCausas,
+      value: valuesCausasRetiros,
+      onChanged: (newValue) {
+        setState(() {
+          valuesCausasRetiros = newValue;
+        });
+      },
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+          labelText: 'Conectividad'),
+    );
+  }
+
+  initDropDownButtonCausas() {
+    listaCausas = [];
+    DBProvider.db.getAllCausas().then((causas) {
+      causas.map((map) {
+        return getDropDownWidgetCausas(map);
+      }).forEach((dropdownitem) {
+        listaCausas.add(dropdownitem);
+      });
+      setState(() {});
+    });
+  }
+
+  getDropDownWidgetCausas(CCausasModel model) {
+    return DropdownMenuItem<String>(
+      value: model.descCausa,
+      child: SizedBox(
+        child: Text(
+          model.descCausa.trimRight(),
+          style: TextStyle(fontSize: 12.0),
+        ),
+        width: 200.0,
       ),
     );
   }
