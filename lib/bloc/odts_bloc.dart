@@ -36,12 +36,12 @@ class OdtsBloc{
     _odtController.sink.add(odt);
   }
 
-  void selectAllOdts(int idstatus) async{
+  void selectAllOdts(List<int> idstatus) async{
     final odts = await DBProvider.db.getAllArs(idstatus);
     _allodtsController.sink.add(odts);
   }
 
-  void selectAllOdtsbyDate(int day, int month, int year, int idstatus) async{
+  void selectAllOdtsbyDate(int day, int month, int year, List<int> idstatus) async{
     final odts = await DBProvider.db.getAllArsbyDate(day, month, year, idstatus);
     _allodtsbyDateController.sink.add(odts);
   }
@@ -55,7 +55,7 @@ class OdtsBloc{
     return status;
   }
 
-  Future<List<Odtmodel>> selectAllOdtsbyDate2 (int day, int month, int year, int idstatus) async{
+  Future<List<Odtmodel>> selectAllOdtsbyDate2 (int day, int month, int year, List<int> idstatus) async{
     final odts = await DBProvider.db.getAllArsbyDate(day, month, year, idstatus);
     return odts;
   }

@@ -76,9 +76,9 @@ class _HomePageState extends State<HomePage> {
             _cardRedondeado('Servicios', 'Abiertos', Icons.lock_open, 2),
             _cardRedondeado('Servicios', 'Cerrados', Icons.lock, 3),
             _cardRedondeado('Unidades', 'Inventario', Icons.lock, 4),
-            _cardRedondeado('Escanear', 'Series', Icons.scanner, 5),
+            /*_cardRedondeado('Escanear', 'Series', Icons.scanner, 5),
             _cardRedondeado('Editar', 'Imagen', Icons.image, 6),
-            _cardRedondeado('Agregar', 'Comentario', Icons.image, 7),
+            _cardRedondeado('Agregar', 'Comentario', Icons.image, 7),*/
           ],
         ),
       ),

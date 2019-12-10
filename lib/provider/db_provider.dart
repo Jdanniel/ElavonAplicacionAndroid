@@ -422,7 +422,7 @@ class DBProvider {
     return list;
   }
 
-  Future<List<Odtmodel>> getAllArs(int idstatus) async{
+  Future<List<Odtmodel>> getAllArs(List<int> idstatus) async{
     final db = await database;
     final res = await db.query(BdArs.table, where: "${BdArs.columnIDSTATUSAR} = ?", whereArgs: [idstatus]);
     List<Odtmodel> list = res.isNotEmpty
@@ -440,12 +440,19 @@ class DBProvider {
     return list;
   }
 
-  Future<List<Odtmodel>> getAllArsbyDate(int day, int month, int year, int idstatus) async{
+  Future<List<Odtmodel>> getAllArsbyDate(int day, int month, int year, List<int> idstatus) async{
     final db = await database;
+    String listaStatus = '';
+    for(var id in idstatus){
+      listaStatus += id.toString() + ",";
+    }
+    
+    String s = listaStatus.substring(0,listaStatus.length -1);
+
     final res = await db.query(
       BdArs.table, 
-      where: "${BdArs.columnDAYS} = ? AND ${BdArs.columnMONTHS} = ? AND ${BdArs.columnYEARS} = ? AND ${BdArs.columnIDSTATUSAR} = ? ", 
-      whereArgs: [day,month,year,idstatus]
+      where: "${BdArs.columnDAYS} = ? AND ${BdArs.columnMONTHS} = ? AND ${BdArs.columnYEARS} = ? AND ${BdArs.columnIDSTATUSAR} IN ($s)", 
+      whereArgs: [day,month,year]
     );
 
     List<Odtmodel> list = res.isNotEmpty

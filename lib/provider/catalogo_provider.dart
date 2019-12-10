@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:elavonappmovil/models/ccausas_model.dart';
 import 'package:elavonappmovil/models/movimientoInventarioServicioFalla_model.dart';
 import 'package:elavonappmovil/models/odts_model.dart';
 import 'package:elavonappmovil/models/software_model.dart';
@@ -14,12 +15,13 @@ class CatalogoProvider {
       'http://sgse.microformas.com.mx/ELAVON_TEST/apimoviltest2/api/catalogos';
   final _prefs = new PreferenciasUsuario();
   final headerJson = {'content-type': 'application/json'};
+  final _contentTypeJson = 'application/json';
 
   Future<List<CmodelosModel>> getModelos() async {
     final url = '$_url/modelos';
     var dio = Dio();
     final resp =
-        await dio.get(url, options: Options(contentType: 'application/json'));
+        await dio.get(url, options: Options(contentType: _contentTypeJson));
 
     final decodeData = resp.data as List;
     final modelosList =
@@ -32,7 +34,7 @@ class CatalogoProvider {
     final url = '$_url/marcas';
     var dio = Dio();
     final resp =
-        await dio.get(url, options: Options(contentType: 'application/json'));
+        await dio.get(url, options: Options(contentType: _contentTypeJson));
     final decodeData = resp.data as List;
     final marcasList =
         decodeData.map((map) => MarcasModel.fromJson(map)).toList();
@@ -44,7 +46,7 @@ class CatalogoProvider {
     final url = '$_url/servicios';
     var dio = Dio();
     final resp =
-        await dio.get(url, options: Options(contentType: 'application/json'));
+        await dio.get(url, options: Options(contentType: _contentTypeJson));
     final decodeData = resp.data as List;
     final servicioList =
         decodeData.map((map) => ServiciosModel.fromJson(map)).toList();
@@ -56,7 +58,7 @@ class CatalogoProvider {
     final url = '$_url/conectividades';
     var dio = Dio();
     final resp =
-        await dio.get(url, options: Options(contentType: 'application/json'));
+        await dio.get(url, options: Options(contentType: _contentTypeJson));
     final decodeData = resp.data as List;
     final conectividadList =
         decodeData.map((map) => ConectividadModel.fromJson(map)).toList();
@@ -68,7 +70,7 @@ class CatalogoProvider {
     final url = '$_url/softwares';
     var dio = Dio();
     final resp =
-        await dio.get(url, options: Options(contentType: 'application/json'));
+        await dio.get(url, options: Options(contentType: _contentTypeJson));
     final decodeData = resp.data as List;
     final softwareList =
         decodeData.map((map) => Softwaremodel.fromJson(map)).toList();
@@ -80,7 +82,7 @@ class CatalogoProvider {
     final url = '$_url/unidades/${_prefs.idUsuario}';
     var dio = Dio();
     final resp =
-        await dio.get(url, options: Options(contentType: 'application/json'));
+        await dio.get(url, options: Options(contentType: _contentTypeJson));
     final decodeData = resp.data as List;
     final unidadesList =
         decodeData.map((map) => UnidadesModel.fromJson(map)).toList();
@@ -92,7 +94,7 @@ class CatalogoProvider {
     final url = '$_url/getodtstecnico/${_prefs.idUsuario}';
     var dio = Dio();
     final resp =
-        await dio.get(url, options: Options(contentType: 'application/json'));
+        await dio.get(url, options: Options(contentType: _contentTypeJson));
     final decodeData = resp.data as List;
     final odtList = decodeData.map((map) => Odtmodel.fromJson(map)).toList();
     if (decodeData == null) return [];
@@ -103,11 +105,21 @@ class CatalogoProvider {
     final url = '$_url/movinventariosf';
     var dio = Dio();
     final resp =
-        await dio.get(url, options: Options(contentType: 'application/json'));
+        await dio.get(url, options: Options(contentType: _contentTypeJson));
     final decodeData = resp.data as List;
     final movsList =
         decodeData.map((map) => MovimientoInventarioSF.fromJson(map)).toList();
     if (decodeData == null) return [];
     return movsList;
+  }
+
+  Future<List<CCausasModel>> getCausas() async {
+    final url = '$_url/causas';
+    var dio = Dio();
+    final resp = await dio.get(url, options: Options(contentType: _contentTypeJson));
+    final decodeData = resp.data as List;
+    final causasList = decodeData.map((map) => CCausasModel.fromJson(map)).toList();
+    if(decodeData == null) return [];
+    return causasList;
   }
 }

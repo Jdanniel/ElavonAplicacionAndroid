@@ -9,10 +9,10 @@ class UnidadesInventarioPage extends StatelessWidget {
     final unidadBloc = Provider.unidadesBloc(context);
     unidadBloc.selectAllUnidades();
 
-    return Scaffold(
-      backgroundColor: Colors.blueAccent,
-      body: SafeArea(
-        child: SingleChildScrollView(
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.blueAccent,
+        body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
               SizedBox(height: 25.0,),
@@ -58,6 +58,7 @@ class UnidadesInventarioPage extends StatelessWidget {
         if(snapshot.hasData){
           final unidades = snapshot.data;
           return ListView.builder(
+            physics: ClampingScrollPhysics(),
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
             itemCount: unidades.length,

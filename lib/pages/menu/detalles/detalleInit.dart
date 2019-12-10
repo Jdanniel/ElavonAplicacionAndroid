@@ -21,7 +21,7 @@ class _DetalleInitState extends State<DetalleInit> {
   DetalleInitBloc detalleBloc = new DetalleInitBloc();
 
   Odtmodel odt = new Odtmodel();
-  
+
   double lat = 0;
   double lon = 0;
 
@@ -47,7 +47,7 @@ class _DetalleInitState extends State<DetalleInit> {
               _botonRegresar(context),
               SizedBox(
                 height: 10.0,
-              ),              
+              ),
               _crearCards(_height)
             ],
           ),
@@ -58,14 +58,14 @@ class _DetalleInitState extends State<DetalleInit> {
         children: <Widget>[
           FloatingActionButton.extended(
             heroTag: UniqueKey(),
-            backgroundColor: Colors.red,
+            backgroundColor: Colors.lightBlueAccent,
             label: Icon(Icons.location_on),
             onPressed: () => _coordenadas(),
           ),
           SizedBox(width: 5.0),
           FloatingActionButton.extended(
             heroTag: UniqueKey(),
-            backgroundColor: Colors.red,
+            backgroundColor: Colors.lightBlueAccent,
             label: Icon(Icons.update),
             onPressed: () => _updateStatusAr(odt),
           ),
@@ -74,14 +74,14 @@ class _DetalleInitState extends State<DetalleInit> {
           ),
           FloatingActionButton.extended(
             heroTag: UniqueKey(),
-            backgroundColor: Colors.red,
+            backgroundColor: Colors.lightBlueAccent,
             label: Icon(Icons.map),
             onPressed: () => _openGoogleMaps(odt),
           ),
           SizedBox(width: 5.0),
           FloatingActionButton.extended(
             //heroTag: UniqueKey(),
-            backgroundColor: Colors.red,
+            backgroundColor: Colors.lightBlueAccent,
             label: Icon(Icons.check),
             onPressed: () => _openCierres(odt),
           )
@@ -127,7 +127,7 @@ class _DetalleInitState extends State<DetalleInit> {
     return Card(
       margin: EdgeInsets.only(left: 10.0, right: 10.0),
       elevation: 8.0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       child: Padding(
         padding: EdgeInsets.all(10.0),
         child: Column(
@@ -138,6 +138,8 @@ class _DetalleInitState extends State<DetalleInit> {
               style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: _height * 0.05),
+            _crearTabla(context, odt),
+            /*
             _crearItems(context, 'ODT', odt.odt.trimRight()),
             _crearItems(context, 'Afiliación', odt.noAfiliacion.trimRight()),
             _crearItems(context, 'Negocio', odt.negocio.trimRight()),
@@ -161,11 +163,45 @@ class _DetalleInitState extends State<DetalleInit> {
                     ? lon.toString()
                     : odt.longitud.toString()),
             _crearItems(
-                context, 'Fecha Garantía', odt.fecGarantia.trimRight()),
+                context, 'Fecha Garantía', odt.fecGarantia.trimRight()),*/
           ],
         ),
       ),
     );
+  }
+
+  Widget _crearTabla(BuildContext context, Odtmodel odt) {
+    return Table(
+        columnWidths: {1: FlexColumnWidth(2.5)},
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        children: [
+          _crearTableRow('ODT:', odt.odt.trimRight()),
+          _crearTableRow('Afiliación: ', odt.noAfiliacion.trimRight()),
+          _crearTableRow('Negocio:', odt.negocio.trimRight()),
+          _crearTableRow(
+              'Dirección:',
+              odt.direccion.trimRight() +
+                  ',' +
+                  odt.colonia.trimRight() +
+                  ',' +
+                  odt.poblacion.trimRight() +
+                  ',' +
+                  odt.estado.trimRight()),
+          _crearTableRow('Latitud:', odt.latitud == null ? lat.toString() : odt.latitud.toString()),
+          _crearTableRow('Longitud:', odt.longitud == null ? lon.toString() : odt.longitud.toString()),
+          _crearTableRow('Fecha Garantía:', odt.fecGarantia.trimRight())
+        ]);
+  }
+
+  TableRow _crearTableRow(String titulo, String contenido) {
+    return TableRow(children: [
+      Text(
+        titulo,
+        style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500),
+        textAlign: TextAlign.right,
+      ),
+      Container(child: Text(contenido), padding: EdgeInsets.only(left: 5.0),)
+    ]);
   }
 
   Widget _crearItems(BuildContext context, String titulo, String contenido) {
@@ -199,8 +235,9 @@ class _DetalleInitState extends State<DetalleInit> {
   }
 
   void _openCierres(Odtmodel odt) async {
-    final model = await detalleBloc.getMovInventariosf(odt.idServicio, odt.idFalla);  
-    switch (model.idMovInventario){
+    final model =
+        await detalleBloc.getMovInventariosf(odt.idServicio, odt.idFalla);
+    switch (model.idMovInventario) {
       case 1:
         Navigator.pushNamed(context, 'cierreInstalacion', arguments: odt);
         break;
@@ -208,7 +245,7 @@ class _DetalleInitState extends State<DetalleInit> {
         Navigator.pushNamed(context, 'cierreRetiro', arguments: odt);
         break;
       case 3:
-        Navigator.pushNamed(context, 'cierreSustitucion', arguments: odt);  
+        Navigator.pushNamed(context, 'cierreSustitucion', arguments: odt);
     }
   }
 
@@ -262,8 +299,7 @@ class _DetalleInitState extends State<DetalleInit> {
     Scaffold.of(context).showSnackBar(snackbar);
   }
 
-  void _coordenadas() async{
-
+  void _coordenadas() async {
     showCustomLoadingWidget(Container(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -292,7 +328,8 @@ class _DetalleInitState extends State<DetalleInit> {
         lon = position.longitude;
       });
     });*/
-    position = await geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+    position = await geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
     //print(position.latitude.toString()+" "+position.longitude.toString());
     setState(() {
       lat = position.latitude;
@@ -305,7 +342,9 @@ class _DetalleInitState extends State<DetalleInit> {
     model.longitud = position.longitude;
     int r = await negocio.updateCoordenadas(model);
     String msg = "";
-    r == 1 ? msg = 'Coordenadas Actualizadas' : msg = 'Favor de intentarlo despues';
+    r == 1
+        ? msg = 'Coordenadas Actualizadas'
+        : msg = 'Favor de intentarlo despues';
     final snackbar = SnackBar(
       content: Text(msg),
     );

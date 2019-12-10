@@ -17,7 +17,12 @@ class CierresInstalacion extends StatefulWidget {
 
 class _CierresInstalacionState extends State<CierresInstalacion> {
   
-  final GlobalKey<FormState> _formkey = new GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey0 = new GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey1 = new GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey2 = new GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey3 = new GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey4 = new GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey5 = new GlobalKey<FormState>();
 
   CierresInstalacionBloc bloc;
 
@@ -53,8 +58,11 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
   bool switchPromociones = true;
   bool switchDescargar = true;
   bool chkIsAmex = false;
+  bool isComplete = false;
 
   int radiodiscover = 0;
+  int currentStep = 0;
+  int totalSteps = 6;
 
   @override
   void initState() {
@@ -75,17 +83,154 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
     bloc = Provider.cierresInstalBloc(context);
     bloc.getVersion != null ? textVersion.text = bloc.getVersion : textVersion.text = '';
 
-    return Scaffold(
-      body: SafeArea(
-        child: Form(
-          key: _formkey,
-          autovalidate: true,
-          child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            children: <Widget>[
-              SizedBox(
-                height: 15.0,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Theme.of(context).primaryColor,
+        body: Column(
+          children: <Widget>[
+            isComplete ? Expanded(
+              child: Center(
+                child: AlertDialog(
+                  title: Text("Datos ingresados"),
+                  content: Text("¿Deseas Continuar?"),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text("Regresar"),
+                      onPressed: (){
+                        setState(() {
+                          isComplete = false;
+                        });
+                      },
+                    ),
+                    FlatButton(
+                      child: Text("Continuar"),
+                      onPressed: (){
+                        _enviarDatosCierreInstalacion();
+                      },
+                    )
+                  ],
+                ),
               ),
+            ) : Expanded(
+              child: Container(
+                color: Colors.white,
+                child: Stepper(
+                  physics: ClampingScrollPhysics(),
+                  type: StepperType.horizontal,
+                  steps: [
+                    paso0(),
+                    paso1(),
+                    paso2(),
+                    paso3(),
+                    paso4(),
+                    paso5()
+                  ],
+                  currentStep: currentStep,
+                  onStepTapped: (step) => goTo(step),
+                  onStepCancel: cancel,
+                  onStepContinue: next,
+                  controlsBuilder: (BuildContext context, {VoidCallback onStepContinue, VoidCallback onStepCancel}){
+                    return _botonesStepper(onStepContinue, onStepCancel);
+                  },
+                ),
+              ),
+            )
+          ],
+        )
+      ),
+    );
+  }
+
+  Widget _botonesStepper(VoidCallback continues, VoidCallback cancel){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Expanded(
+          child: FlatButton(
+            padding: EdgeInsets.all(10.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(18.0),
+                bottomLeft: Radius.circular(18.0)
+              ),
+              side: BorderSide(color: Theme.of(context).primaryColor)
+            ),
+            child: Text("Regresar"),
+            onPressed: cancel,
+          ),
+        ),
+        Expanded(
+          child: FlatButton(
+            color: Theme.of(context).primaryColor,
+            textColor: Colors.white,
+            padding: EdgeInsets.all(10.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(18.0),
+                bottomRight: Radius.circular(18.0)
+              ),
+            ),
+            child: Text("Siguiente"),
+            onPressed: (){
+              if(validaBotonSiguiente()){
+                continues();
+              }
+            },
+          ),
+        )
+      ],
+    );
+  }
+
+  bool validaBotonSiguiente(){
+    bool validate = false;
+    switch(currentStep){
+      case 0:
+        if(_formKey0.currentState.validate()){
+          validate = true;
+        }
+        break;
+      case 1:
+        if(_formKey1.currentState.validate()){
+          validate = true;
+        }
+        break;
+      case 2:
+        if(_formKey2.currentState.validate()){
+          validate = true;
+        }
+        break;
+      case 3:
+        if(_formKey3.currentState.validate()){
+          validate = true;
+        }
+        break;
+      case 4:
+        if(_formKey4.currentState.validate()){
+          validate = true;
+        }
+        break;
+      case 5:
+        if(_formKey5.currentState.validate()){
+          validate = true;
+        }
+        break;
+      default:
+        validate = false;
+        break;
+    }
+    return validate;
+  }
+
+  Step paso0(){
+    return Step(
+      title: Text("1"),
+      isActive: currentStep > 0 ? true : false,
+      state: currentStep > 0 ? StepState.complete : StepState.editing,
+      content: Form(
+        key: _formKey0,
+        child: Column(
+          children: <Widget>[
               Container(
                 child: Text(
                   "Terminal a Instalar",
@@ -124,81 +269,122 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
               SizedBox(
                 height: 5.0,
               ),
-              Container(
-                child: Text(
-                  'Accesorios',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+          ],
+        )
+      )
+    );
+  }
+
+  Step paso1(){
+    return Step(
+      title: Text("2"),
+      isActive: currentStep > 1 ? true : false,
+      state: currentStep > 1 ? StepState.complete : StepState.editing,
+      content: Form(
+        key: _formKey1,
+        child: Column(
+          children: <Widget>[
+                Container(
+                  child: Text(
+                    "Accesorios a Instalar",
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 5.0,
-              ),
-              Row(
-                children: <Widget>[
-                  Text("Batería"),
-                  Switch(
-                    value: switchBateria,
-                    onChanged: (value) {
-                      setState(() {
-                        bloc.changeBateria(value);
-                        switchBateria = value;
-                      });
-                    },
-                  ),
-                  Text("Eliminador"),
-                  Switch(
-                    value: switchEliminador,
-                    onChanged: (value) {
-                      setState(() {
-                        bloc.changeEliminador(value);
-                        switchEliminador = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  Text("Tapa"),
-                  Switch(
-                    value: switchTapa,
-                    onChanged: (value) {
-                      setState(() {
-                        bloc.changeTapa(value);
-                        switchTapa = value;
-                      });
-                    },
-                  ),
-                  Text("Cable Ac"),
-                  Switch(
-                    value: switchCableac,
-                    onChanged: (value) {
-                      setState(() {
-                        bloc.changeCableAc(value);
-                        switchCableac = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  Text("Base"),
-                  Switch(
-                    value: switchBase,
-                    onChanged: (value) {
-                      setState(() {
-                        bloc.changeBase(value);
-                        switchBase = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 5.0,
-              ),
+                Table(
+                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                  children: [
+                    TableRow(children: [
+                      Text(
+                        "Batería",
+                        textAlign: TextAlign.right,
+                      ),
+                      Switch(
+                        value: switchBateria,
+                        onChanged: (value) {
+                          setState(() {
+                            bloc.changeBateria(value);
+                            switchBateria = value;
+                          });
+                        },
+                      ),
+                      Text(
+                        "Eliminador",
+                        textAlign: TextAlign.right,
+                      ),
+                      Switch(
+                        value: switchEliminador,
+                        onChanged: (value) {
+                          setState(() {
+                            bloc.changeEliminador(value);
+                            switchEliminador = value;
+                          });
+                        },
+                      ),
+                    ]),
+                    TableRow(children: [
+                      Text(
+                        "Tapa",
+                        textAlign: TextAlign.right,
+                      ),
+                      Switch(
+                        value: switchTapa,
+                        onChanged: (value) {
+                          setState(() {
+                            bloc.changeTapa(value);
+                            switchTapa = value;
+                          });
+                        },
+                      ),
+                      Text(
+                        "Cable Ac",
+                        textAlign: TextAlign.right,
+                      ),
+                      Switch(
+                        value: switchCableac,
+                        onChanged: (value) {
+                          setState(() {
+                            bloc.changeCableAc(value);
+                            switchCableac = value;
+                          });
+                        },
+                      ),
+                    ]),
+                    TableRow(children: [
+                      Text(
+                        "Base",
+                        textAlign: TextAlign.right,
+                      ),
+                      Switch(
+                        value: switchBase,
+                        onChanged: (value) {
+                          setState(() {
+                            bloc.changeBase(value);
+                            switchBase = value;
+                          });
+                        },
+                      ),
+                      Container(),
+                      Container(),
+                    ])
+                  ],
+                ),
+          ],
+        )
+      )
+    );
+  }
+
+  Step paso2(){
+    return Step(
+      title: Text("2"),
+      isActive: currentStep > 2 ? true : false,
+      state: currentStep > 2 ? StepState.complete : StepState.editing,
+      content: Form(
+        key: _formKey2,
+        child: Column(
+          children: <Widget>[
               Container(
                 child: Text(
                   'Datos Amex',
@@ -290,6 +476,21 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
               SizedBox(
                 height: 15.0,
               ),
+          ],
+        )
+      )
+    );
+  }
+
+  Step paso3(){
+    return Step(
+      title: Text("3"),
+      isActive: currentStep > 3  ? true : false,
+      state: currentStep > 3 ? StepState.complete : StepState.editing,
+      content: Form(
+        key: _formKey3,
+        child: Column(
+          children: <Widget>[
               Container(
                 child: Text(
                   'Mi Comercio',
@@ -375,6 +576,21 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
               SizedBox(
                 height: 15.0,
               ),
+          ],
+        )
+      )
+    );
+  }
+
+  Step paso4(){
+    return Step(
+      title: Text("4"),
+      isActive: currentStep > 4 ? true : false,
+      state: currentStep > 4 ? StepState.complete : StepState.editing,
+      content: Form(
+        key: _formKey4,
+        child: Column(
+          children: <Widget>[
               Container(
                 child: Text(
                   'Datos del Servicio',
@@ -531,6 +747,21 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
               SizedBox(
                 height: 15.0,
               ),
+          ],
+        )
+      )
+    );
+  }
+
+  Step paso5(){
+    return Step(
+      title: Text("5"),
+      isActive: currentStep > 5 ? true : false,
+      state: currentStep > 5 ? StepState.complete : StepState.editing,
+      content: Form(
+        key: _formKey5,
+        child: Column(
+          children: <Widget>[
               Container(
                 child: Text(
                   'Comentarios Servicio',
@@ -557,20 +788,9 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
                         },
                 keyboardType: TextInputType.multiline,
               ),
-
-              //Boton de Submit
-              RaisedButton(
-                onPressed: () {
-                  if (_formkey.currentState.validate()) {
-                    _enviarDatosCierreInstalacion();
-                  }
-                },
-                child: Text('Aceptar'),
-              )
-            ],
-          ),
-        ),
-      ),
+          ],
+        )
+      )
     );
   }
 
@@ -791,4 +1011,21 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
         });
   }
 
+  next(){
+    currentStep + 1 != totalSteps
+                    ? goTo(currentStep + 1)
+                    : setState(() => isComplete = true);
+  }
+
+  cancel(){
+    if(currentStep > 0){
+      goTo(currentStep - 1);
+    }
+  }
+
+  goTo(int step){
+    setState(() {
+      currentStep = step;
+    });
+  }
 }

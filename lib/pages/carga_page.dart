@@ -93,7 +93,7 @@ class CargaPage extends StatelessWidget {
     }
 
     final causasBloc = Provider.causasBloc(context);
-    final causasList = await causasBloc.getAllCausas();
+    final causasList = await causasBloc.getAllCausasHttp();
     for(var causa in causasList){
       await causasBloc.ingresarCausa(causa);
     }

@@ -36,6 +36,9 @@ export 'package:elavonappmovil/bloc/cierresRetiro_bloc.dart';
 import 'package:elavonappmovil/bloc/causas_bloc.dart';
 export 'package:elavonappmovil/bloc/causas_bloc.dart';
 
+import 'package:elavonappmovil/bloc/cierreSustitucion_bloc.dart';
+export 'package:elavonappmovil/bloc/cierreSustitucion_bloc.dart';
+
 import 'package:elavonappmovil/bloc/updates_bloc.dart';
 
 class Provider extends InheritedWidget{
@@ -63,6 +66,8 @@ class Provider extends InheritedWidget{
   final _cierresInstalacionBloc = new CierresInstalacionBloc();
 
   final _cierresRetiroBloc = new CierresRetiroBloc();
+
+  final _cierresSustitucionBloc = new CierresSustitucionBloc();
 
   final _causasBloc = new CausasBloc();
 
@@ -127,6 +132,10 @@ class Provider extends InheritedWidget{
 
   static CierresRetiroBloc cierresRetiroBloc(BuildContext context){
     return(context.inheritFromWidgetOfExactType(Provider) as Provider)._cierresRetiroBloc;
+  }
+
+  static CierresSustitucionBloc cierresSustitucionBloc(BuildContext context){
+    return(context.inheritFromWidgetOfExactType(Provider) as Provider)._cierresSustitucionBloc;
   }
 
   static CausasBloc causasBloc(BuildContext context){

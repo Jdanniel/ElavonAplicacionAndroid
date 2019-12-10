@@ -1,3 +1,5 @@
+import 'package:elavonappmovil/bloc/provider.dart';
+import 'package:elavonappmovil/models/odts_model.dart';
 import 'package:elavonappmovil/pages/menu/detalles/agregarcomentarios.dart';
 import 'package:elavonappmovil/pages/menu/detalles/detalleInit.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,9 @@ class _DetalleOdtPageState extends State<DetalleOdtPage> {
   final TomarFoto _tomarFoto = new TomarFoto();
   final DetalleInit _init = new DetalleInit();
   final AgregarComentario _comentario = new AgregarComentario();
+  
+  OdtsBloc odtBloc;
+  Odtmodel odt = new Odtmodel();
 
   Widget _showPage = new DetalleInit();
 
@@ -20,6 +25,13 @@ class _DetalleOdtPageState extends State<DetalleOdtPage> {
 
   @override
   Widget build(BuildContext context) {
+    odtBloc = Provider.odtsBloc(context);
+    final Odtmodel odtData = ModalRoute.of(context).settings.arguments;
+
+    if (odtData != null) {
+      odt = odtData;
+    }    
+    
     return Scaffold(
         backgroundColor: Colors.blueAccent,
         body: _showPage,

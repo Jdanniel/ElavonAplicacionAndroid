@@ -18,6 +18,11 @@ class CierresRetiro extends StatefulWidget {
 class _CierresRetiroState extends State<CierresRetiro> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
+  final GlobalKey<FormState> _formKey0 = new GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey1 = new GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey2 = new GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey3 = new GlobalKey<FormState>();
+
   CierresRetiroBloc bloc;
 
   ProgressDialog pr;
@@ -48,7 +53,11 @@ class _CierresRetiroState extends State<CierresRetiro> {
   bool switchCableAc = true;
   bool switchBase = true;
 
+  bool iscomplete = false;
+
   int radioDiscover = 0;
+  int currentStep = 0;
+  int totalSteps = 4;
 
   @override
   void initState() {
@@ -70,22 +79,141 @@ class _CierresRetiroState extends State<CierresRetiro> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.blueAccent,
-        body: Form(
-          key: _formKey,
-          autovalidate: true,
-          child: ListView(
-            padding: EdgeInsets.only(top: 16.0, left: 16.0),
-            children: <Widget>[
-              SizedBox(
-                height: 15.0,
+        body: Column(
+          children: <Widget>[
+            iscomplete 
+              ? Expanded(
+                child: Center(
+                  child: AlertDialog(
+                    title: Text("Datos ingresados"),
+                    content: Text("¿Deseas Continuar?"),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text("Regresar"),
+                        onPressed: (){
+                          setState(() {
+                            iscomplete = false;
+                          });
+                        },
+                      ),
+                      FlatButton(
+                        child: Text("Continuar"),
+                        onPressed: (){
+                          _enviarCierreRetiro();
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              ) : Expanded(
+                child: Container(
+                  color: Colors.white,
+                  child: Stepper(
+                    physics: ClampingScrollPhysics(),
+                    type: StepperType.horizontal,
+                    steps: [
+                      paso0(),
+                      paso1(),
+                      paso2(),
+                      paso3()
+                    ],
+                    currentStep: currentStep,
+                    onStepTapped: (step) => goTo(step),
+                    onStepCancel: cancel,
+                    onStepContinue: next,
+                    controlsBuilder: (BuildContext context, {VoidCallback onStepContinue, VoidCallback onStepCancel}){
+                      return _botonesStepper(onStepContinue, onStepCancel);
+                    },
+                  ),
+                ),
+              )
+          ],
+        )
+      ),
+    );
+  }
+
+  Widget _botonesStepper(VoidCallback continues, VoidCallback cancel){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Expanded(
+          child: FlatButton(
+            padding: EdgeInsets.all(10.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(18.0),
+                bottomLeft: Radius.circular(18.0)
               ),
-              Container(
-                padding: EdgeInsets.all(15.0),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16.0),
-                        bottomLeft: Radius.circular(16.0))),
+              side: BorderSide(color: Theme.of(context).primaryColor)
+            ),
+            child: Text("Regresar"),
+            onPressed: cancel,
+          ),
+        ),
+        Expanded(
+          child: FlatButton(
+            color: Theme.of(context).primaryColor,
+            textColor: Colors.white,
+            padding: EdgeInsets.all(10.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(18.0),
+                bottomRight: Radius.circular(18.0)
+              ),
+            ),
+            child: Text("Siguiente"),
+            onPressed: (){
+              if(validaBotonSiguiente()){
+                continues();
+              }
+            },
+          ),
+        )
+      ],      
+    );
+  }
+
+  bool validaBotonSiguiente(){
+    bool validate = false;
+    switch(currentStep){
+      case 0:
+        if(_formKey0.currentState.validate()){
+          validate = true;
+        }
+        break;
+      case 1:
+        if(_formKey1.currentState.validate()){
+          validate = true;
+        }
+        break;
+      case 2:
+        if(_formKey2.currentState.validate()){
+          validate = true;
+        }
+        break;
+      case 3:
+        if(_formKey3.currentState.validate()){
+          validate = true;
+        }
+        break;
+      default:
+        validate = false;
+        break;
+    }
+    return validate;
+  }
+
+  Step paso0(){
+    return Step(
+      title: Text("1"),
+      isActive: currentStep > 0 ? true : false,
+      state: currentStep > 0 ? StepState.complete : StepState.editing,
+      content: Form(
+        key: _formKey0,
+        child: Column(
+          children: <Widget>[
+Container(
                 child: Text(
                   "Terminal a Retirar",
                   textAlign: TextAlign.center,
@@ -96,12 +224,6 @@ class _CierresRetiroState extends State<CierresRetiro> {
                 height: 5.0,
               ),
               Container(
-                padding: EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16.0),
-                        bottomLeft: Radius.circular(16.0))),
                 child: Column(
                   children: <Widget>[
                     TextFormField(
@@ -159,6 +281,21 @@ class _CierresRetiroState extends State<CierresRetiro> {
               SizedBox(
                 height: 5.0,
               ),
+          ],
+        )
+      )
+    );
+  }
+
+  Step paso1(){
+    return Step(
+      title: Text("2"),
+      isActive: currentStep > 1 ? true : false,
+      state: currentStep > 1 ? StepState.complete : StepState.editing,
+      content: Form(
+        key: _formKey1,
+        child: Column(
+          children: <Widget>[
               Container(
                 padding: EdgeInsets.all(15.0),
                 decoration: BoxDecoration(
@@ -268,6 +405,21 @@ class _CierresRetiroState extends State<CierresRetiro> {
               SizedBox(
                 height: 5.0,
               ),
+          ],
+        )
+      )
+    );
+  }
+
+  Step paso2(){
+    return Step(
+      title: Text("3"),
+      isActive: currentStep > 2 ? true : false,
+      state: currentStep > 2 ? StepState.complete : StepState.editing,
+      content: Form(
+        key: _formKey2,
+        child: Column(
+          children: <Widget>[
               Container(
                 padding: EdgeInsets.all(15.0),
                 decoration: BoxDecoration(
@@ -447,6 +599,21 @@ class _CierresRetiroState extends State<CierresRetiro> {
               SizedBox(
                 height: 5.0,
               ),
+          ],
+        )
+      )
+    );
+  }
+
+  Step paso3(){
+    return Step(
+      title: Text("4"),
+      isActive: currentStep > 3 ? true : false,
+      state: currentStep > 3 ? StepState.complete : StepState.editing,
+      content: Form(
+        key: _formKey3,
+        child: Column(
+          children: <Widget>[
               Container(
                 padding: EdgeInsets.all(15.0),
                 decoration: BoxDecoration(
@@ -492,18 +659,9 @@ class _CierresRetiroState extends State<CierresRetiro> {
                   ],
                 ),
               ),
-              Container(
-                child: RaisedButton(
-                  child: Text('Enviar'),
-                  onPressed: (){
-                    _enviarCierreRetiro();
-                  },
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
+          ],
+        )
+      )
     );
   }
 
@@ -756,5 +914,23 @@ class _CierresRetiroState extends State<CierresRetiro> {
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
           labelText: 'Tipo de Atención'),
     );
+  }
+
+  next(){
+    currentStep + 1 != totalSteps
+                    ? goTo(currentStep + 1)
+                    : setState(()=>iscomplete = true);
+  }
+  
+  cancel(){
+    if(currentStep > 0){
+      goTo(currentStep - 1);
+    }
+  }
+  
+  goTo(int step){
+    setState(() {
+      currentStep = step;
+    });
   }
 }

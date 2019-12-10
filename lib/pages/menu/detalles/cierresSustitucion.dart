@@ -1,4 +1,6 @@
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'package:elavonappmovil/bloc/cierreSustitucion_bloc.dart';
+import 'package:elavonappmovil/bloc/provider.dart';
 import 'package:elavonappmovil/models/ccausas_model.dart';
 import 'package:elavonappmovil/models/cmodelos_model.dart';
 import 'package:elavonappmovil/models/conectividad_model.dart';
@@ -8,6 +10,7 @@ import 'package:elavonappmovil/models/unidades_model.dart';
 import 'package:elavonappmovil/provider/db_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class CierresSustitucion extends StatefulWidget {
   @override
@@ -15,6 +18,10 @@ class CierresSustitucion extends StatefulWidget {
 }
 
 class _CierresSustitucionState extends State<CierresSustitucion> {
+
+  CierresSustitucionBloc bloc;
+  ProgressDialog pr;
+
   final GlobalKey<FormState> _formkey0 = new GlobalKey<FormState>();
   final GlobalKey<FormState> _formkey1 = new GlobalKey<FormState>();
   final GlobalKey<FormState> _formkey2 = new GlobalKey<FormState>();
@@ -56,6 +63,8 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
 
   /*Variable de Retiro*/
   TextEditingController textNoSerieRetiro = new TextEditingController();
+  TextEditingController textVersionRetiro = new TextEditingController();
+
 
   List<DropdownMenuItem<String>> listaConectividadesRetiros;
   List<DropdownMenuItem<String>> listaMarcasRetiros;
@@ -92,10 +101,17 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
     initDropDownButtonAplicativo();
     initDropDownButtonMarca();
     initDropDownButtonModelo();
+    initDropDownButtonCausas();
   }
 
   @override
   Widget build(BuildContext context) {
+
+    pr = new ProgressDialog(context, type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    _crearProgressDialog();
+    bloc = Provider.cierresSustitucionBloc(context);
+    bloc.getVersion != null ? textVersion.text = bloc.getVersion : textVersion.text = '';
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.blueAccent,
@@ -193,7 +209,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                           borderRadius: BorderRadius.circular(32.0))),
                   onChanged: (newValue) {
                     setState(() {
-                      //bloc.changeVersion(newValue);
+                      bloc.changeVersion(newValue);
                     });
                   },
                   keyboardType: TextInputType.numberWithOptions(),
@@ -231,7 +247,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                         value: switchBateria,
                         onChanged: (value) {
                           setState(() {
-                            //bloc.changeBateria(value);
+                            bloc.changeBateria(value);
                             switchBateria = value;
                           });
                         },
@@ -244,7 +260,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                         value: switchEliminador,
                         onChanged: (value) {
                           setState(() {
-                            //bloc.changeEliminador(value);
+                            bloc.changeEliminador(value);
                             switchEliminador = value;
                           });
                         },
@@ -259,7 +275,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                         value: switchTapa,
                         onChanged: (value) {
                           setState(() {
-                            //bloc.changeTapa(value);
+                            bloc.changeTapa(value);
                             switchTapa = value;
                           });
                         },
@@ -272,7 +288,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                         value: switchCableac,
                         onChanged: (value) {
                           setState(() {
-                            //bloc.changeCableAc(value);
+                            bloc.changeCableAc(value);
                             switchCableac = value;
                           });
                         },
@@ -287,7 +303,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                         value: switchBase,
                         onChanged: (value) {
                           setState(() {
-                            //bloc.changeBase(value);
+                            bloc.changeBase(value);
                             switchBase = value;
                           });
                         },
@@ -326,7 +342,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                       value: chkIsAmex,
                       onChanged: (value) {
                         setState(() {
-                          //bloc.changeIsAmex(value);
+                          bloc.changeIsAmex(value);
                           chkIsAmex = value;
                         });
                       },
@@ -345,7 +361,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                                 borderRadius: BorderRadius.circular(32.0))),
                         onChanged: (newValue) {
                           setState(() {
-                            //bloc.changeIdAmex(newValue);
+                            bloc.changeIdAmex(newValue);
                           });
                         },
                         keyboardType: TextInputType.numberWithOptions(),
@@ -368,7 +384,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                                 borderRadius: BorderRadius.circular(32.0))),
                         onChanged: (newValue) {
                           setState(() {
-                            //bloc.changeAfilAmex(newValue);
+                            bloc.changeAfilAmex(newValue);
                           });
                         },
                         keyboardType: TextInputType.numberWithOptions(),
@@ -391,7 +407,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                                 borderRadius: BorderRadius.circular(32.0))),
                         onChanged: (newValue) {
                           setState(() {
-                            //bloc.changeConclusionesAmex(newValue);
+                            bloc.changeConclusionesAmex(newValue);
                           });
                         },
                         keyboardType: TextInputType.text,
@@ -429,7 +445,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                           borderRadius: BorderRadius.circular(32.0))),
                   onChanged: (newValue) {
                     setState(() {
-                      //bloc.changeNoserie(newValue);
+                      bloc.changeNoserieRetiro(newValue);
                     });
                   },
                   keyboardType: TextInputType.numberWithOptions(),
@@ -452,7 +468,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                 _crearDropDownButtonAplicativoRetiros(),
                 SizedBox(height: 8.0),
                 TextFormField(
-                  controller: textVersion,
+                  controller: textVersionRetiro,
                   decoration: InputDecoration(
                       //icon: Icon(Icons.plus_one),
                       labelText: 'Versión',
@@ -462,7 +478,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                           borderRadius: BorderRadius.circular(32.0))),
                   onChanged: (newValue) {
                     setState(() {
-                      //bloc.changeVersion(newValue);
+                      bloc.changeVersionRetiro(newValue);
                     });
                   },
                   keyboardType: TextInputType.numberWithOptions(),
@@ -500,7 +516,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                         value: switchBateriaRetiro,
                         onChanged: (value) {
                           setState(() {
-                            //bloc.changeBateria(value);
+                            bloc.changeBateriaRetiro(value);
                             switchBateriaRetiro = value;
                           });
                         },
@@ -513,7 +529,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                         value: switchEliminadorRetiro,
                         onChanged: (value) {
                           setState(() {
-                            //bloc.changeEliminador(value);
+                            bloc.changeEliminadorRetiro(value);
                             switchEliminadorRetiro = value;
                           });
                         },
@@ -528,7 +544,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                         value: switchTapaRetiro,
                         onChanged: (value) {
                           setState(() {
-                            //bloc.changeTapa(value);
+                            bloc.changeTapaRetiro(value);
                             switchTapaRetiro = value;
                           });
                         },
@@ -541,7 +557,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                         value: switchCableacRetiro,
                         onChanged: (value) {
                           setState(() {
-                            //bloc.changeCableAc(value);
+                            bloc.changeCableAcRetiro(value);
                             switchCableacRetiro = value;
                           });
                         },
@@ -556,7 +572,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                         value: switchBaseRetiro,
                         onChanged: (value) {
                           setState(() {
-                            //bloc.changeBase(value);
+                            bloc.changeBaseRetiro(value);
                             switchBaseRetiro = value;
                           });
                         },
@@ -602,7 +618,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                         value: switchNotificado,
                         onChanged: (value) {
                           setState(() {
-                            //bloc.changeBateria(value);
+                            bloc.changeNotificado(value);
                             switchNotificado = value;
                           });
                         },
@@ -615,7 +631,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                         value: switchPromociones,
                         onChanged: (value) {
                           setState(() {
-                            //bloc.changeEliminador(value);
+                            bloc.changePromociones(value);
                             switchPromociones = value;
                           });
                         },
@@ -628,7 +644,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                         value: switchDescargar,
                         onChanged: (value) {
                           setState(() {
-                            //bloc.changeEliminador(value);
+                            bloc.changeDescargarApp(value);
                             switchDescargar = value;
                           });
                         },
@@ -650,7 +666,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                           borderRadius: BorderRadius.circular(32.0))),
                   onChanged: (newValue) {
                     setState(() {
-                      //bloc.changeVersion(newValue);
+                      bloc.changeTelefono1(newValue);
                     });
                   },
                   keyboardType: TextInputType.phone,
@@ -669,7 +685,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                           borderRadius: BorderRadius.circular(32.0))),
                   onChanged: (newValue) {
                     setState(() {
-                      //bloc.changeVersion(newValue);
+                      bloc.changeTelefono2(newValue);
                     });
                   },
                   keyboardType: TextInputType.phone,
@@ -730,7 +746,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                           borderRadius: BorderRadius.circular(32.0))),
                   onChanged: (value) {
                     setState(() {
-                      //bloc.changeFechaCierre(value);
+                      bloc.changeFechaCierre(value);
                     });
                   },
                 ),
@@ -748,7 +764,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                           borderRadius: BorderRadius.circular(32.0))),
                   onChanged: (value) {
                     setState(() {
-                      //bloc.changeAtiende(value);
+                      bloc.changeAtiende(value);
                     });
                   },
                   keyboardType: TextInputType.text,
@@ -767,7 +783,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                           borderRadius: BorderRadius.circular(32.0))),
                   onChanged: (value) {
                     setState(() {
-                      //bloc.changeOtorgante(value);
+                      bloc.changeOtorgante(value);
                     });
                   },
                   keyboardType: TextInputType.text,
@@ -794,7 +810,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                           borderRadius: BorderRadius.circular(32.0))),
                   onChanged: (value) {
                     setState(() {
-                      //bloc.changeRollos(int.parse(value));
+                      bloc.changeRollos(int.parse(value));
                     });
                   },
                   keyboardType: TextInputType.number,
@@ -814,7 +830,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                       groupValue: radiodiscover,
                       onChanged: (value) {
                         setState(() {
-                          //bloc.changeDiscover(value);
+                          bloc.changeDiscover(value);
                           radiodiscover = value;
                         });
                       },
@@ -828,7 +844,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                       groupValue: radiodiscover,
                       onChanged: (value) {
                         setState(() {
-                          //bloc.changeDiscover(value);
+                          bloc.changeDiscover(value);
                           radiodiscover = value;
                         });
                       },
@@ -852,7 +868,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                           borderRadius: BorderRadius.circular(32.0))),
                   onChanged: (value) {
                     setState(() {
-                      //bloc.changeCaja(int.parse(value));
+                      bloc.changeCaja(int.parse(value));
                     });
                   },
                   keyboardType: TextInputType.number,
@@ -883,7 +899,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                           borderRadius: BorderRadius.circular(32.0))),
                   onChanged: (value) {
                     setState(() {
-                      //bloc.changeComentarios(value);
+                      bloc.changeComentarios(value);
                     });
                   },
                   keyboardType: TextInputType.multiline,
@@ -1023,7 +1039,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
       value: valueNoSerie,
       onChanged: (newvalue) {
         setState(() {
-          //bloc.changeNoserie(newvalue);
+          bloc.changeNoserie(newvalue);
           valueNoSerie = newvalue;
         });
       },
@@ -1062,13 +1078,14 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
       value: valuesCausasRetiros,
       onChanged: (newValue) {
         setState(() {
+          bloc.changeCausas(newValue);
           valuesCausasRetiros = newValue;
         });
       },
       decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-          labelText: 'Conectividad'),
+          labelText: 'Causas'),
     );
   }
 
@@ -1129,7 +1146,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
       value: valueConectividad,
       onChanged: (newvalue) {
         setState(() {
-          //bloc.changeConectividad(newvalue);
+          bloc.changeConectividad(newvalue);
           valueConectividad = newvalue;
         });
       },
@@ -1171,7 +1188,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
       value: valueAplicativo,
       onChanged: (newvalue) {
         setState(() {
-          //bloc.changeAplicativo(newvalue);
+          bloc.changeAplicativo(newvalue);
           valueAplicativo = newvalue;
         });
       },
@@ -1207,7 +1224,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
       value: valueTipoAtencion,
       onChanged: (newValue) {
         setState(() {
-          //bloc.changeTipoAtencion(newValue);
+          bloc.changeTipoAtencion(newValue);
           valueTipoAtencion = newValue;
         });
       },
@@ -1277,7 +1294,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
       value: valuesMarcaRetiros,
       onChanged: (newvalue) {
         setState(() {
-          //bloc.changeMarca(newvalue);
+          bloc.changeMarcaRetiro(newvalue);
           valuesMarcaRetiros = newvalue;
         });
       },
@@ -1295,7 +1312,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
       value: valuesModeloRetiros,
       onChanged: (newvalue) {
         setState(() {
-          //bloc.changeModelo(newvalue);
+          bloc.changeModeloRetiro(newvalue);
           valuesModeloRetiros = newvalue;
         });
       },
@@ -1313,7 +1330,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
       value: valuesAplicativoRetiros,
       onChanged: (newvalue) {
         setState(() {
-          //bloc.changeAplicativo(newvalue);
+          bloc.changeAplicativoRetiro(newvalue);
           valuesAplicativoRetiros = newvalue;
         });
       },
@@ -1331,7 +1348,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
       value: valuesConectividadRetiros,
       onChanged: (newvalue) {
         setState(() {
-          //bloc.changeConectividad(newvalue);
+          bloc.changeConectividadRetiro(newvalue);
           valuesConectividadRetiros = newvalue;
         });
       },
@@ -1361,5 +1378,24 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
     setState(() {
       currentStep = step;
     });
+  }
+
+  _crearProgressDialog() {
+  pr.style(
+      message: 'Enviando Datos',
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      progressWidget: CircularProgressIndicator(),
+      elevation: 10.0,
+      insetAnimCurve: Curves.easeInOut,
+      progressTextStyle: TextStyle(
+          color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
+      messageTextStyle: TextStyle(
+          color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600));
+  }
+
+  _enviarSustitucion(){
+    pr.show();
+
   }
 }

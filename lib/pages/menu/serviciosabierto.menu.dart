@@ -54,7 +54,7 @@ class _ServiciosAbiertosPageState extends State<ServiciosAbiertosPage> {
   void _onDaySelected(DateTime day, List events) {
     print('CALLBACK: day_ '+ day.day.toString());
     setState(() {
-      odtbloc.selectAllOdtsbyDate(day.day, day.month, day.year,4);
+      odtbloc.selectAllOdtsbyDate(day.day, day.month, day.year,[3,4,5]);
       _buildOdts();
     });
   }
