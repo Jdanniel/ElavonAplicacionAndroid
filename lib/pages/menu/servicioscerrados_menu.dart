@@ -60,7 +60,7 @@ class _ServiciosCerradosPageState extends State<ServiciosCerradosPage>
     odt = Provider.odtsBloc(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Pruebas"),
+        title: Text("Cerrados"),
       ),
       backgroundColor: Colors.blueAccent,
       body: Column(

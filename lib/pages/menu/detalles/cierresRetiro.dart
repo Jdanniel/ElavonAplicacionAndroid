@@ -16,7 +16,6 @@ class CierresRetiro extends StatefulWidget {
 }
 
 class _CierresRetiroState extends State<CierresRetiro> {
-  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   final GlobalKey<FormState> _formKey0 = new GlobalKey<FormState>();
   final GlobalKey<FormState> _formKey1 = new GlobalKey<FormState>();
@@ -61,7 +60,6 @@ class _CierresRetiroState extends State<CierresRetiro> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     initDropDownButtonAplicativo();
     initDropDownButtonConectividad();

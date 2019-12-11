@@ -94,7 +94,6 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     initDropDownButtonSeries();
     initDropDownButtonConectividad();

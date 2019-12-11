@@ -14,8 +14,9 @@ class DetalleOdtPage extends StatefulWidget {
 class _DetalleOdtPageState extends State<DetalleOdtPage> {
   final TomarFoto _tomarFoto = new TomarFoto();
   final DetalleInit _init = new DetalleInit();
+
   final AgregarComentario _comentario = new AgregarComentario();
-  
+
   OdtsBloc odtBloc;
   Odtmodel odt = new Odtmodel();
 
@@ -30,8 +31,8 @@ class _DetalleOdtPageState extends State<DetalleOdtPage> {
 
     if (odtData != null) {
       odt = odtData;
-    }    
-    
+    }
+
     return Scaffold(
         backgroundColor: Colors.blueAccent,
         body: _showPage,
@@ -45,6 +46,7 @@ class _DetalleOdtPageState extends State<DetalleOdtPage> {
               Icons.list,
               size: 30,
             ),
+            /*
             Icon(
               Icons.location_searching,
               size: 30,
@@ -57,14 +59,19 @@ class _DetalleOdtPageState extends State<DetalleOdtPage> {
               Icons.build,
               size: 30,
             ),
-            Icon(
-              Icons.add_a_photo,
-              size: 30,
-            ),
-            Icon(
-              Icons.edit,
-              size: 30,
-            )
+            */
+            odt.idStatusAr != 6 && odt.idStatusAr != 7 && odt.idStatusAr != 8
+                ? Icon(
+                    Icons.add_a_photo,
+                    size: 30,
+                  )
+                : Container(),
+            odt.idStatusAr != 6 && odt.idStatusAr != 7 && odt.idStatusAr != 8
+                ? Icon(
+                    Icons.edit,
+                    size: 30,
+                  )
+                : Container()
           ],
           onTap: (index) {
             setState(() {
@@ -79,10 +86,10 @@ class _DetalleOdtPageState extends State<DetalleOdtPage> {
       case 0:
         return _init;
         break;
-      case 4:
+      case 1:
         return _tomarFoto;
         break;
-      case 5:
+      case 2:
         return _comentario;
         break;
       default:

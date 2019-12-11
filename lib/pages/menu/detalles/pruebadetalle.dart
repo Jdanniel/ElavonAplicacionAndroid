@@ -23,7 +23,7 @@ class PruebaDetalle extends StatelessWidget {
                       icon: Icon(Icons.add_circle_outline),
                       label: Text("Cambiar Odt"),
                       onPressed: () {
-                        bloc.updateOdt(model.idAr, 'NuevaPrueba');
+                        //bloc.updateOdt(model.idAr, 'NuevaPrueba');
                       },
                     )
                   ],

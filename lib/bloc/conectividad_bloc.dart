@@ -34,9 +34,11 @@ class ConectividadBloc {
     _allConectividadController.sink.add(conectividad);
   }
 
-  Future<List<ConectividadModel>> getConectividadHttp() async{
-    var conectividad = await catalogosProvider.getConectividades();
-    return conectividad;
+  Future getConectividadHttp() async{
+    var conectividades = await catalogosProvider.getConectividades();
+    for(var conectividad in conectividades){
+      await insertConectividad(conectividad);
+    }
   }
 
   dispose(){

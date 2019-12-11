@@ -41,7 +41,6 @@ class _CierresState extends State<Cierres> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     initDropDownButtonSeries();

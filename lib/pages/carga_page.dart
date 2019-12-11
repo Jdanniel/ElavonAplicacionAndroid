@@ -1,20 +1,31 @@
-import 'package:elavonappmovil/provider/catalogo_provider.dart';
-import 'package:elavonappmovil/provider/db_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:date_format/date_format.dart';
 import 'package:elavonappmovil/bloc/provider.dart';
 import 'package:elavonappmovil/models/updates_model.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
-class CargaPage extends StatelessWidget {
+class CargaPage extends StatefulWidget {
   const CargaPage({Key key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  _CargaPageState createState() => _CargaPageState();
+}
 
+class _CargaPageState extends State<CargaPage> {
+  ProgressDialog pr;
+  double progreso = 0.0;
+
+  @override
+  Widget build(BuildContext context) {
+    pr = new ProgressDialog(context,
+        type: ProgressDialogType.Download,
+        isDismissible: false,
+        showLogs: false);
+    _crearProgressDialog();
     valActualizarOdts(context);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.blueAccent,
       body: SafeArea(
         child: Container(
           child: Center(
@@ -22,7 +33,7 @@ class CargaPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 CircularProgressIndicator(),
-                Text('Actualizando...') 
+                Text('Actualizando...')
               ],
             ),
           ),
@@ -31,82 +42,101 @@ class CargaPage extends StatelessWidget {
     );
   }
 
-  void valActualizarOdts(context)async{
+  void valActualizarOdts(context) async {
     final updateBloc = Provider.updatesBloc(context);
     final update = await updateBloc.selectUpdate();
-   
-    if(update == null){
+
+    if (update == null) {
       cargarCatalogos(context);
-    }else{
+    } else {
       final odtBloc = Provider.odtsBloc(context);
       await odtBloc.getNuevasOdts(update.fecha);
       Navigator.pushReplacementNamed(context, 'home');
     }
   }
 
-  void cargarCatalogos(BuildContext context) async{
-        
-    CatalogoProvider catalogo = new CatalogoProvider();
-    final dn = formatDate(DateTime.now(), [dd, '/', mm, '/', yyyy, ' ', HH, ':', nn]);
+  _crearProgressDialog() {
+    pr.style(
+        message: 'Actualizando...',
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        progressWidget: CircularProgressIndicator(),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progress: progreso,
+        maxProgress: 100.0,
+        progressTextStyle: TextStyle(
+            color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
+        messageTextStyle: TextStyle(
+            color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600));
+  }
+
+  _incremetarProgress(double i) {
+    pr.update(
+      progress: i,
+      message: "Actualizando...",
+      progressWidget: Container(
+          padding: EdgeInsets.all(8.0), child: CircularProgressIndicator()),
+      maxProgress: 100.0,
+      progressTextStyle: TextStyle(
+          color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
+      messageTextStyle: TextStyle(
+          color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600),
+    );
+  }
+
+  void cargarCatalogos(BuildContext context) async {
+    pr.show();
+
+    final dn =
+        formatDate(DateTime.now(), [dd, '/', mm, '/', yyyy, ' ', HH, ':', nn]);
     final updatesBloc = Provider.updatesBloc(context);
 
     final serviciosBloc = Provider.serviciosBloc(context);
-    final serviciosList = await serviciosBloc.getServiciosHttp();   
-    for(var servicio in serviciosList){
-      await serviciosBloc.insertServicios(servicio);
-    }
-
+    await serviciosBloc.getServiciosHttp();
+    progreso+=10.0;
+    _incremetarProgress(progreso);
+    final fallaBloc = Provider.fallasBloc(context);
+    await fallaBloc.getFallasHttp();
+    progreso+=10.0;
+    _incremetarProgress(progreso);
     final modeloBloc = Provider.modelosBloc(context);
-    final modeloList = await modeloBloc.getModelosHttp();
-    for(var modelo in modeloList){
-      await modeloBloc.insertModel(modelo);
-    }
-
+    await modeloBloc.getModelosHttp();
+    progreso+=10.0;
+    _incremetarProgress(progreso);
     final marcaBloc = Provider.marcasBloc(context);
-    final marcasList = await marcaBloc.getMarcasHttp();
-    for(var marca in marcasList){
-      await marcaBloc.insertMarcas(marca);
-    }     
-
+    await marcaBloc.getMarcasHttp();
+    progreso+=10.0;
+    _incremetarProgress(progreso);
     final conectividadBloc = Provider.conectividadBloc(context);
-    final conectividadList = await conectividadBloc.getConectividadHttp();
-    for(var conectividad in conectividadList){
-      await conectividadBloc.insertConectividad(conectividad);
-    }      
-
+    await conectividadBloc.getConectividadHttp();
+    progreso+=10.0;
+    _incremetarProgress(progreso);
     final softwareBloc = Provider.softwareBloc(context);
-    final softwareList = await softwareBloc.getSoftwareHttp();
-    for(var software in softwareList){
-      await softwareBloc.insertSoftware(software);
-    }
-
+    await softwareBloc.getSoftwareHttp();
+    progreso+=10.0;
+    _incremetarProgress(progreso);
     final unidadBloc = Provider.unidadesBloc(context);
-    final unidadList = await unidadBloc.getUnidadesHttp();
-    for(var unidad in unidadList){
-      await unidadBloc.insertUnidad(unidad);
-    }    
-
+    await unidadBloc.getUnidadesHttp();
+    progreso+=10.0;
+    _incremetarProgress(progreso);
     final odtBloc = Provider.odtsBloc(context);
-    final odtList = await odtBloc.getAllOdtsHttp();
-    for(var odt in odtList){
-      await odtBloc.insertarOdts(odt);
-    }
-
+    await odtBloc.getAllOdtsHttp();
+    progreso+=10.0;
+    _incremetarProgress(progreso);
     final causasBloc = Provider.causasBloc(context);
-    final causasList = await causasBloc.getAllCausasHttp();
-    for(var causa in causasList){
-      await causasBloc.ingresarCausa(causa);
-    }
-
-    final movsList = await catalogo.getMovInventarioSF();
-    for(var mov in movsList){
-      await DBProvider.db.nuevoMovInv(mov);
-    }
-
+    await causasBloc.getAllCausasHttp();
+    progreso+=10.0;
+    _incremetarProgress(progreso);
+    final movimientoBloc = Provider.movimientosInventarioBloc(context);
+    await movimientoBloc.getAllMovimientosInventarioHttp();
+    progreso+=10.0;
+    _incremetarProgress(progreso);   
     final up = new UpdatesModel();
     up.fecha = dn;
     await updatesBloc.insertUpdates(up);
-
-    Navigator.pushReplacementNamed(context, 'home');
+    pr.hide().whenComplete(() {
+      Navigator.pushReplacementNamed(context, 'home');
+    });
   }
 }

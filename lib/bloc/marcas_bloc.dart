@@ -33,9 +33,11 @@ class MarcasBloc {
     _allMarcaController.sink.add(marcas);
   }
 
-  Future<List<MarcasModel>> getMarcasHttp() async {
+  Future getMarcasHttp() async {
     final marcas = await catalogosProvider.getMarcas();
-    return marcas;
+    for(var marca in marcas){
+      await insertMarcas(marca);
+    }
   }
 
   dispose(){

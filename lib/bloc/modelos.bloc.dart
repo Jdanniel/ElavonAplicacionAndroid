@@ -32,9 +32,11 @@ class ModelosBloc {
     _allModeloController.sink.add(modelo);
   }
 
-  Future<List<CmodelosModel>> getModelosHttp() async{
+  Future getModelosHttp() async{
     final modelos = await catalogosProvider.getModelos();
-    return modelos;
+    for(var modelo in modelos){
+      await insertModel(modelo);
+    }
   }
 
   dispose(){

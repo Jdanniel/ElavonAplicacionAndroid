@@ -34,9 +34,11 @@ class UnidadesBloc {
     _allunidadesController.sink.add(unidades);
   }
 
-  Future<List<UnidadesModel>> getUnidadesHttp() async {
+  Future getUnidadesHttp() async {
     final unidades = await catalogosProvider.getUnidades();
-    return unidades;
+    for(var unidad in unidades){
+      await insertUnidad(unidad);
+    }
   }
 
   dispose(){

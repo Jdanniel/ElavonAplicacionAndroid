@@ -66,7 +66,6 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     initDropDownButtonSeries();
     initDropDownButtonConectividad();

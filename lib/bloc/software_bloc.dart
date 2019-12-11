@@ -34,9 +34,11 @@ class SoftwareBloc {
     _allSoftwareController.sink.add(software);
   }
 
-  Future<List<Softwaremodel>> getSoftwareHttp() async {
-    final software = await catalogosProvider.getSoftwares();
-    return software;
+  Future getSoftwareHttp() async {
+    final softwares = await catalogosProvider.getSoftwares();
+    for(var software in softwares){
+      await insertSoftware(software);
+    }
   }
 
   dispose(){

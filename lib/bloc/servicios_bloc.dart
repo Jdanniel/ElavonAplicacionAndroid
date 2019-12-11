@@ -35,9 +35,12 @@ class ServiciosBloc {
   }
 
   //Seleccionar Servicios via Http
-  Future<List<ServiciosModel>> getServiciosHttp() async{
+  Future getServiciosHttp() async{
     final servicios = await catalogosProvider.getServicios();
-    return servicios;
+
+    for(var servicio in servicios){
+      await insertServicios(servicio);
+    }
   }
 
   dispose(){

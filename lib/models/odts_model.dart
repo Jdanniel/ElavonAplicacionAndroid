@@ -29,6 +29,7 @@ class Odtmodel {
     int idStatusAr;
     int idServicio;
     int idFalla;
+    String estatusAr;
 
     Odtmodel({
         this.odt = '',
@@ -50,7 +51,8 @@ class Odtmodel {
         this.numbers = 0,
         this.idStatusAr = 0,
         this.idServicio = 0,
-        this.idFalla = 0
+        this.idFalla = 0,
+        this.estatusAr = ''
     });
 
     factory Odtmodel.fromJson(Map<String, dynamic> json) => Odtmodel(
@@ -73,7 +75,8 @@ class Odtmodel {
         numbers: json["NUMBER"],
         idStatusAr: json["ID_STATUS_AR"],
         idServicio: json["ID_SERVICIO"],
-        idFalla: json["ID_FALLA"]
+        idFalla: json["ID_FALLA"],
+        estatusAr: json["DESC_STATUS_AR"]
     );
 
     Map<String, dynamic> toJson() => {
@@ -96,6 +99,7 @@ class Odtmodel {
         "NUMBER": numbers,
         "ID_STATUS_AR": idStatusAr,
         "ID_SERVICIO": idServicio,
-        "ID_FALLA": idFalla
+        "ID_FALLA": idFalla,
+        "DESC_STATUS_AR" : estatusAr
     };
 }

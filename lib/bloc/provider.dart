@@ -1,3 +1,4 @@
+import 'package:elavonappmovil/bloc/movimientosInventario_bloc.dart';
 import 'package:flutter/material.dart';
 
 import 'login_bloc.dart';
@@ -39,6 +40,9 @@ export 'package:elavonappmovil/bloc/causas_bloc.dart';
 import 'package:elavonappmovil/bloc/cierreSustitucion_bloc.dart';
 export 'package:elavonappmovil/bloc/cierreSustitucion_bloc.dart';
 
+import 'package:elavonappmovil/bloc/fallas_bloc.dart';
+export 'package:elavonappmovil/bloc/fallas_bloc.dart';
+
 import 'package:elavonappmovil/bloc/updates_bloc.dart';
 
 class Provider extends InheritedWidget{
@@ -50,6 +54,8 @@ class Provider extends InheritedWidget{
   final _odtsBloc = new OdtsBloc();
 
   final _serviciosBloc = new ServiciosBloc();
+
+  final _fallasBloc = new FallasBloc();
 
   final _modelosBloc = new ModelosBloc();
 
@@ -70,6 +76,8 @@ class Provider extends InheritedWidget{
   final _cierresSustitucionBloc = new CierresSustitucionBloc();
 
   final _causasBloc = new CausasBloc();
+
+  final _movInventarioBloc = new MovimientosInventarioBloc();
 
   static Provider _instancia;
 
@@ -100,6 +108,10 @@ class Provider extends InheritedWidget{
 
   static ServiciosBloc serviciosBloc(BuildContext context){
     return (context.inheritFromWidgetOfExactType(Provider) as Provider)._serviciosBloc;
+  }
+
+  static FallasBloc fallasBloc(BuildContext context){
+    return (context.inheritFromWidgetOfExactType(Provider) as Provider)._fallasBloc;
   }
 
   static ModelosBloc modelosBloc(BuildContext context){
@@ -140,5 +152,9 @@ class Provider extends InheritedWidget{
 
   static CausasBloc causasBloc(BuildContext context){
     return(context.inheritFromWidgetOfExactType(Provider) as Provider)._causasBloc;
+  }
+
+  static MovimientosInventarioBloc movimientosInventarioBloc(BuildContext context){
+    return(context.inheritFromWidgetOfExactType(Provider) as Provider)._movInventarioBloc;
   }
 }

@@ -7,9 +7,8 @@ class CausasBloc{
 
   final _catalogoProvider = new CatalogoProvider();
 
-  Future<int> ingresarCausa(CCausasModel model) async {
-    final res = await DBProvider.db.nuevaCausa(model);
-    return res;
+  Future ingresarCausa(CCausasModel model) async {
+    await DBProvider.db.nuevaCausa(model);
   }
 
   Future<CCausasModel> getCausa(int idcausa) async{
@@ -22,9 +21,11 @@ class CausasBloc{
     return res;
   }
 
-  Future<List<CCausasModel>> getAllCausasHttp()async{
-    final res = await _catalogoProvider.getCausas();
-    return res;
+  Future getAllCausasHttp()async{
+    final causas = await _catalogoProvider.getCausas();
+    for(var causa in causas){
+      await ingresarCausa(causa);
+    }
   }
 
 }

@@ -28,6 +28,7 @@ class _DetalleInitState extends State<DetalleInit> {
   @override
   Widget build(BuildContext context) {
     odtBloc = Provider.odtsBloc(context);
+
     final Odtmodel odtData = ModalRoute.of(context).settings.arguments;
     final double _height = MediaQuery.of(context).size.height;
 
@@ -56,35 +57,43 @@ class _DetalleInitState extends State<DetalleInit> {
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          FloatingActionButton.extended(
-            heroTag: UniqueKey(),
-            backgroundColor: Colors.lightBlueAccent,
-            label: Icon(Icons.location_on),
-            onPressed: () => _coordenadas(),
-          ),
+          odt.idStatusAr != 6 && odt.idStatusAr != 7 && odt.idStatusAr != 8
+              ? FloatingActionButton.extended(
+                  heroTag: UniqueKey(),
+                  backgroundColor: Colors.lightBlueAccent,
+                  label: Icon(Icons.location_on),
+                  onPressed: () => _coordenadas(),
+                )
+              : Container(),
           SizedBox(width: 5.0),
-          FloatingActionButton.extended(
-            heroTag: UniqueKey(),
-            backgroundColor: Colors.lightBlueAccent,
-            label: Icon(Icons.update),
-            onPressed: () => _updateStatusAr(odt),
-          ),
+          odt.idStatusAr != 6 && odt.idStatusAr != 7 && odt.idStatusAr != 8
+              ? FloatingActionButton.extended(
+                  heroTag: UniqueKey(),
+                  backgroundColor: Colors.lightBlueAccent,
+                  label: Icon(Icons.update),
+                  onPressed: () => _updateStatusAr(odt),
+                )
+              : Container(),
           SizedBox(
             width: 5.0,
           ),
-          FloatingActionButton.extended(
-            heroTag: UniqueKey(),
-            backgroundColor: Colors.lightBlueAccent,
-            label: Icon(Icons.map),
-            onPressed: () => _openGoogleMaps(odt),
-          ),
+          odt.idStatusAr != 6 && odt.idStatusAr != 7 && odt.idStatusAr != 8
+              ? FloatingActionButton.extended(
+                  heroTag: UniqueKey(),
+                  backgroundColor: Colors.lightBlueAccent,
+                  label: Icon(Icons.map),
+                  onPressed: () => _openGoogleMaps(odt),
+                )
+              : Container(),
           SizedBox(width: 5.0),
-          FloatingActionButton.extended(
-            //heroTag: UniqueKey(),
-            backgroundColor: Colors.lightBlueAccent,
-            label: Icon(Icons.check),
-            onPressed: () => _openCierres(odt),
-          )
+          odt.idStatusAr != 6 && odt.idStatusAr != 7 && odt.idStatusAr != 8
+              ? FloatingActionButton.extended(
+                  //heroTag: UniqueKey(),
+                  backgroundColor: Colors.lightBlueAccent,
+                  label: Icon(Icons.check),
+                  onPressed: () => _openCierres(odt),
+                )
+              : Container()
         ],
       ),
     );
@@ -134,7 +143,7 @@ class _DetalleInitState extends State<DetalleInit> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Text(
-              'Servicio',
+              '${odt.idServicio} - ${odt.idFalla}',
               style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: _height * 0.05),
@@ -187,9 +196,12 @@ class _DetalleInitState extends State<DetalleInit> {
                   odt.poblacion.trimRight() +
                   ',' +
                   odt.estado.trimRight()),
-          _crearTableRow('Latitud:', odt.latitud == null ? lat.toString() : odt.latitud.toString()),
-          _crearTableRow('Longitud:', odt.longitud == null ? lon.toString() : odt.longitud.toString()),
-          _crearTableRow('Fecha Garantía:', odt.fecGarantia.trimRight())
+          _crearTableRow('Latitud:',
+              odt.latitud == null ? lat.toString() : odt.latitud.toString()),
+          _crearTableRow('Longitud:',
+              odt.longitud == null ? lon.toString() : odt.longitud.toString()),
+          _crearTableRow('Fecha Garantía:', odt.fecGarantia.trimRight()),
+          _crearTableRow('Estatus:', odt.estatusAr.trimRight())
         ]);
   }
 
@@ -200,7 +212,10 @@ class _DetalleInitState extends State<DetalleInit> {
         style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500),
         textAlign: TextAlign.right,
       ),
-      Container(child: Text(contenido), padding: EdgeInsets.only(left: 5.0),)
+      Container(
+        child: Text(contenido),
+        padding: EdgeInsets.only(left: 5.0),
+      )
     ]);
   }
 
@@ -255,16 +270,20 @@ class _DetalleInitState extends State<DetalleInit> {
 
   void _updateStatusAr(Odtmodel model) async {
     int idstatusarp = 0;
+    String descStatus = '';
     String msg = "";
     switch (model.idStatusAr) {
       case 3:
         idstatusarp = 13;
+        descStatus = 'Asignacion Confirmada';
         break;
       case 4:
         idstatusarp = 5;
+        descStatus = 'En Sitio';
         break;
       case 6:
         idstatusarp = 7;
+        descStatus = 'Rechazado';
         break;
       default:
     }
@@ -281,6 +300,10 @@ class _DetalleInitState extends State<DetalleInit> {
     )));
     int isupdate = await odtBloc.updateStatusAr(
         model.idAr, model.idStatusAr, idstatusarp, model.idAr);
+    odtBloc.updateOdt(model.idAr, idstatusarp, descStatus);
+    setState(() {
+      odt.estatusAr = descStatus;
+    });
     // isupdate == 1
     //     ? mostrarAlertDatosActualizado(
     //         context, 'El estatus de la Odt se ha actualizado')

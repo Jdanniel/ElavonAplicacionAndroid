@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:elavonappmovil/data/database_ars.dart';
 import 'package:elavonappmovil/data/database_causas.dart';
 import 'package:elavonappmovil/data/database_conectividades.dart';
+import 'package:elavonappmovil/data/database_fallas.dart';
 import 'package:elavonappmovil/data/database_marcas.dart';
 import 'package:elavonappmovil/data/database_modelos.dart';
 import 'package:elavonappmovil/data/database_movimientoinventarioServicioFalla.dart';
@@ -11,6 +12,7 @@ import 'package:elavonappmovil/data/database_unidades.dart';
 import 'package:elavonappmovil/models/ccausas_model.dart';
 import 'package:elavonappmovil/models/cmodelos_model.dart';
 import 'package:elavonappmovil/models/conectividad_model.dart';
+import 'package:elavonappmovil/models/fallas_model.dart';
 import 'package:elavonappmovil/models/marcas_model.dart';
 import 'package:elavonappmovil/models/movimientoInventarioServicioFalla_model.dart';
 import 'package:elavonappmovil/models/odts_model.dart';
@@ -23,10 +25,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-
 class DBProvider {
-
-
   static Database _database;
   static final DBProvider db = DBProvider._();
 
@@ -44,7 +43,7 @@ class DBProvider {
   Future<Database> get database async {
     final path = await getPath();
 
-    if(_database != null){
+    if (_database != null) {
       return _database;
     }
 
@@ -52,7 +51,7 @@ class DBProvider {
     return _database;
   }
 
-  Future<String> getPath() async{
+  Future<String> getPath() async {
     Directory documentDirectory = await getApplicationDocumentsDirectory();
     final path = join(documentDirectory.path, 'ElavonDB.db');
     return path;
@@ -63,119 +62,129 @@ class DBProvider {
     await deleteDatabase(path);
   }
 
-  initDB(String path) async{
+  initDB(String path) async {
     //await deleteDatabase(path);
-    final String queryServicios = 'CREATE TABLE $tableservicios ( idservicio INTEGER NOT NULL, descservicio TEXT)';
-    final String queryModelos = 'CREATE TABLE ${CModelos.table} ( ${CModelos.columnID} INTEGER NOT NULL, ${CModelos.columnDESCMODELO} TEXT)';
-    final String queryMarcas = 'CREATE TABLE ${CMarcas.table} ( ${CMarcas.columnID} INTEGER NOT NULL, ${CMarcas.columnDESCMARCA} TEXT)';
-    final String queryConectividad = 'CREATE TABLE ${CConectividades.table} ( ${CConectividades.columnID} INTEGER NOT NULL, ${CConectividades.columnDESCCONECTIVIDAD} TEXT)';
-    final String querySoftware = 'CREATE TABLE ${CSoftware.table} ( ${CSoftware.columnID} INTEGER NOT NULL, ${CSoftware.columnDESCSOFTWARE} TEXT)';
-    final String queryUnidades = 'CREATE TABLE ${Bdunidades.table} (${Bdunidades.columnID} INTEGER NOT NULL, ${Bdunidades.columnNOSERIE} TEXT, ${Bdunidades.columnIDMARCA} INTEGER, ${Bdunidades.columnIDMODELO} INTEGER, ${Bdunidades.columnIDCONECTIVIDAD} INTEGER, ${Bdunidades.columnIDAPLICATIVO} INTEGER)';
-    final String queryUpdates = 'CREATE TABLE $tableUpdates ( idupdates INTEGER PRIMARY KEY, fecha TEXT)';
-    final String queryArs = 'CREATE TABLE ${BdArs.table} (${BdArs.columnID} INTEGER NOT NULL, ${BdArs.columnNOAR} TEXT, ${BdArs.columnIDNEGOCIO} INTEGER, ${BdArs.columnIDTIPOSERVICIO} INTEGER, ${BdArs.columnDESCNEGOCIO} TEXT, ${BdArs.columnNOAFILIACION} TEXT, ${BdArs.columnESTADO} TEXT, ${BdArs.columnCOLONIA} TEXT, ${BdArs.columnPOBLACION} TEXT, ${BdArs.columnDIRECCION} TEXT, ${BdArs.columnFECGARANTIA} TEXT, ${BdArs.columnLATITUD} REAL, ${BdArs.columnLONGITUD} REAL, ${BdArs.columnDAYS} INTEGER, ${BdArs.columnMONTHS} INTEGER, ${BdArs.columnYEARS} INTEGER, ${BdArs.columnNUMBERS} INTEGER, ${BdArs.columnIDSTATUSAR} INTEGER, ${BdArs.columnIDSERVICIO} INTEGER, ${BdArs.columnIDFALLA} INTEGER)';
-    final String queryMovInventarioSF = 'CREATE TABLE ${CmovimientoInventarioServicioFalla.table} (${CmovimientoInventarioServicioFalla.columnID} INTEGER NOT NULL, ${CmovimientoInventarioServicioFalla.columnIDSERVICIO} INT, ${CmovimientoInventarioServicioFalla.columnIDFALLA} INT, ${CmovimientoInventarioServicioFalla.columnIDMOVINVENTARIO} INT, ${CmovimientoInventarioServicioFalla.columnSTATUS} TEXT)';
-    final String queryCcausas = 'CREATE TABLE ${Causas.table} (${Causas.columnId} INTEGER NOT NULL, ${Causas.columnDESCCAUSA} TEXT,${Causas.columnDESCRIPCION} TEXT)';
+    final String queryServicios =
+        'CREATE TABLE $tableservicios ( idservicio INTEGER NOT NULL, descservicio TEXT)';
+    final String queryFallas =
+        'CREATE TABLE ${Cfallas.table} (${Cfallas.columnIDFALLA} INTEGER NOT NULL, ${Cfallas.columnDESCFALLA} TEXT)';
+    final String queryModelos =
+        'CREATE TABLE ${CModelos.table} ( ${CModelos.columnID} INTEGER NOT NULL, ${CModelos.columnDESCMODELO} TEXT)';
+    final String queryMarcas =
+        'CREATE TABLE ${CMarcas.table} ( ${CMarcas.columnID} INTEGER NOT NULL, ${CMarcas.columnDESCMARCA} TEXT)';
+    final String queryConectividad =
+        'CREATE TABLE ${CConectividades.table} ( ${CConectividades.columnID} INTEGER NOT NULL, ${CConectividades.columnDESCCONECTIVIDAD} TEXT)';
+    final String querySoftware =
+        'CREATE TABLE ${CSoftware.table} ( ${CSoftware.columnID} INTEGER NOT NULL, ${CSoftware.columnDESCSOFTWARE} TEXT)';
+    final String queryUnidades =
+        'CREATE TABLE ${Bdunidades.table} (${Bdunidades.columnID} INTEGER NOT NULL, ${Bdunidades.columnNOSERIE} TEXT, ${Bdunidades.columnIDMARCA} INTEGER, ${Bdunidades.columnIDMODELO} INTEGER, ${Bdunidades.columnIDCONECTIVIDAD} INTEGER, ${Bdunidades.columnIDAPLICATIVO} INTEGER)';
+    final String queryUpdates =
+        'CREATE TABLE $tableUpdates ( idupdates INTEGER PRIMARY KEY, fecha TEXT)';
+    final String queryArs =
+        'CREATE TABLE ${BdArs.table} (${BdArs.columnID} INTEGER NOT NULL, ${BdArs.columnNOAR} TEXT, ${BdArs.columnIDNEGOCIO} INTEGER, ${BdArs.columnIDTIPOSERVICIO} INTEGER, ${BdArs.columnDESCNEGOCIO} TEXT, ${BdArs.columnNOAFILIACION} TEXT, ${BdArs.columnESTADO} TEXT, ${BdArs.columnCOLONIA} TEXT, ${BdArs.columnPOBLACION} TEXT, ${BdArs.columnDIRECCION} TEXT, ${BdArs.columnFECGARANTIA} TEXT, ${BdArs.columnLATITUD} REAL, ${BdArs.columnLONGITUD} REAL, ${BdArs.columnDAYS} INTEGER, ${BdArs.columnMONTHS} INTEGER, ${BdArs.columnYEARS} INTEGER, ${BdArs.columnNUMBERS} INTEGER, ${BdArs.columnIDSTATUSAR} INTEGER, ${BdArs.columnIDSERVICIO} INTEGER, ${BdArs.columnIDFALLA} INTEGER, ${BdArs.columnSTATUSAR} TEXT)';
+    final String queryMovInventarioSF =
+        'CREATE TABLE ${CmovimientoInventarioServicioFalla.table} (${CmovimientoInventarioServicioFalla.columnID} INTEGER NOT NULL, ${CmovimientoInventarioServicioFalla.columnIDSERVICIO} INT, ${CmovimientoInventarioServicioFalla.columnIDFALLA} INT, ${CmovimientoInventarioServicioFalla.columnIDMOVINVENTARIO} INT, ${CmovimientoInventarioServicioFalla.columnSTATUS} TEXT)';
+    final String queryCcausas =
+        'CREATE TABLE ${Causas.table} (${Causas.columnId} INTEGER NOT NULL, ${Causas.columnDESCCAUSA} TEXT,${Causas.columnDESCRIPCION} TEXT)';
 
     return await openDatabase(path,
-      version: 1,
-      readOnly: false,
-      onOpen: (db){},
-      onCreate: (Database db, int version) async {
-        await db.execute(queryServicios);
-        await db.execute(queryModelos);
-        await db.execute(queryMarcas);
-        await db.execute(queryConectividad);
-        await db.execute(querySoftware);
-        await db.execute(queryUnidades);
-        await db.execute(queryUpdates);
-        await db.execute(queryArs);
-        await db.execute(queryMovInventarioSF);
-        await db.execute(queryCcausas);
-        // await db.close();
-      }
-    );
+        version: 1,
+        readOnly: false,
+        onOpen: (db) {}, onCreate: (Database db, int version) async {
+      await db.execute(queryServicios);
+      await db.execute(queryFallas);
+      await db.execute(queryModelos);
+      await db.execute(queryMarcas);
+      await db.execute(queryConectividad);
+      await db.execute(querySoftware);
+      await db.execute(queryUnidades);
+      await db.execute(queryUpdates);
+      await db.execute(queryArs);
+      await db.execute(queryMovInventarioSF);
+      await db.execute(queryCcausas);
+      // await db.close();
+    });
   }
 
   //INSERTAR
 
-  nuevoServicio(ServiciosModel nuevoServicio) async{
+  nuevoServicio(ServiciosModel nuevoServicio) async {
     final db = await database;
 
     final res = await db.transaction((txn) async {
-      var query = "INSERT INTO $tableservicios(idservicio,descservicio) VALUES (${nuevoServicio.idServicio},'${nuevoServicio.descServicio}')";
+      var query =
+          "INSERT INTO $tableservicios(idservicio,descservicio) VALUES (${nuevoServicio.idServicio},'${nuevoServicio.descServicio}')";
       return await txn.rawInsert(query);
     });
     return res;
   }
 
-  nuevoModelo(CmodelosModel nuevoModelo) async{
+  nuevoFalla(FallasModel nuevoFalla) async {
+    final db = await database;
 
+    final res = await db.transaction((txn) async {
+      var query =
+          "INSERT INTO ${Cfallas.table}(${Cfallas.columnIDFALLA},${Cfallas.columnDESCFALLA}) VALUES (${nuevoFalla.idFalla}, '${nuevoFalla.descFalla}')";
+      return await txn.rawInsert(query);
+    });
+    return res;
+  }
+
+  nuevoModelo(CmodelosModel nuevoModelo) async {
     final db = await database;
 
     final res = await db.rawInsert(
-      "INSERT INTO ${CModelos.table}(${CModelos.columnID},${CModelos.columnDESCMODELO})" +
-      "VALUES (${nuevoModelo.idModelo},'${nuevoModelo.descModelo}')"
-    );
+        "INSERT INTO ${CModelos.table}(${CModelos.columnID},${CModelos.columnDESCMODELO})" +
+            "VALUES (${nuevoModelo.idModelo},'${nuevoModelo.descModelo}')");
     // await db.close();
     return res;
   }
 
-  nuevoMarcas(MarcasModel nuevoMarcas) async{
-
+  nuevoMarcas(MarcasModel nuevoMarcas) async {
     final db = await database;
 
     final res = await db.rawInsert(
-      "INSERT INTO ${CMarcas.table}(${CMarcas.columnID},${CMarcas.columnDESCMARCA})" +
-      "VALUES (${nuevoMarcas.idMarca},'${nuevoMarcas.descMarca}')"
-    );
+        "INSERT INTO ${CMarcas.table}(${CMarcas.columnID},${CMarcas.columnDESCMARCA})" +
+            "VALUES (${nuevoMarcas.idMarca},'${nuevoMarcas.descMarca}')");
     // await db.close();
     return res;
   }
 
-   nuevoConectividad(ConectividadModel nuevoConectividad) async{
-
+  nuevoConectividad(ConectividadModel nuevoConectividad) async {
     final db = await database;
 
     final res = await db.rawInsert(
-      "INSERT INTO ${CConectividades.table}(${CConectividades.columnID},${CConectividades.columnDESCCONECTIVIDAD})" +
-      "VALUES (${nuevoConectividad.idConectividad},'${nuevoConectividad.descConectividad}')"
-    );
+        "INSERT INTO ${CConectividades.table}(${CConectividades.columnID},${CConectividades.columnDESCCONECTIVIDAD})" +
+            "VALUES (${nuevoConectividad.idConectividad},'${nuevoConectividad.descConectividad}')");
     // await db.close();
     return res;
   }
 
-   nuevoSoftware(Softwaremodel nuevoSoftware) async{
-
+  nuevoSoftware(Softwaremodel nuevoSoftware) async {
     final db = await database;
 
     final res = await db.rawInsert(
-      "INSERT INTO ${CSoftware.table}(${CSoftware.columnID},${CSoftware.columnDESCSOFTWARE})" +
-      "VALUES (${nuevoSoftware.idSoftware},'${nuevoSoftware.descSoftware}')"
-    );
+        "INSERT INTO ${CSoftware.table}(${CSoftware.columnID},${CSoftware.columnDESCSOFTWARE})" +
+            "VALUES (${nuevoSoftware.idSoftware},'${nuevoSoftware.descSoftware}')");
     // await db.close();
     return res;
   }
 
-   nuevoUnidad(UnidadesModel nuevoUnidad) async{
-
+  nuevoUnidad(UnidadesModel nuevoUnidad) async {
     final db = await database;
 
     final res = await db.rawInsert(
-      "INSERT INTO ${Bdunidades.table}(${Bdunidades.columnID},${Bdunidades.columnNOSERIE},${Bdunidades.columnIDMARCA},${Bdunidades.columnIDMODELO},${Bdunidades.columnIDCONECTIVIDAD},${Bdunidades.columnIDAPLICATIVO})" +
-      "VALUES (${nuevoUnidad.idUnidad},'${nuevoUnidad.noSerie}',${nuevoUnidad.idMarca},${nuevoUnidad.idModelo},${nuevoUnidad.idConectividad},${nuevoUnidad.idAplicativo})"
-    );
+        "INSERT INTO ${Bdunidades.table}(${Bdunidades.columnID},${Bdunidades.columnNOSERIE},${Bdunidades.columnIDMARCA},${Bdunidades.columnIDMODELO},${Bdunidades.columnIDCONECTIVIDAD},${Bdunidades.columnIDAPLICATIVO})" +
+            "VALUES (${nuevoUnidad.idUnidad},'${nuevoUnidad.noSerie}',${nuevoUnidad.idMarca},${nuevoUnidad.idModelo},${nuevoUnidad.idConectividad},${nuevoUnidad.idAplicativo})");
     // await db.close();
     return res;
   }
 
-   nuevoUpdate(UpdatesModel model) async{
-
+  nuevoUpdate(UpdatesModel model) async {
     final db = await database;
 
     final res = await db.rawInsert(
-      "INSERT INTO $tableUpdates(fecha)" +
-      "VALUES ('${model.fecha}}')"
-    );
+        "INSERT INTO $tableUpdates(fecha)" + "VALUES ('${model.fecha}}')");
     // await db.close();
     return res;
   }
@@ -183,326 +192,363 @@ class DBProvider {
   nuevoArs(Odtmodel model) async {
     final db = await database;
 
-    final res = await db.rawInsert(
-      "INSERT INTO ${BdArs.table}( " 
-      "${BdArs.columnID}," 
-      "${BdArs.columnNOAR}," 
-      "${BdArs.columnIDNEGOCIO}," 
-      "${BdArs.columnIDTIPOSERVICIO}," 
-      "${BdArs.columnDESCNEGOCIO}," 
-      "${BdArs.columnNOAFILIACION}," 
-      "${BdArs.columnESTADO}," 
-      "${BdArs.columnCOLONIA}," 
-      "${BdArs.columnPOBLACION}," 
-      "${BdArs.columnDIRECCION}," 
-      "${BdArs.columnFECGARANTIA}," 
-      "${BdArs.columnLATITUD}," 
-      "${BdArs.columnLONGITUD}," 
-      "${BdArs.columnDAYS}," 
-      "${BdArs.columnMONTHS}," 
-      "${BdArs.columnYEARS}," 
-      "${BdArs.columnNUMBERS}," 
-      "${BdArs.columnIDSTATUSAR}," 
-      "${BdArs.columnIDSERVICIO}," 
-      "${BdArs.columnIDFALLA}" 
-      ") VALUES(" 
-      "${model.idAr},"
-      "'${model.odt}',"
-      "${model.idNegocio},"
-      "${model.idTipoServicio},"
-      "'${model.negocio}',"
-      "'${model.noAfiliacion}',"
-      "'${model.estado}',"
-      "'${model.colonia}',"
-      "'${model.poblacion}',"
-      "'${model.direccion}',"
-      "'${model.fecGarantia}',"
-      "${model.latitud},"
-      "${model.longitud},"
-      "${model.days},"
-      "${model.months},"
-      "${model.years},"
-      "${model.numbers},"
-      "${model.idStatusAr},"
-      "${model.idServicio},"
-      "${model.idFalla}"
-      ")"
-    );
+    final res = await db.rawInsert("INSERT INTO ${BdArs.table}( "
+        "${BdArs.columnID},"
+        "${BdArs.columnNOAR},"
+        "${BdArs.columnIDNEGOCIO},"
+        "${BdArs.columnIDTIPOSERVICIO},"
+        "${BdArs.columnDESCNEGOCIO},"
+        "${BdArs.columnNOAFILIACION},"
+        "${BdArs.columnESTADO},"
+        "${BdArs.columnCOLONIA},"
+        "${BdArs.columnPOBLACION},"
+        "${BdArs.columnDIRECCION},"
+        "${BdArs.columnFECGARANTIA},"
+        "${BdArs.columnLATITUD},"
+        "${BdArs.columnLONGITUD},"
+        "${BdArs.columnDAYS},"
+        "${BdArs.columnMONTHS},"
+        "${BdArs.columnYEARS},"
+        "${BdArs.columnNUMBERS},"
+        "${BdArs.columnIDSTATUSAR},"
+        "${BdArs.columnIDSERVICIO},"
+        "${BdArs.columnIDFALLA},"
+        "${BdArs.columnSTATUSAR}"
+        ") VALUES("
+        "${model.idAr},"
+        "'${model.odt}',"
+        "${model.idNegocio},"
+        "${model.idTipoServicio},"
+        "'${model.negocio}',"
+        "'${model.noAfiliacion}',"
+        "'${model.estado}',"
+        "'${model.colonia}',"
+        "'${model.poblacion}',"
+        "'${model.direccion}',"
+        "'${model.fecGarantia}',"
+        "${model.latitud},"
+        "${model.longitud},"
+        "${model.days},"
+        "${model.months},"
+        "${model.years},"
+        "${model.numbers},"
+        "${model.idStatusAr},"
+        "${model.idServicio},"
+        "${model.idFalla},"
+        "'${model.estatusAr}'"
+        ")");
     return res;
   }
 
   nuevoMovInv(MovimientoInventarioSF model) async {
     final db = await database;
-    final res = await db.rawInsert("INSERT INTO ${CmovimientoInventarioServicioFalla.table} "
-    "( "
-    "${CmovimientoInventarioServicioFalla.columnID}, "
-    "${CmovimientoInventarioServicioFalla.columnIDSERVICIO}, "
-    "${CmovimientoInventarioServicioFalla.columnIDFALLA}, "
-    "${CmovimientoInventarioServicioFalla.columnIDMOVINVENTARIO}, "
-    "${CmovimientoInventarioServicioFalla.columnSTATUS}"
-    ") VALUES ("
-    "${model.idValMovimientosInvServicioFalla}, "
-    "${model.idServicio}, "
-    "${model.idFalla}, "
-    "${model.idMovInventario}, "
-    "'${model.status}' )"
-    );
+    final res = await db
+        .rawInsert("INSERT INTO ${CmovimientoInventarioServicioFalla.table} "
+            "( "
+            "${CmovimientoInventarioServicioFalla.columnID}, "
+            "${CmovimientoInventarioServicioFalla.columnIDSERVICIO}, "
+            "${CmovimientoInventarioServicioFalla.columnIDFALLA}, "
+            "${CmovimientoInventarioServicioFalla.columnIDMOVINVENTARIO}, "
+            "${CmovimientoInventarioServicioFalla.columnSTATUS}"
+            ") VALUES ("
+            "${model.idValMovimientosInvServicioFalla}, "
+            "${model.idServicio}, "
+            "${model.idFalla}, "
+            "${model.idMovInventario}, "
+            "'${model.status}' )");
     return res;
   }
 
-  nuevaCausa(CCausasModel model)async{
+  nuevaCausa(CCausasModel model) async {
     final db = await database;
     final res = await db.rawInsert("INSERT INTO ${Causas.table} ("
-    "${Causas.columnId},"
-    "${Causas.columnDESCCAUSA},"
-    "${Causas.columnDESCRIPCION}"
-    ") VALUES ("
-    "${model.idCausa},"
-    "'${model.descCausa}',"
-    "'${model.descripcion}'"
-    ")"
-    );
+        "${Causas.columnId},"
+        "${Causas.columnDESCCAUSA},"
+        "${Causas.columnDESCRIPCION}"
+        ") VALUES ("
+        "${model.idCausa},"
+        "'${model.descCausa}',"
+        "'${model.descripcion}'"
+        ")");
     return res;
   }
 
   //Seleccionar por id
 
-  Future<ServiciosModel> getServicioId(int id) async{
+  Future<ServiciosModel> getServicioId(int id) async {
     final db = await database;
-    final res = await db.query(tableservicios, where: 'idservicio = ?', whereArgs: [id]);
+    final res = await db
+        .query(tableservicios, where: 'idservicio = ?', whereArgs: [id]);
     // await db.close();
     return res.isNotEmpty ? ServiciosModel.fromJson(res.first) : null;
   }
 
-  Future<CmodelosModel> getModeloId(int id) async{
+  Future<FallasModel> getFallaId(int id) async {
     final db = await database;
-    final res = await db.query(CModelos.table, where: '${CModelos.columnID} = ?', whereArgs: [id]);
+
+    final res = await db.transaction((txn) async {
+      return await txn.query(Cfallas.table,
+          where: '${Cfallas.columnIDFALLA} = ?', whereArgs: [id]);
+    });
+
+    return res.isNotEmpty ? FallasModel.fromJson(res.first) : null;
+  }
+
+  Future<CmodelosModel> getModeloId(int id) async {
+    final db = await database;
+    final res = await db.query(CModelos.table,
+        where: '${CModelos.columnID} = ?', whereArgs: [id]);
     // await db.close();
     return res.isNotEmpty ? CmodelosModel.fromJson(res.first) : null;
   }
 
-  Future<MarcasModel> getMarcasId(int id) async{
+  Future<MarcasModel> getMarcasId(int id) async {
     final db = await database;
 
-    final res = await db.query(CMarcas.table, where: '${CMarcas.columnID} = ?', whereArgs: [id]);
+    final res = await db.query(CMarcas.table,
+        where: '${CMarcas.columnID} = ?', whereArgs: [id]);
     // await db.close();
     return res.isNotEmpty ? MarcasModel.fromJson(res.first) : null;
   }
 
-  Future<ConectividadModel> getConectividadId(int id) async{
+  Future<ConectividadModel> getConectividadId(int id) async {
     final db = await database;
 
-    final res = await db.query(CConectividades.table, where: '${CConectividades.columnID} = ?', whereArgs: [id]);
+    final res = await db.query(CConectividades.table,
+        where: '${CConectividades.columnID} = ?', whereArgs: [id]);
     // await db.close();
     return res.isNotEmpty ? ConectividadModel.fromJson(res.first) : null;
   }
 
-  Future<Softwaremodel> getSoftwareId(int id) async{
+  Future<Softwaremodel> getSoftwareId(int id) async {
     final db = await database;
 
-    final res = await db.query(CSoftware.table, where: '${CSoftware.columnID} = ?', whereArgs: [id]);
+    final res = await db.query(CSoftware.table,
+        where: '${CSoftware.columnID} = ?', whereArgs: [id]);
     // await db.close();
     return res.isNotEmpty ? Softwaremodel.fromJson(res.first) : null;
   }
 
-  Future<UnidadesModel> getUnidadId(int id) async{
+  Future<UnidadesModel> getUnidadId(int id) async {
     final db = await database;
 
-    final res = await db.query(tableUnidades, where: 'idunidad = ?', whereArgs: [id]);
+    final res =
+        await db.query(tableUnidades, where: 'idunidad = ?', whereArgs: [id]);
     // await db.close();
     return res.isNotEmpty ? UnidadesModel.fromJson(res.first) : null;
-  }    
+  }
 
-  Future<Odtmodel> getOdtsId(int id) async{
+  Future<Odtmodel> getOdtsId(int id) async {
     final db = await database;
-    final res = await db.query(BdArs.table, where: '${BdArs.columnID} = ?', whereArgs: [id]);
+    final res = await db
+        .query(BdArs.table, where: '${BdArs.columnID} = ?', whereArgs: [id]);
     return res.isNotEmpty ? Odtmodel.fromJson(res.first) : null;
   }
 
-  Future<MovimientoInventarioSF> getMovInventarioSF(int idservicio, int idfalla) async {
+  Future<MovimientoInventarioSF> getMovInventarioSF(
+      int idservicio, int idfalla) async {
     final db = await database;
-    final res = await db.query(CmovimientoInventarioServicioFalla.table, where: '${CmovimientoInventarioServicioFalla.columnIDSERVICIO} = ? AND ${CmovimientoInventarioServicioFalla.columnIDFALLA} = ?', whereArgs: [idservicio,idfalla]);
+    final res = await db.query(CmovimientoInventarioServicioFalla.table,
+        where:
+            '${CmovimientoInventarioServicioFalla.columnIDSERVICIO} = ? AND ${CmovimientoInventarioServicioFalla.columnIDFALLA} = ?',
+        whereArgs: [idservicio, idfalla]);
     return res.isNotEmpty ? MovimientoInventarioSF.fromJson(res.first) : null;
   }
 
   Future<CCausasModel> getCausas(int idcausa) async {
     final db = await database;
-    final res = await db.query(Causas.table, where: '${Causas.columnId} = ?', whereArgs: [idcausa]);
+    final res = await db.query(Causas.table,
+        where: '${Causas.columnId} = ?', whereArgs: [idcausa]);
     return res.isNotEmpty ? CCausasModel.fromJson(res.first) : null;
   }
 
-  Future<UpdatesModel> getLastUpdate() async{
+  Future<UpdatesModel> getLastUpdate() async {
     final db = await database;
-    final res = await db.query('$tableUpdates',orderBy: 'idupdates DESC', limit: 1);
+    final res =
+        await db.query('$tableUpdates', orderBy: 'idupdates DESC', limit: 1);
     return res.isNotEmpty ? UpdatesModel.fromJson(res.first) : null;
   }
 
   //Seleccionar Todos
-  Future<List<ServiciosModel>> getAllServicio() async{
+  Future<List<ServiciosModel>> getAllServicio() async {
     final db = await database;
     final res = await db.query(tableservicios);
 
-    List<ServiciosModel> list = res.isNotEmpty 
-                              ? res.map((s) => ServiciosModel.fromJson(s)).toList()
-                              : [];
-    // await db.close();                              
+    List<ServiciosModel> list = res.isNotEmpty
+        ? res.map((s) => ServiciosModel.fromJson(s)).toList()
+        : [];
+    // await db.close();
     return list;
   }
 
-  Future<List<CmodelosModel>> getAllModelos() async{
+  Future<List<FallasModel>> getAllFallas() async {
+    final db = await database;
+
+    final res = await db.transaction((txn) async {
+      return await txn.query(Cfallas.table);
+    });
+    List<FallasModel> list =
+        res.isNotEmpty ? res.map((s) => FallasModel.fromJson(s)).toList() : [];
+    return list;
+  }
+
+  Future<List<CmodelosModel>> getAllModelos() async {
     final db = await database;
     final res = await db.query(tableModelos);
 
-    List<CmodelosModel> list = res.isNotEmpty 
-                              ? res.map((s) => CmodelosModel.fromJson(s)).toList()
-                              : [];
-    // await db.close();                       
+    List<CmodelosModel> list = res.isNotEmpty
+        ? res.map((s) => CmodelosModel.fromJson(s)).toList()
+        : [];
+    // await db.close();
     return list;
-  }  
+  }
 
-  Future<List<MarcasModel>> getAllMarcas() async{
+  Future<List<MarcasModel>> getAllMarcas() async {
     final db = await database;
     final res = await db.query(CMarcas.table);
 
-    List<MarcasModel> list = res.isNotEmpty 
-                              ? res.map((s) => MarcasModel.fromJson(s)).toList()
-                              : [];
-    // await db.close();              
+    List<MarcasModel> list =
+        res.isNotEmpty ? res.map((s) => MarcasModel.fromJson(s)).toList() : [];
+    // await db.close();
     return list;
-  }  
+  }
 
-  Future<List<ConectividadModel>> getAllConectividad() async{
+  Future<List<ConectividadModel>> getAllConectividad() async {
     final db = await database;
     final res = await db.query(CConectividades.table);
 
-    List<ConectividadModel> list = res.isNotEmpty 
-                              ? res.map((s) => ConectividadModel.fromJson(s)).toList()
-                              : [];
-    // await db.close();               
+    List<ConectividadModel> list = res.isNotEmpty
+        ? res.map((s) => ConectividadModel.fromJson(s)).toList()
+        : [];
+    // await db.close();
     return list;
-  } 
+  }
 
-  Future<List<Softwaremodel>> getAllSoftware() async{
+  Future<List<Softwaremodel>> getAllSoftware() async {
     final db = await database;
     final res = await db.query(CSoftware.table);
 
-    List<Softwaremodel> list = res.isNotEmpty 
-                              ? res.map((s) => Softwaremodel.fromJson(s)).toList()
-                              : [];
-    // await db.close();     
+    List<Softwaremodel> list = res.isNotEmpty
+        ? res.map((s) => Softwaremodel.fromJson(s)).toList()
+        : [];
+    // await db.close();
     return list;
-  }      
+  }
 
-  Future<List<UnidadesModel>> getAllUnidades() async{
+  Future<List<UnidadesModel>> getAllUnidades() async {
     final db = await database;
     final res = await db.query(Bdunidades.table);
 
-    List<UnidadesModel> list = res.isNotEmpty 
-                              ? res.map((s) => UnidadesModel.fromJson(s)).toList()
-                              : [];
-    // await db.close();                   
+    List<UnidadesModel> list = res.isNotEmpty
+        ? res.map((s) => UnidadesModel.fromJson(s)).toList()
+        : [];
+    // await db.close();
     return list;
-  }    
+  }
 
-  Future<List<MovimientoInventarioSF>> getAllMovimientoInventarioSF() async{
+  Future<List<MovimientoInventarioSF>> getAllMovimientoInventarioSF() async {
     final db = await database;
     final res = await db.query(CmovimientoInventarioServicioFalla.table);
     List<MovimientoInventarioSF> list = res.isNotEmpty
-                                        ? res.map((s) => MovimientoInventarioSF.fromJson(s)).toList()
-                                        : [];
+        ? res.map((s) => MovimientoInventarioSF.fromJson(s)).toList()
+        : [];
     return list;
   }
 
   Future<List<CCausasModel>> getAllCausas() async {
     final db = await database;
     final res = await db.query(Causas.table);
-    List<CCausasModel> list = res.isNotEmpty
-                            ? res.map((s) => CCausasModel.fromJson(s)).toList()
-                            : [];
+    List<CCausasModel> list =
+        res.isNotEmpty ? res.map((s) => CCausasModel.fromJson(s)).toList() : [];
     return list;
   }
 
-  Future<List<Odtmodel>> getAllArs(List<int> idstatus) async{
+  Future<List<Odtmodel>> getAllArs(int idstatus) async {
     final db = await database;
-    final res = await db.query(BdArs.table, where: "${BdArs.columnIDSTATUSAR} = ?", whereArgs: [idstatus]);
-    List<Odtmodel> list = res.isNotEmpty
-                        ? res.map((s) => Odtmodel.fromJson(s)).toList()
-                        : [];
+    final res = await db.query(BdArs.table,
+        where: "${BdArs.columnIDSTATUSAR} = ?", whereArgs: [idstatus]);
+    List<Odtmodel> list =
+        res.isNotEmpty ? res.map((s) => Odtmodel.fromJson(s)).toList() : [];
     return list;
   }
 
-  Future<List<Odtmodel>> getAllArsGroupByDate() async{
+  Future<List<Odtmodel>> getAllArsGroupByDate() async {
     final db = await database;
-    final res = await db.rawQuery("SELECT ${BdArs.columnDAYS}, ${BdArs.columnMONTHS}, ${BdArs.columnYEARS} FROM ${BdArs.table} GROUP BY ${BdArs.columnDAYS}, ${BdArs.columnMONTHS}, ${BdArs.columnYEARS}");
-    List<Odtmodel> list = res.isNotEmpty
-                        ? res.map((s) => Odtmodel.fromJson(s)).toList()
-                        : [];
+    final res = await db.rawQuery(
+        "SELECT ${BdArs.columnDAYS}, ${BdArs.columnMONTHS}, ${BdArs.columnYEARS} FROM ${BdArs.table} GROUP BY ${BdArs.columnDAYS}, ${BdArs.columnMONTHS}, ${BdArs.columnYEARS}");
+    List<Odtmodel> list =
+        res.isNotEmpty ? res.map((s) => Odtmodel.fromJson(s)).toList() : [];
     return list;
   }
 
-  Future<List<Odtmodel>> getAllArsbyDate(int day, int month, int year, List<int> idstatus) async{
+  Future<List<Odtmodel>> getAllArsbyDate(
+      int day, int month, int year, List<int> idstatus) async {
     final db = await database;
     String listaStatus = '';
-    for(var id in idstatus){
+    for (var id in idstatus) {
       listaStatus += id.toString() + ",";
     }
-    
-    String s = listaStatus.substring(0,listaStatus.length -1);
 
-    final res = await db.query(
-      BdArs.table, 
-      where: "${BdArs.columnDAYS} = ? AND ${BdArs.columnMONTHS} = ? AND ${BdArs.columnYEARS} = ? AND ${BdArs.columnIDSTATUSAR} IN ($s)", 
-      whereArgs: [day,month,year]
-    );
+    String s = listaStatus.substring(0, listaStatus.length - 1);
 
-    List<Odtmodel> list = res.isNotEmpty
-                        ? res.map((s) => Odtmodel.fromJson(s)).toList()
-                        : [];
+    final res = await db.query(BdArs.table,
+        where:
+            "${BdArs.columnDAYS} = ? AND ${BdArs.columnMONTHS} = ? AND ${BdArs.columnYEARS} = ? AND ${BdArs.columnIDSTATUSAR} IN ($s)",
+        whereArgs: [day, month, year]);
+
+    List<Odtmodel> list =
+        res.isNotEmpty ? res.map((s) => Odtmodel.fromJson(s)).toList() : [];
     return list;
   }
 
-  Future<TotalodtsModel> getTotalOdts() async{
+  Future<TotalodtsModel> getTotalOdts() async {
     //Agregar el ID del estatus ar para realizar el conteo
     final db = await database;
-    final total = Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM ${BdArs.table}'));
+    final total = Sqflite.firstIntValue(await db.rawQuery(
+        'SELECT COUNT(*) FROM ${BdArs.table} WHERE ${BdArs.columnIDSTATUSAR} = 13'));
     TotalodtsModel model = new TotalodtsModel();
     model.nuevas = total;
     return model;
   }
 
   //Actualizar
-  Future<int> updateServicio(ServiciosModel nuevoServicio) async{
+  Future<int> updateServicio(ServiciosModel nuevoServicio) async {
     final db = await database;
-    final res = await db.update(tableservicios, nuevoServicio.toJson(), where: 'id = ?', whereArgs: [nuevoServicio.idServicio]);
+    final res = await db.update(tableservicios, nuevoServicio.toJson(),
+        where: 'id = ?', whereArgs: [nuevoServicio.idServicio]);
     // await db.close();
     return res;
   }
 
-  Future<int> updateOdt(int idar, String noar) async{
+  Future<int> updateOdt(int idar, int idstatusar, String descstatusar) async {
     final db = await database;
-    final res = await db.rawUpdate("UPDATE ${BdArs.table} SET ${BdArs.columnNOAR} = '$noar' WHERE ${BdArs.columnID} = $idar");
+    final res = await db.rawUpdate(
+        "UPDATE ${BdArs.table} SET ${BdArs.columnIDSTATUSAR} = $idstatusar, ${BdArs.columnSTATUSAR} = '$descstatusar' WHERE ${BdArs.columnID} = $idar");
     return res;
   }
 
   //Eliminar uno
   Future<int> deleteServicio(int id) async {
     final db = await database;
-    final res = await db.delete(tableservicios, where: 'id = ?', whereArgs: [id]);
+    final res =
+        await db.delete(tableservicios, where: 'id = ?', whereArgs: [id]);
     // await db.close();
     return res;
   }
 
   Future<int> deleteAr(int id) async {
     final db = await database;
-    final res = await db.delete(BdArs.table, where: '${BdArs.columnID} = ?', whereArgs: [id]);
+    final res = await db
+        .delete(BdArs.table, where: '${BdArs.columnID} = ?', whereArgs: [id]);
     return res;
   }
   //Validar Existencia
 
-  Future<bool> validateOdt (Odtmodel model)async{
+  Future<bool> validateOdt(Odtmodel model) async {
     final db = await database;
-    final res = Sqflite.firstIntValue(await db.rawQuery("SELECT COUNT(*) FROM ${BdArs.table} WHERE ${BdArs.columnID} = ${model.idAr}"));
-    if(res > 0) return true;
+    final res = Sqflite.firstIntValue(await db.rawQuery(
+        "SELECT COUNT(*) FROM ${BdArs.table} WHERE ${BdArs.columnID} = ${model.idAr}"));
+    if (res > 0) return true;
     return false;
   }
 

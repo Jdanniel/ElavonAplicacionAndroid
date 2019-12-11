@@ -24,5 +24,6 @@ class BdArs {
   static final columnIDSTATUSAR = 'ID_STATUS_AR';
   static final columnIDSERVICIO = 'ID_SERVICIO';
   static final columnIDFALLA = 'ID_FALLA';
+  static final columnSTATUSAR = 'DESC_STATUS_AR';
 
 }

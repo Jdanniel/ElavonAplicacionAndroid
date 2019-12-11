@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:elavonappmovil/models/ccausas_model.dart';
+import 'package:elavonappmovil/models/fallas_model.dart';
 import 'package:elavonappmovil/models/movimientoInventarioServicioFalla_model.dart';
 import 'package:elavonappmovil/models/odts_model.dart';
 import 'package:elavonappmovil/models/software_model.dart';
@@ -52,6 +53,16 @@ class CatalogoProvider {
         decodeData.map((map) => ServiciosModel.fromJson(map)).toList();
     if (decodeData == null) return [];
     return servicioList;
+  }
+
+  Future<List<FallasModel>> getFallas() async {
+    final url = '$_url/fallas';
+    var dio = Dio();
+    final resp = await dio.get(url, options: Options(contentType: _contentTypeJson));
+    final decodeData = resp.data as List;
+    final fallaList = decodeData.map((map) => FallasModel.fromJson(map)).toList();
+    if(decodeData == null) return [];
+    return fallaList;
   }
 
   Future<List<ConectividadModel>> getConectividades() async {

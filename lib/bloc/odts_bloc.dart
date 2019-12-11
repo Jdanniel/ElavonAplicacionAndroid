@@ -36,7 +36,7 @@ class OdtsBloc{
     _odtController.sink.add(odt);
   }
 
-  void selectAllOdts(List<int> idstatus) async{
+  void selectAllOdts(int idstatus) async{
     final odts = await DBProvider.db.getAllArs(idstatus);
     _allodtsController.sink.add(odts);
   }
@@ -62,6 +62,9 @@ class OdtsBloc{
 
   Future<List<Odtmodel>> getAllOdtsHttp() async{
     final odts = await _odtsProvider.getOdts();
+    for(var odt in odts){
+      await insertarOdts(odt);
+    }
     return odts;
   }
 
@@ -90,8 +93,8 @@ class OdtsBloc{
     }
   }
 
-  void updateOdt(int idar, String noar)async{
-    await DBProvider.db.updateOdt(idar, noar);
+  void updateOdt(int idar, int idstatusar, String descstatus)async{
+    await DBProvider.db.updateOdt(idar, idstatusar, descstatus);
   }
 
   dispose(){
