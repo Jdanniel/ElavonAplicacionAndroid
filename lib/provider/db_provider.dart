@@ -1,17 +1,23 @@
 import 'dart:io';
 
 import 'package:elavonappmovil/data/database_ars.dart';
+import 'package:elavonappmovil/data/database_cambiostatusar.dart';
 import 'package:elavonappmovil/data/database_causas.dart';
 import 'package:elavonappmovil/data/database_conectividades.dart';
 import 'package:elavonappmovil/data/database_fallas.dart';
 import 'package:elavonappmovil/data/database_marcas.dart';
 import 'package:elavonappmovil/data/database_modelos.dart';
 import 'package:elavonappmovil/data/database_movimientoinventarioServicioFalla.dart';
+import 'package:elavonappmovil/data/database_servicios.dart';
 import 'package:elavonappmovil/data/database_software.dart';
+import 'package:elavonappmovil/data/database_statusar.dart';
 import 'package:elavonappmovil/data/database_unidades.dart';
+import 'package:elavonappmovil/models/bdcambiostatusar_model.dart';
+import 'package:elavonappmovil/models/cambiostatusarrequest_model.dart';
 import 'package:elavonappmovil/models/ccausas_model.dart';
 import 'package:elavonappmovil/models/cmodelos_model.dart';
 import 'package:elavonappmovil/models/conectividad_model.dart';
+import 'package:elavonappmovil/models/cstatusar_model.dart';
 import 'package:elavonappmovil/models/fallas_model.dart';
 import 'package:elavonappmovil/models/marcas_model.dart';
 import 'package:elavonappmovil/models/movimientoInventarioServicioFalla_model.dart';
@@ -29,13 +35,6 @@ class DBProvider {
   static Database _database;
   static final DBProvider db = DBProvider._();
 
-  //NOMBRE DE TABLAS
-  final String tableservicios = 'Cservicios';
-  final String tableModelos = 'Cmodelos';
-  final String tableMarcas = 'Cmarcas';
-  final String tableConectividad = 'Cconectividad';
-  final String tableSoftware = 'Csoftware';
-  final String tableUnidades = 'Bdunidades';
   final String tableUpdates = 'Cupdates';
 
   DBProvider._();
@@ -65,7 +64,7 @@ class DBProvider {
   initDB(String path) async {
     //await deleteDatabase(path);
     final String queryServicios =
-        'CREATE TABLE $tableservicios ( idservicio INTEGER NOT NULL, descservicio TEXT)';
+        'CREATE TABLE ${Cservicios.table} ( ${Cservicios.columnID} INTEGER NOT NULL, ${Cservicios.columnDESCSERVICIO} TEXT)';
     final String queryFallas =
         'CREATE TABLE ${Cfallas.table} (${Cfallas.columnIDFALLA} INTEGER NOT NULL, ${Cfallas.columnDESCFALLA} TEXT)';
     final String queryModelos =
@@ -86,6 +85,10 @@ class DBProvider {
         'CREATE TABLE ${CmovimientoInventarioServicioFalla.table} (${CmovimientoInventarioServicioFalla.columnID} INTEGER NOT NULL, ${CmovimientoInventarioServicioFalla.columnIDSERVICIO} INT, ${CmovimientoInventarioServicioFalla.columnIDFALLA} INT, ${CmovimientoInventarioServicioFalla.columnIDMOVINVENTARIO} INT, ${CmovimientoInventarioServicioFalla.columnSTATUS} TEXT)';
     final String queryCcausas =
         'CREATE TABLE ${Causas.table} (${Causas.columnId} INTEGER NOT NULL, ${Causas.columnDESCCAUSA} TEXT,${Causas.columnDESCRIPCION} TEXT)';
+    final String queryCstatusAr = 
+        'CREATE TABLE ${CstausAr.table} (${CstausAr.columnID} INTEGER NOT NULL, ${CstausAr.columnDESCSTATUSAR} TEXT)';
+    final String querybdCambioStatusAr = 
+        'CREATE TABLE ${BdCambioStatusAr.table} (${BdCambioStatusAr.columnID} INTEGER NOT NULL, ${BdCambioStatusAr.columnIDSTATUSARINI} INTEGER, ${BdCambioStatusAr.columnIDSTATUSARFIN} INTEGER)';
 
     return await openDatabase(path,
         version: 1,
@@ -102,6 +105,8 @@ class DBProvider {
       await db.execute(queryArs);
       await db.execute(queryMovInventarioSF);
       await db.execute(queryCcausas);
+      await db.execute(queryCstatusAr);
+      await db.execute(querybdCambioStatusAr);
       // await db.close();
     });
   }
@@ -113,7 +118,7 @@ class DBProvider {
 
     final res = await db.transaction((txn) async {
       var query =
-          "INSERT INTO $tableservicios(idservicio,descservicio) VALUES (${nuevoServicio.idServicio},'${nuevoServicio.descServicio}')";
+          "INSERT INTO ${Cservicios.table}(${Cservicios.columnID}, ${Cservicios.columnDESCSERVICIO}) VALUES (${nuevoServicio.idServicio},'${nuevoServicio.descServicio}')";
       return await txn.rawInsert(query);
     });
     return res;
@@ -126,6 +131,26 @@ class DBProvider {
       var query =
           "INSERT INTO ${Cfallas.table}(${Cfallas.columnIDFALLA},${Cfallas.columnDESCFALLA}) VALUES (${nuevoFalla.idFalla}, '${nuevoFalla.descFalla}')";
       return await txn.rawInsert(query);
+    });
+    return res;
+  }
+
+  nuevoStatusAr(CStatusArModel nuevoStatus) async {
+    final db = await database;
+    final res = await db.transaction((txn) async {
+      var query = 
+          "INSERT INTO ${CstausAr.table} (${CstausAr.columnID}, ${CstausAr.columnDESCSTATUSAR}) VALUES(${nuevoStatus.idStatusAr}, '${nuevoStatus.descStatusAr}')";
+      return await txn.rawInsert(query);
+    });
+    return res;
+  }
+
+  nuevoCambioStatusAr(BdCambioStatusArModel nuevoCambio) async {
+    final db = await database;
+    final res = await db.transaction((txn) async {
+      var query = 
+                "INSERT INTO ${BdCambioStatusAr.table} (${BdCambioStatusAr.columnID}, ${BdCambioStatusAr.columnIDSTATUSARINI}, ${BdCambioStatusAr.columnIDSTATUSARFIN}) VALUES(${nuevoCambio.idCambioStatusAr},${nuevoCambio.idStatusArIni}, ${nuevoCambio.idStatusArFin})";
+      return await txn.rawInsert(query);  
     });
     return res;
   }
@@ -277,9 +302,8 @@ class DBProvider {
 
   Future<ServiciosModel> getServicioId(int id) async {
     final db = await database;
-    final res = await db
-        .query(tableservicios, where: 'idservicio = ?', whereArgs: [id]);
-    // await db.close();
+    final res = await db.query(Cservicios.table,
+        where: '${Cservicios.columnID} = ?', whereArgs: [id]);
     return res.isNotEmpty ? ServiciosModel.fromJson(res.first) : null;
   }
 
@@ -293,6 +317,28 @@ class DBProvider {
 
     return res.isNotEmpty ? FallasModel.fromJson(res.first) : null;
   }
+
+  Future<CStatusArModel> getStatusArId(int id) async {
+    final db = await database;
+
+    final res = await db.transaction((txn) async {
+      return await txn.query(CstausAr.table,
+          where: '${CstausAr.columnID} = ?', whereArgs: [id]);
+    });
+
+    return res.isNotEmpty ? CStatusArModel.fromJson(res.first) : null;
+  }
+
+  Future<BdCambioStatusArModel> getCambioStatusArId(int id) async {
+    final db = await database;
+
+    final res = await db.transaction((txn) async {
+      return await txn.query(BdCambioStatusAr.table,
+          where: '${BdCambioStatusAr.columnID} = ?', whereArgs: [id]);
+    });
+
+    return res.isNotEmpty ? BdCambioStatusArModel.fromJson(res.first) : null;
+  } 
 
   Future<CmodelosModel> getModeloId(int id) async {
     final db = await database;
@@ -332,8 +378,8 @@ class DBProvider {
   Future<UnidadesModel> getUnidadId(int id) async {
     final db = await database;
 
-    final res =
-        await db.query(tableUnidades, where: 'idunidad = ?', whereArgs: [id]);
+    final res = await db.query(Bdunidades.table,
+        where: '${Bdunidades.columnID} = ?', whereArgs: [id]);
     // await db.close();
     return res.isNotEmpty ? UnidadesModel.fromJson(res.first) : null;
   }
@@ -362,6 +408,18 @@ class DBProvider {
     return res.isNotEmpty ? CCausasModel.fromJson(res.first) : null;
   }
 
+  Future<StatusCambioResponseModel> getCambioStatusResponse(int id) async {
+    final db = await database;
+    final res = await db.transaction((txn) async {
+      var query = "SELECT ${BdCambioStatusAr.columnIDSTATUSARFIN} AS ID_STATUS_AR, "
+      "(SELECT ${CstausAr.columnDESCSTATUSAR} FROM ${CstausAr.table} WHERE ${CstausAr.columnID} = ${BdCambioStatusAr.columnIDSTATUSARFIN}) AS DESC_STATUS_AR "
+      "FROM ${BdCambioStatusAr.table} "
+      "WHERE ${BdCambioStatusAr.columnIDSTATUSARINI} = $id";
+      return txn.rawQuery(query);
+    });
+    return res.isNotEmpty ? StatusCambioResponseModel.fromJson(res.first) : null;
+  }
+
   Future<UpdatesModel> getLastUpdate() async {
     final db = await database;
     final res =
@@ -372,7 +430,7 @@ class DBProvider {
   //Seleccionar Todos
   Future<List<ServiciosModel>> getAllServicio() async {
     final db = await database;
-    final res = await db.query(tableservicios);
+    final res = await db.query(Cservicios.table);
 
     List<ServiciosModel> list = res.isNotEmpty
         ? res.map((s) => ServiciosModel.fromJson(s)).toList()
@@ -394,7 +452,7 @@ class DBProvider {
 
   Future<List<CmodelosModel>> getAllModelos() async {
     final db = await database;
-    final res = await db.query(tableModelos);
+    final res = await db.query(CModelos.table);
 
     List<CmodelosModel> list = res.isNotEmpty
         ? res.map((s) => CmodelosModel.fromJson(s)).toList()
@@ -465,8 +523,18 @@ class DBProvider {
 
   Future<List<Odtmodel>> getAllArs(int idstatus) async {
     final db = await database;
-    final res = await db.query(BdArs.table,
-        where: "${BdArs.columnIDSTATUSAR} = ?", whereArgs: [idstatus]);
+    final res = await db.transaction((txn) async {
+      return await txn.rawQuery(
+        "SELECT * , (SELECT ${Cfallas.columnDESCFALLA} "
+                  "FROM ${Cfallas.table} "
+                  "WHERE ${Cfallas.columnIDFALLA} = ${BdArs.columnIDFALLA}) AS DESC_FALLA, "
+                  "(SELECT ${Cservicios.columnDESCSERVICIO} "
+                  "FROM ${Cservicios.table} "
+                  "WHERE ${Cservicios.columnID} = ${BdArs.columnIDSERVICIO}) AS DESC_SERVICIO "
+                  "FROM ${BdArs.table} "
+                  "WHERE ${BdArs.columnIDSTATUSAR} IN ($idstatus)"
+      );
+    });
     List<Odtmodel> list =
         res.isNotEmpty ? res.map((s) => Odtmodel.fromJson(s)).toList() : [];
     return list;
@@ -490,11 +558,25 @@ class DBProvider {
     }
 
     String s = listaStatus.substring(0, listaStatus.length - 1);
-
+/*
     final res = await db.query(BdArs.table,
         where:
             "${BdArs.columnDAYS} = ? AND ${BdArs.columnMONTHS} = ? AND ${BdArs.columnYEARS} = ? AND ${BdArs.columnIDSTATUSAR} IN ($s)",
         whereArgs: [day, month, year]);
+*/
+    final res = await db.transaction((txn) async {
+      return await txn.rawQuery("SELECT * , (SELECT ${Cfallas.columnDESCFALLA} "
+          "FROM ${Cfallas.table} "
+          "WHERE ${Cfallas.columnIDFALLA} = ${BdArs.columnIDFALLA}) AS DESC_FALLA, "
+          "(SELECT ${Cservicios.columnDESCSERVICIO} "
+          "FROM ${Cservicios.table} "
+          "WHERE ${Cservicios.columnID} = ${BdArs.columnIDSERVICIO}) AS DESC_SERVICIO "
+          "FROM ${BdArs.table} "
+          "WHERE ${BdArs.columnDAYS} = $day "
+          "AND ${BdArs.columnMONTHS} = $month "
+          "AND ${BdArs.columnYEARS} = $year "
+          "AND ${BdArs.columnIDSTATUSAR} IN ($s)");
+    });
 
     List<Odtmodel> list =
         res.isNotEmpty ? res.map((s) => Odtmodel.fromJson(s)).toList() : [];
@@ -514,8 +596,9 @@ class DBProvider {
   //Actualizar
   Future<int> updateServicio(ServiciosModel nuevoServicio) async {
     final db = await database;
-    final res = await db.update(tableservicios, nuevoServicio.toJson(),
-        where: 'id = ?', whereArgs: [nuevoServicio.idServicio]);
+    final res = await db.update(Cservicios.table, nuevoServicio.toJson(),
+        where: '${Cservicios.columnID} = ?',
+        whereArgs: [nuevoServicio.idServicio]);
     // await db.close();
     return res;
   }
@@ -530,8 +613,8 @@ class DBProvider {
   //Eliminar uno
   Future<int> deleteServicio(int id) async {
     final db = await database;
-    final res =
-        await db.delete(tableservicios, where: 'id = ?', whereArgs: [id]);
+    final res = await db.delete(Cservicios.table,
+        where: '${Cservicios.columnID} = ?', whereArgs: [id]);
     // await db.close();
     return res;
   }

@@ -1,5 +1,6 @@
 import 'package:elavonappmovil/bloc/detalleinit_bloc.dart';
 import 'package:elavonappmovil/bloc/provider.dart';
+import 'package:elavonappmovil/models/cambiostatusarrequest_model.dart';
 import 'package:elavonappmovil/models/negocios_model.dart';
 import 'package:elavonappmovil/models/odts_model.dart';
 import 'package:elavonappmovil/provider/negocios_provider.dart';
@@ -27,14 +28,11 @@ class _DetalleInitState extends State<DetalleInit> {
 
   @override
   Widget build(BuildContext context) {
-    odtBloc = Provider.odtsBloc(context);
 
-    final Odtmodel odtData = ModalRoute.of(context).settings.arguments;
     final double _height = MediaQuery.of(context).size.height;
 
-    if (odtData != null) {
-      odt = odtData;
-    }
+    odtBloc = Provider.odtsBloc(context);
+    odt = odtBloc.getNuevoOdt;
 
     return Scaffold(
       backgroundColor: Colors.blueAccent,
@@ -143,8 +141,12 @@ class _DetalleInitState extends State<DetalleInit> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Text(
-              '${odt.idServicio} - ${odt.idFalla}',
+              '${odt.descServicio}',
               style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              '${odt.descFalla}',
+              style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.w500),
             ),
             SizedBox(height: _height * 0.05),
             _crearTabla(context, odt),
@@ -254,13 +256,13 @@ class _DetalleInitState extends State<DetalleInit> {
         await detalleBloc.getMovInventariosf(odt.idServicio, odt.idFalla);
     switch (model.idMovInventario) {
       case 1:
-        Navigator.pushNamed(context, 'cierreInstalacion', arguments: odt);
+        Navigator.pushNamed(context, 'cierreInstalacion');
         break;
       case 2:
-        Navigator.pushNamed(context, 'cierreRetiro', arguments: odt);
+        Navigator.pushNamed(context, 'cierreRetiro');
         break;
       case 3:
-        Navigator.pushNamed(context, 'cierreSustitucion', arguments: odt);
+        Navigator.pushNamed(context, 'cierreSustitucion');
     }
   }
 
@@ -269,23 +271,11 @@ class _DetalleInitState extends State<DetalleInit> {
   }
 
   void _updateStatusAr(Odtmodel model) async {
-    int idstatusarp = 0;
-    String descStatus = '';
-    String msg = "";
-    switch (model.idStatusAr) {
-      case 3:
-        idstatusarp = 13;
-        descStatus = 'Asignacion Confirmada';
-        break;
-      case 4:
-        idstatusarp = 5;
-        descStatus = 'En Sitio';
-        break;
-      case 6:
-        idstatusarp = 7;
-        descStatus = 'Rechazado';
-        break;
-      default:
+    String msg = '';
+
+    StatusCambioResponseModel cambio = await detalleBloc.getCambioStatusValido(model.idStatusAr);
+    if(cambio == null){
+      return null;
     }
     showCustomLoadingWidget(Container(
         child: Column(
@@ -298,12 +288,10 @@ class _DetalleInitState extends State<DetalleInit> {
         Text("Actualizando...")
       ],
     )));
+
     int isupdate = await odtBloc.updateStatusAr(
-        model.idAr, model.idStatusAr, idstatusarp, model.idAr);
-    odtBloc.updateOdt(model.idAr, idstatusarp, descStatus);
-    setState(() {
-      odt.estatusAr = descStatus;
-    });
+        model.idAr, model.idStatusAr, cambio.idStatusAr, model.idAr);
+    
     // isupdate == 1
     //     ? mostrarAlertDatosActualizado(
     //         context, 'El estatus de la Odt se ha actualizado')
@@ -313,8 +301,14 @@ class _DetalleInitState extends State<DetalleInit> {
 
     if (isupdate == 1) {
       msg = 'Odt Actulizada';
+      odtBloc.updateOdt(model.idAr, cambio.idStatusAr, cambio.descStatusAr);
+      model.estatusAr = cambio.descStatusAr;
+      odtBloc.nuevoOdt(model);
+      setState(() {
+        odt = odtBloc.getNuevoOdt;
+      });        
     } else {
-      msg = 'La Odt no se ha actualizado';
+      msg = 'La Odt no se ha actualizado al estatus ${cambio.descStatusAr}';    
     }
     final snackbar = SnackBar(
       content: Text(msg),

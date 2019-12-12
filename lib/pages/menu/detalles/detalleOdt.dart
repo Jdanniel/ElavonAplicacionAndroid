@@ -14,25 +14,20 @@ class DetalleOdtPage extends StatefulWidget {
 class _DetalleOdtPageState extends State<DetalleOdtPage> {
   final TomarFoto _tomarFoto = new TomarFoto();
   final DetalleInit _init = new DetalleInit();
-
   final AgregarComentario _comentario = new AgregarComentario();
 
   OdtsBloc odtBloc;
   Odtmodel odt = new Odtmodel();
-
   Widget _showPage = new DetalleInit();
 
   int pageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+
     odtBloc = Provider.odtsBloc(context);
-    final Odtmodel odtData = ModalRoute.of(context).settings.arguments;
-
-    if (odtData != null) {
-      odt = odtData;
-    }
-
+    odt = odtBloc.getNuevoOdt;
+    
     return Scaffold(
         backgroundColor: Colors.blueAccent,
         body: _showPage,

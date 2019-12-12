@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:elavonappmovil/bloc/detalleinit_bloc.dart';
 import 'package:elavonappmovil/bloc/provider.dart';
 import 'package:elavonappmovil/models/odts_model.dart';
 import 'package:flutter/material.dart';
@@ -15,16 +16,20 @@ class _TomarFotoState extends State<TomarFoto> {
   File _image;
   bool _ismageloaded = false;
   OdtsBloc bloc;
+  DetalleInitBloc detalleInitBloc;
+
   Odtmodel odt = new Odtmodel();
+
+  int pageReturn = 0;
 
   @override
   Widget build(BuildContext context) {
-    final Odtmodel odtData = ModalRoute.of(context).settings.arguments;
+
+    detalleInitBloc = Provider.detalleinitBloc(context);
     bloc = Provider.odtsBloc(context);
 
-    if (odtData != null) {
-      odt = odtData;
-    }
+    odt = bloc.getNuevoOdt;
+    pageReturn = detalleInitBloc.getPageReturn;
 
     return Scaffold(
       backgroundColor: Colors.blueAccent,
@@ -129,7 +134,21 @@ class _TomarFotoState extends State<TomarFoto> {
   }
 
   void _regresar(BuildContext _context) {
-    Navigator.pop(_context);
+    String pagina = '';
+
+    switch(pageReturn){
+      case 1:
+        pagina = 'nuevas';
+        break;
+      case 2:
+        pagina = 'abiertas';
+        break;
+      case 3:
+        pagina = 'cerradas';
+        break;
+      default:
+    }
+    Navigator.of(context).pushReplacementNamed(pagina);
   }
 
   getImageFile(ImageSource source) async {

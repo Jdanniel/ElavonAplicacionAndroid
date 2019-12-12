@@ -1,4 +1,7 @@
+import 'package:elavonappmovil/bloc/cambiostatusar_bloc.dart';
+import 'package:elavonappmovil/bloc/detalleinit_bloc.dart';
 import 'package:elavonappmovil/bloc/movimientosInventario_bloc.dart';
+import 'package:elavonappmovil/bloc/statusar_bloc.dart';
 import 'package:flutter/material.dart';
 
 import 'login_bloc.dart';
@@ -79,6 +82,12 @@ class Provider extends InheritedWidget{
 
   final _movInventarioBloc = new MovimientosInventarioBloc();
 
+  final _detalleinitBloc = new DetalleInitBloc();
+
+  final _statusArBloc = new StatusArBloc();
+
+  final _cambioStatusArBloc = new CambioStatusArBloc();
+
   static Provider _instancia;
 
   factory Provider({Key key, Widget child}){
@@ -156,5 +165,17 @@ class Provider extends InheritedWidget{
 
   static MovimientosInventarioBloc movimientosInventarioBloc(BuildContext context){
     return(context.inheritFromWidgetOfExactType(Provider) as Provider)._movInventarioBloc;
+  }
+
+  static DetalleInitBloc detalleinitBloc(BuildContext context){
+    return(context.inheritFromWidgetOfExactType(Provider) as Provider)._detalleinitBloc;
+  }
+
+  static StatusArBloc statusArBloc(BuildContext context){
+    return(context.inheritFromWidgetOfExactType(Provider) as Provider)._statusArBloc;
+  }
+
+  static CambioStatusArBloc cambioStatusArBloc(BuildContext context){
+    return(context.inheritFromWidgetOfExactType(Provider) as Provider)._cambioStatusArBloc;
   }
 }

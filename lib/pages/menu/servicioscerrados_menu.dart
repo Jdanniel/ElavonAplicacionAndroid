@@ -1,3 +1,4 @@
+import 'package:elavonappmovil/bloc/detalleinit_bloc.dart';
 import 'package:elavonappmovil/bloc/odts_bloc.dart';
 import 'package:elavonappmovil/bloc/provider.dart';
 import 'package:elavonappmovil/models/odts_model.dart';
@@ -14,6 +15,7 @@ class ServiciosCerradosPage extends StatefulWidget {
 class _ServiciosCerradosPageState extends State<ServiciosCerradosPage>
     with TickerProviderStateMixin {
   OdtsBloc odt;
+  DetalleInitBloc detalleInitBloc;
   bool _init = false;
 
   Map<DateTime, List<Odtmodel>> _events = new Map<DateTime, List<Odtmodel>>();
@@ -40,6 +42,7 @@ class _ServiciosCerradosPageState extends State<ServiciosCerradosPage>
   void dispose() {
     //_animationController.dispose();
     _calendarController.dispose();
+
     super.dispose();
   }
 
@@ -57,7 +60,12 @@ class _ServiciosCerradosPageState extends State<ServiciosCerradosPage>
 
   @override
   Widget build(BuildContext context) {
+    
     odt = Provider.odtsBloc(context);
+
+    detalleInitBloc = Provider.detalleinitBloc(context);
+    detalleInitBloc.changePageReturn(3);
+    
     return Scaffold(
       appBar: AppBar(
         title: Text("Cerrados"),
@@ -97,7 +105,7 @@ class _ServiciosCerradosPageState extends State<ServiciosCerradosPage>
     for (int i = 0; i < listodts.length; i++) {
       //print(listodts[i].days.toString()+'/'+listodts[i].months.toString()+'/'+listodts[i].years.toString());
       List<Odtmodel> datosbyDate = await odt.selectAllOdtsbyDate2(
-          listodts[i].days, listodts[i].months, listodts[i].years, [6,7,8]);
+          listodts[i].days, listodts[i].months, listodts[i].years, [6, 7, 8]);
       eventos = {
         DateTime(listodts[i].years, listodts[i].months, listodts[i].days):
             datosbyDate
@@ -150,15 +158,14 @@ class _ServiciosCerradosPageState extends State<ServiciosCerradosPage>
     return ListView(
       children: _selectedEvents
           .map((event) => Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(width: 0.8),
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                child: _makeListTile(event)
-              ))
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(width: 0.8),
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              margin:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+              child: _makeListTile(event)))
           .toList(),
     );
   }
@@ -179,31 +186,35 @@ class _ServiciosCerradosPageState extends State<ServiciosCerradosPage>
     }
 
     return ListTile(
-        contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-        leading: Container(
-          height: 50.0,
-          padding: EdgeInsets.only(right: 12.0),
-          decoration: BoxDecoration(
-              border: Border(
-                  right: new BorderSide(width: 1.0, color: Colors.black26))),
-          child: Icon(
-            icono,
-            color: Colors.black,
-          ),
+      contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      leading: Container(
+        height: 50.0,
+        padding: EdgeInsets.only(right: 12.0),
+        decoration: BoxDecoration(
+            border: Border(
+                right: new BorderSide(width: 1.0, color: Colors.black26))),
+        child: Icon(
+          icono,
+          color: Colors.black,
         ),
-        title: Text(
-          "ODT: ${model.odt}",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            SelectableText("Negocio: ${model.negocio}"),
-            Text("Afiliacion: ${model.noAfiliacion}"),
-            Text("Fecha garantía: ${model.fecGarantia}")
-          ],
-        ),
-        onTap: (){Navigator.pushNamed(context, 'detalleOdt', arguments: model); odt.nuevoOdt(model);},
-        );
+      ),
+      title: Text(
+        "ODT: ${model.odt}",
+        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          SelectableText("Negocio: ${model.negocio}"),
+          Text("Afiliacion: ${model.noAfiliacion}"),
+          Text("Fecha garantía: ${model.fecGarantia}")
+        ],
+      ),
+      onTap: () {
+        Navigator.pushNamed(context, 'detalleOdt', arguments: model);
+        
+        odt.nuevoOdt(model);
+      },
+    );
   }
 }

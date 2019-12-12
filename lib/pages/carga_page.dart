@@ -28,15 +28,6 @@ class _CargaPageState extends State<CargaPage> {
       backgroundColor: Colors.blueAccent,
       body: SafeArea(
         child: Container(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                CircularProgressIndicator(),
-                Text('Actualizando...')
-              ],
-            ),
-          ),
         ),
       ),
     );
@@ -131,7 +122,15 @@ class _CargaPageState extends State<CargaPage> {
     final movimientoBloc = Provider.movimientosInventarioBloc(context);
     await movimientoBloc.getAllMovimientosInventarioHttp();
     progreso+=10.0;
-    _incremetarProgress(progreso);   
+    _incremetarProgress(progreso);  
+    final statusArBloc = Provider.statusArBloc(context);
+    await statusArBloc.getAllStatusArHttp();
+    progreso+= 10.0;
+    _incremetarProgress(progreso);
+    final cambioStatusAr = Provider.cambioStatusArBloc(context);
+    await cambioStatusAr.getAllCambiosStatusArHttp();
+    progreso+= 10.0;
+    _incremetarProgress(progreso);
     final up = new UpdatesModel();
     up.fecha = dn;
     await updatesBloc.insertUpdates(up);

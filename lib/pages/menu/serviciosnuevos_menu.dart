@@ -1,3 +1,4 @@
+import 'package:elavonappmovil/bloc/detalleinit_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:elavonappmovil/bloc/provider.dart';
 import 'package:elavonappmovil/models/odts_model.dart';
@@ -10,12 +11,15 @@ class ServiciosNuevosPage extends StatefulWidget {
 
 class _ServiciosNuevosPageState extends State<ServiciosNuevosPage> {
 
+  DetalleInitBloc detalleInitBloc;
   int years;
   int mesActual;
 
   @override
   Widget build(BuildContext context) {
+    detalleInitBloc = Provider.detalleinitBloc(context);
     final odtbloc = Provider.odtsBloc(context);
+    detalleInitBloc.changePageReturn(1);    
     odtbloc.selectAllOdts(13);
 
     return Scaffold(
@@ -115,8 +119,10 @@ class _ServiciosNuevosPageState extends State<ServiciosNuevosPage> {
           color: Colors.red,
         ),
         child: InkWell(
-          onTap: () =>
-              Navigator.pushNamed(context, 'detalleOdt', arguments: odts),
+          onTap: () {
+            odtBloc.nuevoOdt(odts);
+            Navigator.pushNamed(context, 'detalleOdt');
+          },
           child: Card(
             elevation: 8.0,
             margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),

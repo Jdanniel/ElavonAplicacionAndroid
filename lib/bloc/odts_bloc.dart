@@ -50,6 +50,8 @@ class OdtsBloc{
     _odtNuevoController.sink.add(odt);
   }
 
+  Odtmodel get getNuevoOdt => _odtNuevoController.value;
+
   Future<int> updateStatusAr(int idusuario, int idstatusara, int idstatusarp, int idar) async{
     final status = await _odtsProvider.updateStatusAr(idusuario,idstatusara,idstatusarp,idar);
     return status;

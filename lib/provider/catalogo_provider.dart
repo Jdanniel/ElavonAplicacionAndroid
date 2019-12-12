@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:elavonappmovil/models/bdcambiostatusar_model.dart';
 import 'package:elavonappmovil/models/ccausas_model.dart';
+import 'package:elavonappmovil/models/cstatusar_model.dart';
 import 'package:elavonappmovil/models/fallas_model.dart';
 import 'package:elavonappmovil/models/movimientoInventarioServicioFalla_model.dart';
 import 'package:elavonappmovil/models/odts_model.dart';
@@ -133,4 +135,33 @@ class CatalogoProvider {
     if(decodeData == null) return [];
     return causasList;
   }
+
+  Future<List<CStatusArModel>> getStatusAr() async{
+    final url = '$_url/statusar';
+    var dio = Dio();
+    try{    
+      final resp = await dio.get(url, options: Options(contentType: _contentTypeJson));
+      final decodeData = resp.data as List;
+      final statusList = decodeData.map((map) => CStatusArModel.fromJson(map)).toList();
+      if(decodeData == null) return [];
+      return statusList;
+    } on DioError catch(error){
+      return [];
+    }
+  }
+
+  Future<List<BdCambioStatusArModel>> getcambioStatusAr() async{
+    final url = '$_url/cambiostatusar';
+    var dio = Dio();
+    try{    
+      final resp = await dio.get(url, options: Options(contentType: _contentTypeJson));
+      final decodeData = resp.data as List;
+      final statusList = decodeData.map((map) => BdCambioStatusArModel.fromJson(map)).toList();
+      if(decodeData == null) return [];
+      return statusList;
+    } on DioError catch(error){
+      return [];
+    }
+  }
+
 }
