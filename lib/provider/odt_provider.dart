@@ -10,6 +10,7 @@ import 'package:elavonappmovil/preferencias_usuario/preferencias_usuario.dart';
 class OdtProvider{
 
   final String _url = 'http://sgse.microformas.com.mx/ELAVON_TEST/apimoviltest2/api/odts';
+  final String _url3 = 'http://sgse.microformas.com.mx/ELAVON_TEST/apimoviltest3/api/odts';
   final String _urlphotos = 'http://sgse.microformas.com.mx/ELAVON_TEST/WebApiFotosTest/api/files/odt';
   final _prefs  = new PreferenciasUsuario();
   final headerJson = {
@@ -37,8 +38,33 @@ class OdtProvider{
     }on DioError catch(error){
       return [];
     }
+  }
 
+  Future<int> updateAgregarRechazarOdt(int idar, int idstatusar) async{
+    final url = '$_url/AceptarRechazarOdt';
+    var dio = Dio();
+    try{
+      final request = {
+        "ID_AR": idar,
+        "ID_STATUS_AR": idstatusar,
+        "ID_USUARIO": _prefs.idUsuario
+      };
 
+      final resp = await dio.put(url,
+      data: request,
+      options: Options(contentType: _contentTypeJson));
+
+      if(resp.statusCode == 200){
+        return 1;
+      }
+      return 0;
+
+    }on DioError catch(error){
+      if(error.response.statusCode >= 400){
+        return 2;
+      }
+      return 0;
+    }
   }
 
   Future<int> sendPhoto(File imagen, String noar) async {
@@ -77,7 +103,7 @@ class OdtProvider{
   }
 
   Future<List<Odtmodel>> getOdts() async {
-    final url = '$_url/getodtstecnico/${_prefs.idUsuario}';
+    final url = '$_url3/getodtstecnico/${_prefs.idUsuario}';
     final resp = await http.get(url,
       headers: headerJson
     );

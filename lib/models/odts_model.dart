@@ -12,6 +12,7 @@ class Odtmodel {
     String odt;
     String noAfiliacion;
     String fecGarantia;
+    String fecAtencion;
     String negocio;
     int idAr;
     int idNegocio;
@@ -37,6 +38,7 @@ class Odtmodel {
         this.odt = '',
         this.noAfiliacion = '',
         this.fecGarantia = '',
+        this.fecAtencion = '',
         this.negocio = '',
         this.idAr = 0,
         this.idNegocio = 0,
@@ -63,6 +65,7 @@ class Odtmodel {
         odt: json["NO_AR"],
         noAfiliacion: json["NO_AFILIACION"],
         fecGarantia: json["FEC_GARANTIA"],
+        fecAtencion: json["FEC_ATENCION"],
         negocio: json["DESC_NEGOCIO"],
         idAr: json["ID_AR"],
         idNegocio: json["ID_NEGOCIO"],
@@ -89,6 +92,7 @@ class Odtmodel {
         "NO_AR": odt,
         "NO_AFILIACION": noAfiliacion,
         "FEC_GARANTIA": fecGarantia,
+        "FEC_ATENCION": fecAtencion,
         "DESC_NEGOCIO": negocio,
         "ID_AR": idAr,
         "ID_NEGOCIO": idNegocio,

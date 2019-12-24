@@ -1,9 +1,12 @@
 import 'package:elavonappmovil/models/cambiostatusarrequest_model.dart';
 import 'package:elavonappmovil/models/movimientoInventarioServicioFalla_model.dart';
 import 'package:elavonappmovil/provider/db_provider.dart';
+import 'package:elavonappmovil/provider/odt_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class DetalleInitBloc{
+
+  final _odtProvider = new OdtProvider();
 
   final _pageReturnController = BehaviorSubject<int>();
 
@@ -23,8 +26,17 @@ class DetalleInitBloc{
     return res;
   }
 
-  Future<int> getStatusCambio(int id) async {
+  Future<String> getStatusCambio() async {
 
+  }
+
+  Future<String> updateAceptarRechazarOdt(int idstatusar, int idar) async {
+    final res = await _odtProvider.updateAgregarRechazarOdt(idar, idstatusar);
+    if(idstatusar == 35 && res == 1){
+      return "El servicio se ha Aceptado";
+    }else{
+      return "El servicio se ha Rechazado";
+    }    
   }
 
   dispose(){

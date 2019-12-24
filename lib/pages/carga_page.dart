@@ -12,6 +12,7 @@ class CargaPage extends StatefulWidget {
 }
 
 class _CargaPageState extends State<CargaPage> {
+  int forzarActualizacion = 0;
   ProgressDialog pr;
   double progreso = 0.0;
 
@@ -20,8 +21,9 @@ class _CargaPageState extends State<CargaPage> {
     pr = new ProgressDialog(context,
         type: ProgressDialogType.Download,
         isDismissible: false,
-        showLogs: false);
+        showLogs: true);
     _crearProgressDialog();
+    forzarActualizacion = ModalRoute.of(context).settings.arguments;
     valActualizarOdts(context);
 
     return Scaffold(
@@ -37,7 +39,7 @@ class _CargaPageState extends State<CargaPage> {
     final updateBloc = Provider.updatesBloc(context);
     final update = await updateBloc.selectUpdate();
 
-    if (update == null) {
+    if (update == null || forzarActualizacion == 1) {
       cargarCatalogos(context);
     } else {
       final odtBloc = Provider.odtsBloc(context);
@@ -138,4 +140,5 @@ class _CargaPageState extends State<CargaPage> {
       Navigator.pushReplacementNamed(context, 'home');
     });
   }
+
 }

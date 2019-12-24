@@ -1,8 +1,12 @@
+import 'package:date_format/date_format.dart';
+import 'package:elavonappmovil/bloc/home_bloc.dart';
+import 'package:elavonappmovil/models/updates_model.dart';
 import 'package:elavonappmovil/provider/push_notifications_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:elavonappmovil/bloc/provider.dart';
 import 'package:elavonappmovil/models/totalodts_model.dart';
 import 'package:elavonappmovil/preferencias_usuario/preferencias_usuario.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -12,8 +16,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   final prefs = new PreferenciasUsuario();
+
   int nuevas = 0;
 
   @override
@@ -24,15 +28,13 @@ class _HomePageState extends State<HomePage> {
 
     pushProvider.initNotifiations(prefs.idUsuario);
 
-    pushProvider.mensajes.listen((argumento){
-
-    });
-
+    pushProvider.mensajes.listen((argumento) {});
   }
 
   @override
   Widget build(BuildContext context) {
     final totalodtsBloc = Provider.totalOdtsBloc(context);
+
     totales(totalodtsBloc);
 
     return Container(
@@ -43,7 +45,7 @@ class _HomePageState extends State<HomePage> {
             SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  _titulo(),
+                  _titulo(context),
                   //_botonesIniciales(context)
                   //_cardsIniciales(context)
                   _contenedorCards(context)
@@ -119,19 +121,35 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _titulo() {
+  Widget _titulo(BuildContext context) {
     return SafeArea(
       child: Container(
         padding: EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
-              "Hola",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 40.0,
-                  fontWeight: FontWeight.bold),
+            Row(
+              children: <Widget>[
+                Text(
+                  "Hola",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 40.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Ink(
+                  decoration: const ShapeDecoration(
+                      color: Colors.greenAccent, shape: CircleBorder()),
+                  child: IconButton(
+                    color: Colors.white,
+                    icon: Icon(Icons.refresh),
+                    onPressed: () {
+                      cargarCatalogos(context);
+                    },
+                  ),
+                )
+              ],
             ),
             Text(
               prefs.usuarioNombre,
@@ -166,6 +184,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
 /*
   Widget _botonesIniciales(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
@@ -241,7 +260,7 @@ class _HomePageState extends State<HomePage> {
         break;
       case 4:
         Navigator.pushNamed(context, 'unidadesInvenario');
-        break;        
+        break;
       case 5:
         Navigator.pushNamed(context, 'scanner');
         break;
@@ -250,8 +269,8 @@ class _HomePageState extends State<HomePage> {
         break;
       case 7:
         Navigator.pushNamed(context, 'agregarComentario');
-        break;          
-        default:
+        break;
+      default:
     }
   }
 
@@ -273,4 +292,9 @@ class _HomePageState extends State<HomePage> {
       children: <Widget>[gradiente],
     );
   }
+
+  void cargarCatalogos(BuildContext context) async {    
+    Navigator.popAndPushNamed(context, 'cargaCatalogos', arguments: 1);
+  }
+
 }

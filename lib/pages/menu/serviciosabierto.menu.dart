@@ -65,7 +65,7 @@ class _ServiciosAbiertosPageState extends State<ServiciosAbiertosPage>
     detalleInitBloc.changePageReturn(2);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cerrados"),
+        title: Text("Abiertos"),
       ),
       backgroundColor: Colors.blueAccent,
       body: Column(
@@ -102,7 +102,7 @@ class _ServiciosAbiertosPageState extends State<ServiciosAbiertosPage>
     for (int i = 0; i < listodts.length; i++) {
       //print(listodts[i].days.toString()+'/'+listodts[i].months.toString()+'/'+listodts[i].years.toString());
       List<Odtmodel> datosbyDate = await odt.selectAllOdtsbyDate2(
-          listodts[i].days, listodts[i].months, listodts[i].years, [3,4,5]);
+          listodts[i].days, listodts[i].months, listodts[i].years, [35,4,5]);
       eventos = {
         DateTime(listodts[i].years, listodts[i].months, listodts[i].days):
             datosbyDate

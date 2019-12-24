@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:load/load.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class DetalleInit extends StatefulWidget {
   @override
@@ -17,7 +18,7 @@ class DetalleInit extends StatefulWidget {
 class _DetalleInitState extends State<DetalleInit> {
   //StreamSubscription<Position> positionStream;
   Position position;
-
+  ProgressDialog pr;
   OdtsBloc odtBloc;
   DetalleInitBloc detalleBloc = new DetalleInitBloc();
 
@@ -28,9 +29,10 @@ class _DetalleInitState extends State<DetalleInit> {
 
   @override
   Widget build(BuildContext context) {
-
     final double _height = MediaQuery.of(context).size.height;
-
+    pr = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    _crearProgressDialog();
     odtBloc = Provider.odtsBloc(context);
     odt = odtBloc.getNuevoOdt;
 
@@ -38,6 +40,7 @@ class _DetalleInitState extends State<DetalleInit> {
       backgroundColor: Colors.blueAccent,
       body: SafeArea(
         child: SingleChildScrollView(
+          physics: ClampingScrollPhysics(),
           child: Column(
             children: <Widget>[
               SizedBox(
@@ -47,7 +50,10 @@ class _DetalleInitState extends State<DetalleInit> {
               SizedBox(
                 height: 10.0,
               ),
-              _crearCards(_height)
+              _crearCards(_height),
+              odt.idStatusAr == 13
+                  ? _crearBotonesRechazarAceptar(odt)
+                  : Container()
             ],
           ),
         ),
@@ -55,14 +61,14 @@ class _DetalleInitState extends State<DetalleInit> {
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          odt.idStatusAr != 6 && odt.idStatusAr != 7 && odt.idStatusAr != 8
+          odt.idStatusAr != 6 && odt.idStatusAr != 7 && odt.idStatusAr != 8 && odt.idStatusAr != 13
               ? FloatingActionButton.extended(
                   heroTag: UniqueKey(),
                   backgroundColor: Colors.lightBlueAccent,
                   label: Icon(Icons.location_on),
                   onPressed: () => _coordenadas(),
                 )
-              : Container(),
+              : SizedBox(width: 5.0),
           SizedBox(width: 5.0),
           odt.idStatusAr != 6 && odt.idStatusAr != 7 && odt.idStatusAr != 8
               ? FloatingActionButton.extended(
@@ -84,16 +90,52 @@ class _DetalleInitState extends State<DetalleInit> {
                 )
               : Container(),
           SizedBox(width: 5.0),
-          odt.idStatusAr != 6 && odt.idStatusAr != 7 && odt.idStatusAr != 8
+          odt.idStatusAr != 6 && odt.idStatusAr != 7 && odt.idStatusAr != 8 && odt.idStatusAr != 13
               ? FloatingActionButton.extended(
                   //heroTag: UniqueKey(),
                   backgroundColor: Colors.lightBlueAccent,
                   label: Icon(Icons.check),
                   onPressed: () => _openCierres(odt),
                 )
-              : Container()
+              : SizedBox(height: 5.0,)
         ],
       ),
+    );
+  }
+
+  Widget _crearBotonesRechazarAceptar(Odtmodel model) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        FlatButton(
+            padding: EdgeInsets.only(top: 10.0, bottom: 10.0, left: 50.0, right: 50.0),
+            color: Colors.red,
+            textColor: Colors.white,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(18.0),
+                    bottomLeft: Radius.circular(18.0)),
+                side: BorderSide(color: Colors.red)),
+            child: Text("Rechazar"),
+            onPressed: () {
+              _updateAceptarRechazarOdt(model,36);
+            },
+          ),
+        FlatButton(
+            color: Colors.green,
+            textColor: Colors.white,
+            padding: EdgeInsets.only(top: 10.0, bottom: 10.0, left: 50.0, right: 50.0),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(18.0),
+                    bottomRight: Radius.circular(18.0)),
+                side: BorderSide(color: Colors.green)),
+            child: Text("Aceptar"),
+            onPressed: () {
+              _updateAceptarRechazarOdt(model,35);
+            },
+          ),
+      ],
     );
   }
 
@@ -142,13 +184,13 @@ class _DetalleInitState extends State<DetalleInit> {
           children: <Widget>[
             Text(
               '${odt.descServicio}',
-              style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
             ),
             Text(
               '${odt.descFalla}',
-              style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
             ),
-            SizedBox(height: _height * 0.05),
+            SizedBox(height: 5.0),
             _crearTabla(context, odt),
             /*
             _crearItems(context, 'ODT', odt.odt.trimRight()),
@@ -183,7 +225,7 @@ class _DetalleInitState extends State<DetalleInit> {
 
   Widget _crearTabla(BuildContext context, Odtmodel odt) {
     return Table(
-        columnWidths: {1: FlexColumnWidth(2.5)},
+        columnWidths: {1: FlexColumnWidth(1.5)},
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         children: [
           _crearTableRow('ODT:', odt.odt.trimRight()),
@@ -202,6 +244,7 @@ class _DetalleInitState extends State<DetalleInit> {
               odt.latitud == null ? lat.toString() : odt.latitud.toString()),
           _crearTableRow('Longitud:',
               odt.longitud == null ? lon.toString() : odt.longitud.toString()),
+          _crearTableRow('Fecha Atención:', odt.fecAtencion.trimRight()),
           _crearTableRow('Fecha Garantía:', odt.fecGarantia.trimRight()),
           _crearTableRow('Estatus:', odt.estatusAr.trimRight())
         ]);
@@ -270,11 +313,32 @@ class _DetalleInitState extends State<DetalleInit> {
     Navigator.pop(_context);
   }
 
+  void _updateAceptarRechazarOdt(Odtmodel model, int idstatusNuevo) async {
+    pr.show();
+    String mensaje = await detalleBloc.updateAceptarRechazarOdt(
+        idstatusNuevo, model.idAr);
+    pr.hide().whenComplete(() {
+      String estatus = (idstatusNuevo == 35 ? 'Aceptado por tecnico' : 'Rechazado por tecnico');
+      odtBloc.updateOdt(model.idAr, idstatusNuevo, estatus);
+      model.idStatusAr = idstatusNuevo;
+      model.estatusAr = estatus;
+      odtBloc.nuevoOdt(model);
+      setState(() {
+        odt = odtBloc.getNuevoOdt;
+      });
+      final snackbar = SnackBar(
+        content: Text(mensaje),
+      );
+      Scaffold.of(context).showSnackBar(snackbar);
+    });
+  }
+
   void _updateStatusAr(Odtmodel model) async {
     String msg = '';
 
-    StatusCambioResponseModel cambio = await detalleBloc.getCambioStatusValido(model.idStatusAr);
-    if(cambio == null){
+    StatusCambioResponseModel cambio =
+        await detalleBloc.getCambioStatusValido(model.idStatusAr);
+    if (cambio == null) {
       return null;
     }
     showCustomLoadingWidget(Container(
@@ -291,7 +355,7 @@ class _DetalleInitState extends State<DetalleInit> {
 
     int isupdate = await odtBloc.updateStatusAr(
         model.idAr, model.idStatusAr, cambio.idStatusAr, model.idAr);
-    
+
     // isupdate == 1
     //     ? mostrarAlertDatosActualizado(
     //         context, 'El estatus de la Odt se ha actualizado')
@@ -306,9 +370,9 @@ class _DetalleInitState extends State<DetalleInit> {
       odtBloc.nuevoOdt(model);
       setState(() {
         odt = odtBloc.getNuevoOdt;
-      });        
+      });
     } else {
-      msg = 'La Odt no se ha actualizado al estatus ${cambio.descStatusAr}';    
+      msg = 'La Odt no se ha actualizado al estatus ${cambio.descStatusAr}';
     }
     final snackbar = SnackBar(
       content: Text(msg),
@@ -368,6 +432,20 @@ class _DetalleInitState extends State<DetalleInit> {
     Scaffold.of(context).showSnackBar(snackbar);
     hideLoadingDialog();
     //positionStream.cancel();
+  }
+
+  _crearProgressDialog() {
+    pr.style(
+        message: 'Procesando...',
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        progressWidget: CircularProgressIndicator(),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progressTextStyle: TextStyle(
+            color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
+        messageTextStyle: TextStyle(
+            color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600));
   }
 
   @override

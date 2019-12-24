@@ -15,6 +15,7 @@ class BdArs {
   static final columnPOBLACION = 'POBLACION';
   static final columnDIRECCION = 'DIRECCION';
   static final columnFECGARANTIA = 'FEC_GARANTIA';
+  static final columnFECATENCION = 'FEC_ATENCION';
   static final columnLATITUD = 'LATITUD';
   static final columnLONGITUD = 'LONGITUD';
   static final columnDAYS = 'DAYS';

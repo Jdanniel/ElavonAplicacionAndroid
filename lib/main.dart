@@ -22,7 +22,7 @@ import 'package:elavonappmovil/pages/menu/detalles/agregarcomentarios.dart';
 import 'package:elavonappmovil/pages/menu/detalles/pruebadetalle.dart';
 
 void main() async {
-  
+  WidgetsFlutterBinding.ensureInitialized();
   final prefs = new PreferenciasUsuario();
   await prefs.initPrefs();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);

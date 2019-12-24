@@ -61,8 +61,13 @@ class DBProvider {
     await deleteDatabase(path);
   }
 
+  closeDb() async{
+    final db = await database;
+    await db.close();
+  }
+
   initDB(String path) async {
-    //await deleteDatabase(path);
+    await deleteDatabase(path);
     final String queryServicios =
         'CREATE TABLE ${Cservicios.table} ( ${Cservicios.columnID} INTEGER NOT NULL, ${Cservicios.columnDESCSERVICIO} TEXT)';
     final String queryFallas =
@@ -80,7 +85,7 @@ class DBProvider {
     final String queryUpdates =
         'CREATE TABLE $tableUpdates ( idupdates INTEGER PRIMARY KEY, fecha TEXT)';
     final String queryArs =
-        'CREATE TABLE ${BdArs.table} (${BdArs.columnID} INTEGER NOT NULL, ${BdArs.columnNOAR} TEXT, ${BdArs.columnIDNEGOCIO} INTEGER, ${BdArs.columnIDTIPOSERVICIO} INTEGER, ${BdArs.columnDESCNEGOCIO} TEXT, ${BdArs.columnNOAFILIACION} TEXT, ${BdArs.columnESTADO} TEXT, ${BdArs.columnCOLONIA} TEXT, ${BdArs.columnPOBLACION} TEXT, ${BdArs.columnDIRECCION} TEXT, ${BdArs.columnFECGARANTIA} TEXT, ${BdArs.columnLATITUD} REAL, ${BdArs.columnLONGITUD} REAL, ${BdArs.columnDAYS} INTEGER, ${BdArs.columnMONTHS} INTEGER, ${BdArs.columnYEARS} INTEGER, ${BdArs.columnNUMBERS} INTEGER, ${BdArs.columnIDSTATUSAR} INTEGER, ${BdArs.columnIDSERVICIO} INTEGER, ${BdArs.columnIDFALLA} INTEGER, ${BdArs.columnSTATUSAR} TEXT)';
+        'CREATE TABLE ${BdArs.table} (${BdArs.columnID} INTEGER NOT NULL, ${BdArs.columnNOAR} TEXT, ${BdArs.columnIDNEGOCIO} INTEGER, ${BdArs.columnIDTIPOSERVICIO} INTEGER, ${BdArs.columnDESCNEGOCIO} TEXT, ${BdArs.columnNOAFILIACION} TEXT, ${BdArs.columnESTADO} TEXT, ${BdArs.columnCOLONIA} TEXT, ${BdArs.columnPOBLACION} TEXT, ${BdArs.columnDIRECCION} TEXT, ${BdArs.columnFECGARANTIA} TEXT, ${BdArs.columnFECATENCION} TEXT, ${BdArs.columnLATITUD} REAL, ${BdArs.columnLONGITUD} REAL, ${BdArs.columnDAYS} INTEGER, ${BdArs.columnMONTHS} INTEGER, ${BdArs.columnYEARS} INTEGER, ${BdArs.columnNUMBERS} INTEGER, ${BdArs.columnIDSTATUSAR} INTEGER, ${BdArs.columnIDSERVICIO} INTEGER, ${BdArs.columnIDFALLA} INTEGER, ${BdArs.columnSTATUSAR} TEXT)';
     final String queryMovInventarioSF =
         'CREATE TABLE ${CmovimientoInventarioServicioFalla.table} (${CmovimientoInventarioServicioFalla.columnID} INTEGER NOT NULL, ${CmovimientoInventarioServicioFalla.columnIDSERVICIO} INT, ${CmovimientoInventarioServicioFalla.columnIDFALLA} INT, ${CmovimientoInventarioServicioFalla.columnIDMOVINVENTARIO} INT, ${CmovimientoInventarioServicioFalla.columnSTATUS} TEXT)';
     final String queryCcausas =
@@ -229,6 +234,7 @@ class DBProvider {
         "${BdArs.columnPOBLACION},"
         "${BdArs.columnDIRECCION},"
         "${BdArs.columnFECGARANTIA},"
+        "${BdArs.columnFECATENCION},"
         "${BdArs.columnLATITUD},"
         "${BdArs.columnLONGITUD},"
         "${BdArs.columnDAYS},"
@@ -251,6 +257,7 @@ class DBProvider {
         "'${model.poblacion}',"
         "'${model.direccion}',"
         "'${model.fecGarantia}',"
+        "'${model.fecAtencion}',"
         "${model.latitud},"
         "${model.longitud},"
         "${model.days},"
@@ -527,10 +534,10 @@ class DBProvider {
       return await txn.rawQuery(
         "SELECT * , (SELECT ${Cfallas.columnDESCFALLA} "
                   "FROM ${Cfallas.table} "
-                  "WHERE ${Cfallas.columnIDFALLA} = ${BdArs.columnIDFALLA}) AS DESC_FALLA, "
+                  "WHERE ${Cfallas.table}.${Cfallas.columnIDFALLA} = ${BdArs.table}.${BdArs.columnIDFALLA}) AS DESC_FALLA, "
                   "(SELECT ${Cservicios.columnDESCSERVICIO} "
                   "FROM ${Cservicios.table} "
-                  "WHERE ${Cservicios.columnID} = ${BdArs.columnIDSERVICIO}) AS DESC_SERVICIO "
+                  "WHERE ${Cservicios.table}.${Cservicios.columnID} = ${BdArs.table}.${BdArs.columnIDSERVICIO}) AS DESC_SERVICIO "
                   "FROM ${BdArs.table} "
                   "WHERE ${BdArs.columnIDSTATUSAR} IN ($idstatus)"
       );

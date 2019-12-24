@@ -1,7 +1,3 @@
-import 'package:elavonappmovil/bloc/cambiostatusar_bloc.dart';
-import 'package:elavonappmovil/bloc/detalleinit_bloc.dart';
-import 'package:elavonappmovil/bloc/movimientosInventario_bloc.dart';
-import 'package:elavonappmovil/bloc/statusar_bloc.dart';
 import 'package:flutter/material.dart';
 
 import 'login_bloc.dart';
@@ -46,11 +42,28 @@ export 'package:elavonappmovil/bloc/cierreSustitucion_bloc.dart';
 import 'package:elavonappmovil/bloc/fallas_bloc.dart';
 export 'package:elavonappmovil/bloc/fallas_bloc.dart';
 
+import 'package:elavonappmovil/bloc/cambiostatusar_bloc.dart';
+export 'package:elavonappmovil/bloc/cambiostatusar_bloc.dart';
+
+import 'package:elavonappmovil/bloc/detalleinit_bloc.dart';
+export 'package:elavonappmovil/bloc/detalleinit_bloc.dart';
+
+import 'package:elavonappmovil/bloc/home_bloc.dart';
+export 'package:elavonappmovil/bloc/home_bloc.dart';
+
+import 'package:elavonappmovil/bloc/movimientosInventario_bloc.dart';
+export 'package:elavonappmovil/bloc/movimientosInventario_bloc.dart';
+
+import 'package:elavonappmovil/bloc/statusar_bloc.dart';
+export 'package:elavonappmovil/bloc/statusar_bloc.dart';
+
 import 'package:elavonappmovil/bloc/updates_bloc.dart';
 
 class Provider extends InheritedWidget{
   
   final _loginBloc = new LoginBloc();
+
+  final _homeBloc = new HomeBloc();
 
   final _totalodtsBloc = new TotalOdtsBloc();
 
@@ -105,6 +118,11 @@ class Provider extends InheritedWidget{
 
   static LoginBloc of (BuildContext context){
     return (context.inheritFromWidgetOfExactType(Provider) as Provider)._loginBloc;
+    //return(context.dependOnInheritedWidgetOfExactType(). as Provider)._loginBloc;
+  }
+
+  static HomeBloc homeBloc(BuildContext context){
+    return(context.inheritFromWidgetOfExactType(Provider) as Provider)._homeBloc;
   }
 
   static TotalOdtsBloc totalOdtsBloc(BuildContext context){
