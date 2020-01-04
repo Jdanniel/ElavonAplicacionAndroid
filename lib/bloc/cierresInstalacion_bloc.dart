@@ -1,5 +1,7 @@
 
 
+import 'package:elavonappmovil/models/unidades_model.dart';
+import 'package:elavonappmovil/provider/db_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CierresInstalacionBloc {
@@ -110,6 +112,10 @@ class CierresInstalacionBloc {
   int get getDiscover => _discoverController.value;
   int get getCaja => _cajaController.value;
   String get getComentarios => _comentariosController.value;
+
+  Future<List<UnidadesModel>> getSeries(String serie) async {
+    return DBProvider.db.getAllUnidadesBySerie(serie);
+  }
 
   dispose(){
     _noserieController?.close();

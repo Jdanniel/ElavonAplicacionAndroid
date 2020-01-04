@@ -6,9 +6,9 @@ import 'package:elavonappmovil/models/software_model.dart';
 import 'package:elavonappmovil/models/unidades_model.dart';
 import 'package:elavonappmovil/provider/db_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:intl/intl.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-
 
 class CierresInstalacion extends StatefulWidget {
   @override
@@ -16,7 +16,6 @@ class CierresInstalacion extends StatefulWidget {
 }
 
 class _CierresInstalacionState extends State<CierresInstalacion> {
-  
   final GlobalKey<FormState> _formKey0 = new GlobalKey<FormState>();
   final GlobalKey<FormState> _formKey1 = new GlobalKey<FormState>();
   final GlobalKey<FormState> _formKey2 = new GlobalKey<FormState>();
@@ -38,6 +37,7 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
   TextEditingController textVOBO = new TextEditingController();
   TextEditingController textComentarios = new TextEditingController();
   TextEditingController textFechaCierre = new TextEditingController();
+  TextEditingController autoCompleteSeries = new TextEditingController();
 
   List<DropdownMenuItem<String>> listaAplicativos;
   List<DropdownMenuItem<String>> listaSeries;
@@ -70,77 +70,82 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
     initDropDownButtonSeries();
     initDropDownButtonConectividad();
     initDropDownButtonAplicativo();
-    
   }
 
   @override
   Widget build(BuildContext context) {
-    
-    pr = new ProgressDialog(context, type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
-    createProgressDialog();    
+    pr = new ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    createProgressDialog();
 
     bloc = Provider.cierresInstalBloc(context);
-    bloc.getVersion != null ? textVersion.text = bloc.getVersion : textVersion.text = '';
+    bloc.getVersion != null
+        ? textVersion.text = bloc.getVersion
+        : textVersion.text = '';
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Theme.of(context).primaryColor,
-        body: Column(
-          children: <Widget>[
-            isComplete ? Expanded(
-              child: Center(
-                child: AlertDialog(
-                  title: Text("Datos ingresados"),
-                  content: Text("¿Deseas Continuar?"),
-                  actions: <Widget>[
-                    FlatButton(
-                      child: Text("Regresar"),
-                      onPressed: (){
-                        setState(() {
-                          isComplete = false;
-                        });
-                      },
-                    ),
-                    FlatButton(
-                      child: Text("Continuar"),
-                      onPressed: (){
-                        _enviarDatosCierreInstalacion();
-                      },
+          backgroundColor: Theme.of(context).primaryColor,
+          body: Column(
+            children: <Widget>[
+              isComplete
+                  ? Expanded(
+                      child: Center(
+                        child: AlertDialog(
+                          title: Text("Datos ingresados"),
+                          content: Text("¿Deseas Continuar?"),
+                          actions: <Widget>[
+                            FlatButton(
+                              child: Text("Regresar"),
+                              onPressed: () {
+                                setState(() {
+                                  isComplete = false;
+                                });
+                              },
+                            ),
+                            FlatButton(
+                              child: Text("Continuar"),
+                              onPressed: () {
+                                _enviarDatosCierreInstalacion();
+                              },
+                            )
+                          ],
+                        ),
+                      ),
                     )
-                  ],
-                ),
-              ),
-            ) : Expanded(
-              child: Container(
-                color: Colors.white,
-                child: Stepper(
-                  physics: ClampingScrollPhysics(),
-                  type: StepperType.horizontal,
-                  steps: [
-                    paso0(),
-                    paso1(),
-                    paso2(),
-                    paso3(),
-                    paso4(),
-                    paso5()
-                  ],
-                  currentStep: currentStep,
-                  onStepTapped: (step) => goTo(step),
-                  onStepCancel: cancel,
-                  onStepContinue: next,
-                  controlsBuilder: (BuildContext context, {VoidCallback onStepContinue, VoidCallback onStepCancel}){
-                    return _botonesStepper(onStepContinue, onStepCancel);
-                  },
-                ),
-              ),
-            )
-          ],
-        )
-      ),
+                  : Expanded(
+                      child: Container(
+                        color: Colors.white,
+                        child: Stepper(
+                          physics: ClampingScrollPhysics(),
+                          type: StepperType.horizontal,
+                          steps: [
+                            paso0(),
+                            paso1(),
+                            paso2(),
+                            paso3(),
+                            paso4(),
+                            paso5()
+                          ],
+                          currentStep: currentStep,
+                          onStepTapped: (step) => goTo(step),
+                          onStepCancel: cancel,
+                          onStepContinue: next,
+                          controlsBuilder: (BuildContext context,
+                              {VoidCallback onStepContinue,
+                              VoidCallback onStepCancel}) {
+                            return _botonesStepper(
+                                onStepContinue, onStepCancel);
+                          },
+                        ),
+                      ),
+                    )
+            ],
+          )),
     );
   }
 
-  Widget _botonesStepper(VoidCallback continues, VoidCallback cancel){
+  Widget _botonesStepper(VoidCallback continues, VoidCallback cancel) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -148,12 +153,10 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
           child: FlatButton(
             padding: EdgeInsets.all(10.0),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(18.0),
-                bottomLeft: Radius.circular(18.0)
-              ),
-              side: BorderSide(color: Theme.of(context).primaryColor)
-            ),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(18.0),
+                    bottomLeft: Radius.circular(18.0)),
+                side: BorderSide(color: Theme.of(context).primaryColor)),
             child: Text("Regresar"),
             onPressed: cancel,
           ),
@@ -165,13 +168,12 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
             padding: EdgeInsets.all(10.0),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
-                topRight: Radius.circular(18.0),
-                bottomRight: Radius.circular(18.0)
-              ),
+                  topRight: Radius.circular(18.0),
+                  bottomRight: Radius.circular(18.0)),
             ),
             child: Text("Siguiente"),
-            onPressed: (){
-              if(validaBotonSiguiente()){
+            onPressed: () {
+              if (validaBotonSiguiente()) {
                 continues();
               }
             },
@@ -181,36 +183,36 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
     );
   }
 
-  bool validaBotonSiguiente(){
+  bool validaBotonSiguiente() {
     bool validate = false;
-    switch(currentStep){
+    switch (currentStep) {
       case 0:
-        if(_formKey0.currentState.validate()){
+        if (_formKey0.currentState.validate()) {
           validate = true;
         }
         break;
       case 1:
-        if(_formKey1.currentState.validate()){
+        if (_formKey1.currentState.validate()) {
           validate = true;
         }
         break;
       case 2:
-        if(_formKey2.currentState.validate()){
+        if (_formKey2.currentState.validate()) {
           validate = true;
         }
         break;
       case 3:
-        if(_formKey3.currentState.validate()){
+        if (_formKey3.currentState.validate()) {
           validate = true;
         }
         break;
       case 4:
-        if(_formKey4.currentState.validate()){
+        if (_formKey4.currentState.validate()) {
           validate = true;
         }
         break;
       case 5:
-        if(_formKey5.currentState.validate()){
+        if (_formKey5.currentState.validate()) {
           validate = true;
         }
         break;
@@ -221,68 +223,83 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
     return validate;
   }
 
-  Step paso0(){
+  Step paso0() {
     return Step(
-      title: Text("1"),
-      isActive: currentStep > 0 ? true : false,
-      state: currentStep > 0 ? StepState.complete : StepState.editing,
-      content: Form(
-        key: _formKey0,
-        child: Column(
-          children: <Widget>[
-              Container(
-                child: Text(
-                  "Terminal a Instalar",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+        title: Text("1"),
+        isActive: currentStep > 0 ? true : false,
+        state: currentStep > 0 ? StepState.complete : StepState.editing,
+        content: Form(
+            key: _formKey0,
+            child: Column(
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    "Terminal a Instalar",
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 15.0,
-              ),
-              _crearDropDownButtonSerie(),
-              SizedBox(height: 15.0),
-              _crearDropDownButtonConectividad(),
-              SizedBox(
-                height: 15.0,
-              ),
-              _crearDropDownButtonAplicativo(),
-              SizedBox(
-                height: 15.0,
-              ),
-              TextFormField(
-                controller: textVersion,
-                decoration: InputDecoration(
-                    icon: Icon(Icons.gamepad),
-                    labelText: 'Versión',
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32.0))),
-                onChanged: (newValue){
-                  setState(() {
-                    bloc.changeVersion(newValue);
-                  });
-                },
-                keyboardType: TextInputType.numberWithOptions(),
-              ),
-              SizedBox(
-                height: 5.0,
-              ),
-          ],
-        )
-      )
-    );
+                SizedBox(
+                  height: 15.0,
+                ),
+                _crearDropDownButtonSerie(),
+                SizedBox(
+                  height: 15.0,
+                ),
+                _crearAutoCompleteSeries(),
+                SizedBox(height: 15.0),
+                _crearDropDownButtonConectividad(),
+                SizedBox(
+                  height: 15.0,
+                ),
+                _crearDropDownButtonAplicativo(),
+                SizedBox(
+                  height: 15.0,
+                ),
+                TextFormField(
+                  controller: textVersion,
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.gamepad),
+                      labelText: 'Versión',
+                      contentPadding:
+                          EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32.0))),
+                          keyboardType: TextInputType.number,
+                ),
+                TextFormField(
+                  controller: textVersion,
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.gamepad),
+                      labelText: 'Versión',
+                      contentPadding:
+                          EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32.0))),
+                  onChanged: (newValue) {
+                    setState(() {
+                      bloc.changeVersion(newValue);
+                    });
+                  },
+                  keyboardType: TextInputType.number,
+                ),
+                SizedBox(
+                  height: 5.0,
+                ),
+              ],
+            )));
   }
 
-  Step paso1(){
+  Step paso1() {
     return Step(
-      title: Text("2"),
-      isActive: currentStep > 1 ? true : false,
-      state: currentStep > 1 ? StepState.complete : StepState.editing,
-      content: Form(
-        key: _formKey1,
-        child: Column(
-          children: <Widget>[
+        title: Text("2"),
+        isActive: currentStep > 1 ? true : false,
+        state: currentStep > 1 ? StepState.complete : StepState.editing,
+        content: Form(
+            key: _formKey1,
+            child: Column(
+              children: <Widget>[
                 Container(
                   child: Text(
                     "Accesorios a Instalar",
@@ -369,428 +386,430 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
                     ])
                   ],
                 ),
-          ],
-        )
-      )
-    );
+              ],
+            )));
   }
 
-  Step paso2(){
+  Step paso2() {
     return Step(
-      title: Text("2"),
-      isActive: currentStep > 2 ? true : false,
-      state: currentStep > 2 ? StepState.complete : StepState.editing,
-      content: Form(
-        key: _formKey2,
-        child: Column(
-          children: <Widget>[
-              Container(
-                child: Text(
-                  'Datos Amex',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                ),
-              ),
-              SizedBox(
-                height: 5.0,
-              ),
-              Row(
-                children: <Widget>[
-                  Text('Es Amex'),
-                  Checkbox(
-                    value: chkIsAmex,
-                    onChanged: (value) {
-                      setState(() {
-                        bloc.changeIsAmex(value);
-                        chkIsAmex = value;
-                      });
-                    },
+        title: Text("2"),
+        isActive: currentStep > 2 ? true : false,
+        state: currentStep > 2 ? StepState.complete : StepState.editing,
+        content: Form(
+            key: _formKey2,
+            child: Column(
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    'Datos Amex',
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
-                ],
-              ),
-              chkIsAmex
-                  ? TextFormField(
-                    controller: textIdamex,
-                      decoration: InputDecoration(
-                          icon: Icon(Icons.gamepad),
-                          labelText: 'Id Amex',
-                          contentPadding:
-                              EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32.0))),
-                      onChanged: (newValue){
+                ),
+                SizedBox(
+                  height: 5.0,
+                ),
+                Row(
+                  children: <Widget>[
+                    Text('Es Amex'),
+                    Checkbox(
+                      value: chkIsAmex,
+                      onChanged: (value) {
                         setState(() {
-                          bloc.changeIdAmex(newValue);
+                          bloc.changeIsAmex(value);
+                          chkIsAmex = value;
                         });
                       },
-                      keyboardType: TextInputType.numberWithOptions(),
-                    )
-                  : Container(),
-              chkIsAmex
-                  ? SizedBox(
-                      height: 15.0,
-                    )
-                  : Container(),
-              chkIsAmex
-                  ? TextFormField(
-                    controller: textAfilAmex,
-                      decoration: InputDecoration(
-                          icon: Icon(Icons.gamepad),
-                          labelText: 'Afiliación Amex',
-                          contentPadding:
-                              EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32.0))),
-                              onChanged: (newValue){
-                                setState(() {
-                                  bloc.changeAfilAmex(newValue);
-                                });
-                              },
-                      keyboardType: TextInputType.numberWithOptions(),
-                    )
-                  : Container(),
-              chkIsAmex
-                  ? SizedBox(
-                      height: 15.0,
-                    )
-                  : Container(),
-              chkIsAmex
-                  ? TextFormField(
-                    controller: textConcAmex,
-                      decoration: InputDecoration(
-                          icon: Icon(Icons.gamepad),
-                          labelText: 'Conclusiones Amex',
-                          contentPadding:
-                              EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(32.0))),
-                              onChanged: (newValue){
-                                setState(() {
-                                  bloc.changeConclusionesAmex(newValue);
-                                });
-                              },
-                      keyboardType: TextInputType.text,
-                    )
-                  : Container(),
-              SizedBox(
-                height: 15.0,
-              ),
-          ],
-        )
-      )
-    );
+                    ),
+                  ],
+                ),
+                chkIsAmex
+                    ? TextFormField(
+                        controller: textIdamex,
+                        decoration: InputDecoration(
+                            icon: Icon(Icons.gamepad),
+                            labelText: 'Id Amex',
+                            contentPadding:
+                                EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(32.0))),
+                        onChanged: (newValue) {
+                          setState(() {
+                            bloc.changeIdAmex(newValue);
+                          });
+                        },
+                        keyboardType: TextInputType.numberWithOptions(),
+                      )
+                    : Container(),
+                chkIsAmex
+                    ? SizedBox(
+                        height: 15.0,
+                      )
+                    : Container(),
+                chkIsAmex
+                    ? TextFormField(
+                        controller: textAfilAmex,
+                        decoration: InputDecoration(
+                            icon: Icon(Icons.gamepad),
+                            labelText: 'Afiliación Amex',
+                            contentPadding:
+                                EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(32.0))),
+                        onChanged: (newValue) {
+                          setState(() {
+                            bloc.changeAfilAmex(newValue);
+                          });
+                        },
+                        keyboardType: TextInputType.numberWithOptions(),
+                      )
+                    : Container(),
+                chkIsAmex
+                    ? SizedBox(
+                        height: 15.0,
+                      )
+                    : Container(),
+                chkIsAmex
+                    ? TextFormField(
+                        controller: textConcAmex,
+                        decoration: InputDecoration(
+                            icon: Icon(Icons.gamepad),
+                            labelText: 'Conclusiones Amex',
+                            contentPadding:
+                                EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(32.0))),
+                        onChanged: (newValue) {
+                          setState(() {
+                            bloc.changeConclusionesAmex(newValue);
+                          });
+                        },
+                        keyboardType: TextInputType.text,
+                      )
+                    : Container(),
+                SizedBox(
+                  height: 15.0,
+                ),
+              ],
+            )));
   }
 
-  Step paso3(){
+  Step paso3() {
     return Step(
-      title: Text("3"),
-      isActive: currentStep > 3  ? true : false,
-      state: currentStep > 3 ? StepState.complete : StepState.editing,
-      content: Form(
-        key: _formKey3,
-        child: Column(
-          children: <Widget>[
-              Container(
-                child: Text(
-                  'Mi Comercio',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+        title: Text("3"),
+        isActive: currentStep > 3 ? true : false,
+        state: currentStep > 3 ? StepState.complete : StepState.editing,
+        content: Form(
+            key: _formKey3,
+            child: Column(
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    'Mi Comercio',
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-              Row(
-                children: <Widget>[
-                  Text("Notificado"),
-                  Switch(
-                    value: switchNotificado,
-                    onChanged: (value) {
-                      setState(() {
-                        bloc.changeNotificado(value);
-                        switchNotificado = value;
-                      });
-                    },
-                  ),
-                  Text("Promociones"),
-                  Switch(
-                    value: switchPromociones,
-                    onChanged: (value) {
-                      setState(() {
-                        bloc.changePromociones(value);
-                        switchPromociones = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text("Se Descarga App"),
-                  Switch(
-                    value: switchDescargar,
-                    onChanged: (value) {
-                      setState(() {
-                        bloc.changeDescargarApp(value);
-                        switchDescargar = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 15.0,
-              ),
-              TextFormField(
-                controller: textTelefono1,
-                decoration: InputDecoration(
-                    icon: Icon(Icons.phone),
-                    labelText: 'Teléfono 1',
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32.0))),
-                        onChanged: (value){
-                          setState(() {
-                            bloc.changeTelefono1(value);
-                          });
-                        },
-                keyboardType: TextInputType.phone,
-              ),
-              SizedBox(
-                height: 15.0,
-              ),
-              TextFormField(
-                controller: textTelefono2,
-                decoration: InputDecoration(
-                    icon: Icon(Icons.phone),
-                    labelText: 'Teléfono 2',
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32.0))),
-                        onChanged: (value){
-                          setState(() {
-                            bloc.changeTelefono2(value);
-                          });
-                        },
-                keyboardType: TextInputType.phone,
-              ),
-              SizedBox(
-                height: 15.0,
-              ),
-          ],
-        )
-      )
-    );
+                Row(
+                  children: <Widget>[
+                    Text("Notificado"),
+                    Switch(
+                      value: switchNotificado,
+                      onChanged: (value) {
+                        setState(() {
+                          bloc.changeNotificado(value);
+                          switchNotificado = value;
+                        });
+                      },
+                    ),
+                    Text("Promociones"),
+                    Switch(
+                      value: switchPromociones,
+                      onChanged: (value) {
+                        setState(() {
+                          bloc.changePromociones(value);
+                          switchPromociones = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("Se Descarga App"),
+                    Switch(
+                      value: switchDescargar,
+                      onChanged: (value) {
+                        setState(() {
+                          bloc.changeDescargarApp(value);
+                          switchDescargar = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 15.0,
+                ),
+                TextFormField(
+                  controller: textTelefono1,
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.phone),
+                      labelText: 'Teléfono 1',
+                      contentPadding:
+                          EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32.0))),
+                  onChanged: (value) {
+                    setState(() {
+                      bloc.changeTelefono1(value);
+                    });
+                  },
+                  keyboardType: TextInputType.phone,
+                ),
+                SizedBox(
+                  height: 15.0,
+                ),
+                TextFormField(
+                  controller: textTelefono2,
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.phone),
+                      labelText: 'Teléfono 2',
+                      contentPadding:
+                          EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32.0))),
+                  onChanged: (value) {
+                    setState(() {
+                      bloc.changeTelefono2(value);
+                    });
+                  },
+                  keyboardType: TextInputType.phone,
+                ),
+                SizedBox(
+                  height: 15.0,
+                ),
+              ],
+            )));
   }
 
-  Step paso4(){
+  Step paso4() {
     return Step(
-      title: Text("4"),
-      isActive: currentStep > 4 ? true : false,
-      state: currentStep > 4 ? StepState.complete : StepState.editing,
-      content: Form(
-        key: _formKey4,
-        child: Column(
-          children: <Widget>[
-              Container(
-                child: Text(
-                  'Datos del Servicio',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+        title: Text("4"),
+        isActive: currentStep > 4 ? true : false,
+        state: currentStep > 4 ? StepState.complete : StepState.editing,
+        content: Form(
+            key: _formKey4,
+            child: Column(
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    'Datos del Servicio',
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-              DateTimeField(
-                controller: textFechaCierre,
-                format: DateFormat('dd/MM/yyyy HH:mm'),
-                onShowPicker: (context, currentValue) async {
-                  final date = await showDatePicker(
-                      context: context,
-                      firstDate: DateTime(1900),
-                      initialDate: currentValue ?? DateTime.now(),
-                      lastDate: DateTime(2100));
-                  if(date != null){
-                    final time = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
-                    );
-                    return DateTimeField.combine(date, time);
-                  }else{
-                    return currentValue;
-                  }
-
-                },
-                decoration: InputDecoration(
-                    icon: Icon(Icons.calendar_today),
-                    labelText: 'Fecha Cierre',
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32.0))),
-                        onChanged: (value){
-                          setState(() {
-                            bloc.changeFechaCierre(value);
-                          });
-                        },
-              ),
-              SizedBox(
-                height: 15.0,
-              ),
-              TextFormField(
-                controller: textAtiende,
-                decoration: InputDecoration(
-                    icon: Icon(Icons.phone),
-                    labelText: 'Atiende',
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32.0))),
-                        onChanged: (value){
-                          setState(() {
-                            bloc.changeAtiende(value);
-                          });
-                        },
-                keyboardType: TextInputType.text,
-              ),
-              SizedBox(
-                height: 15.0,
-              ),
-              TextFormField(
-                controller: textVOBO,
-                decoration: InputDecoration(
-                    icon: Icon(Icons.phone),
-                    labelText: 'Otorgante VOBO',
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32.0))),
-                        onChanged: (value){
-                          setState(() {
-                            bloc.changeOtorgante(value);
-                          });
-                        },
-                keyboardType: TextInputType.text,
-              ),
-              SizedBox(
-                height: 15.0,
-              ),
-              _crearDropDownButtonTipoAtencion(),
-              SizedBox(
-                height: 15.0,
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                    icon: Icon(Icons.camera_roll),
-                    labelText: 'Rollos Instalados',
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32.0))),
-                        onChanged: (value){
-                          setState(() {
-                            bloc.changeRollos(int.parse(value));
-                          });
-                        },
-                keyboardType: TextInputType.number,
-              ),
-              SizedBox(
-                height: 15.0,
-              ),
-              Text(
-                'Discover',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Radio(
-                    value: 1,
-                    groupValue: radiodiscover,
-                    onChanged: (value) {
-                      setState(() {
-                        bloc.changeDiscover(value);
-                        radiodiscover = value;
-                      });
-                    },
-                  ),
-                  Text(
-                    'Sí',
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                  Radio(
-                    value: 0,
-                    groupValue: radiodiscover,
-                    onChanged: (value) {
-                      setState(() {
-                        bloc.changeDiscover(value);
-                        radiodiscover = value;
-                      });
-                    },
-                  ),
-                  Text(
-                    'No',
-                    style: TextStyle(fontSize: 16.0),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 15.0,
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                    icon: Icon(Icons.phone),
-                    labelText: 'Caja',
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32.0))),
-                        onChanged: (value){
-                          setState(() {
-                            bloc.changeCaja(int.parse(value));
-                          });
-                        },
-                keyboardType: TextInputType.number,
-              ),
-              SizedBox(
-                height: 15.0,
-              ),
-          ],
-        )
-      )
-    );
+                DateTimeField(
+                  controller: textFechaCierre,
+                  format: DateFormat('dd/MM/yyyy HH:mm'),
+                  onShowPicker: (context, currentValue) async {
+                    final date = await showDatePicker(
+                        context: context,
+                        firstDate: DateTime(1900),
+                        initialDate: currentValue ?? DateTime.now(),
+                        lastDate: DateTime(2100));
+                    if (date != null) {
+                      final time = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.fromDateTime(
+                            currentValue ?? DateTime.now()),
+                      );
+                      return DateTimeField.combine(date, time);
+                    } else {
+                      return currentValue;
+                    }
+                  },
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.calendar_today),
+                      labelText: 'Fecha Cierre',
+                      contentPadding:
+                          EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32.0))),
+                  onChanged: (value) {
+                    setState(() {
+                      bloc.changeFechaCierre(value);
+                    });
+                  },
+                ),
+                SizedBox(
+                  height: 15.0,
+                ),
+                TextFormField(
+                  controller: textAtiende,
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.phone),
+                      labelText: 'Atiende',
+                      contentPadding:
+                          EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32.0))),
+                  onChanged: (value) {
+                    setState(() {
+                      bloc.changeAtiende(value);
+                    });
+                  },
+                  keyboardType: TextInputType.text,
+                ),
+                SizedBox(
+                  height: 15.0,
+                ),
+                TextFormField(
+                  controller: textVOBO,
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.phone),
+                      labelText: 'Otorgante VOBO',
+                      contentPadding:
+                          EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32.0))),
+                  onChanged: (value) {
+                    setState(() {
+                      bloc.changeOtorgante(value);
+                    });
+                  },
+                  keyboardType: TextInputType.text,
+                ),
+                SizedBox(
+                  height: 15.0,
+                ),
+                _crearDropDownButtonTipoAtencion(),
+                SizedBox(
+                  height: 15.0,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.camera_roll),
+                      labelText: 'Rollos Instalados',
+                      contentPadding:
+                          EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32.0))),
+                  onChanged: (value) {
+                    setState(() {
+                      bloc.changeRollos(int.parse(value));
+                    });
+                  },
+                  keyboardType: TextInputType.number,
+                ),
+                SizedBox(
+                  height: 15.0,
+                ),
+                Text(
+                  'Discover',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Radio(
+                      value: 1,
+                      groupValue: radiodiscover,
+                      onChanged: (value) {
+                        setState(() {
+                          bloc.changeDiscover(value);
+                          radiodiscover = value;
+                        });
+                      },
+                    ),
+                    Text(
+                      'Sí',
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                    Radio(
+                      value: 0,
+                      groupValue: radiodiscover,
+                      onChanged: (value) {
+                        setState(() {
+                          bloc.changeDiscover(value);
+                          radiodiscover = value;
+                        });
+                      },
+                    ),
+                    Text(
+                      'No',
+                      style: TextStyle(fontSize: 16.0),
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 15.0,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.phone),
+                      labelText: 'Caja',
+                      contentPadding:
+                          EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32.0))),
+                  onChanged: (value) {
+                    setState(() {
+                      bloc.changeCaja(int.parse(value));
+                    });
+                  },
+                  keyboardType: TextInputType.number,
+                ),
+                SizedBox(
+                  height: 15.0,
+                ),
+              ],
+            )));
   }
 
-  Step paso5(){
+  Step paso5() {
     return Step(
-      title: Text("5"),
-      isActive: currentStep > 5 ? true : false,
-      state: currentStep > 5 ? StepState.complete : StepState.editing,
-      content: Form(
-        key: _formKey5,
-        child: Column(
-          children: <Widget>[
-              Container(
-                child: Text(
-                  'Comentarios Servicio',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+        title: Text("5"),
+        isActive: currentStep > 5 ? true : false,
+        state: currentStep > 5 ? StepState.complete : StepState.editing,
+        content: Form(
+            key: _formKey5,
+            child: Column(
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    'Comentarios Servicio',
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 15.0,
-              ),
-              TextFormField(
-                controller: textComentarios,
-                maxLines: 5,
-                decoration: InputDecoration(
-                    icon: Icon(Icons.text_fields),
-                    labelText: 'Comentarios',
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(32.0))),
-                        onChanged: (value){
-                          setState(() {
-                            bloc.changeComentarios(value);
-                          });
-                        },
-                keyboardType: TextInputType.multiline,
-              ),
-          ],
-        )
-      )
-    );
+                SizedBox(
+                  height: 15.0,
+                ),
+                TextFormField(
+                  controller: textComentarios,
+                  maxLines: 5,
+                  decoration: InputDecoration(
+                      icon: Icon(Icons.text_fields),
+                      labelText: 'Comentarios',
+                      contentPadding:
+                          EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32.0))),
+                  onChanged: (value) {
+                    setState(() {
+                      bloc.changeComentarios(value);
+                    });
+                  },
+                  keyboardType: TextInputType.multiline,
+                ),
+              ],
+            )));
   }
 
   createProgressDialog() {
@@ -971,58 +990,103 @@ class _CierresInstalacionState extends State<CierresInstalacion> {
     );
   }
 
-  _enviarDatosCierreInstalacion(){
-        pr.show();
-        CierresInstalacionModel model = new CierresInstalacionModel();
-        model.noSerie = bloc.getNoSerie;
-        model.conectividad = bloc.getConectividad;
-        model.aplicativo = bloc.getAplicativo;
-        model.version = bloc.getVersion;
-        model.bateria = bloc.getBateria == null ? true : bloc.getBateria;
-        model.eliminador = bloc.getEliminador == null ? true: bloc.getEliminador;
-        model.tapa = bloc.getTapa == null ? true : bloc.getTapa;
-        model.cableAc = bloc.getCableAc == null ? true : bloc.getCableAc;
-        model.base = bloc.getBase == null ? true : bloc.getBase;
-        model.isAmex = bloc.getIsAmex == null ? false : bloc.getIsAmex;
-        if(bloc.getIsAmex == true){
-          model.idAmex = bloc.getIdAmex;
-          model.afiliacionAmex = bloc.getAfilAmex;
-          model.conclusionesAmex = bloc.getConclusionesAmex;
-        }
-        model.notificado = bloc.getNotificado == null ? true : bloc.getNotificado;
-        model.promociones = bloc.getPromociones == null ? true : bloc.getPromociones;
-        model.descargaApp = bloc.getDescargarApp == null ? true : bloc.getDescargarApp;
-        model.telefono1 = bloc.getTelefono1;
-        model.telefono2 = bloc.getTelefono2;
-        model.fechaCierre = bloc.getFechaCierre;
-        model.atiende = bloc.getAtiende;
-        model.otorganteVobo = bloc.getOtorgante;
-        model.tipoAtencion = bloc.getTipoAtencion;
-        model.rollos = bloc.getRollos;
-        model.discover = bloc.getDiscover == null ? 0 : bloc.getDiscover;
-        model.caja = bloc.getCaja;
-        model.comentario = bloc.getComentarios;
-        print(model.discover);
-        Future.delayed(Duration(seconds: 15)).then((value){
-          pr.hide().whenComplete((){
-            Navigator.pop(context);
-          });
-        });
+  Widget _crearAutoCompleteSeries() {
+    return Table(
+      columnWidths: {0: FractionColumnWidth(0.55)},
+      children: <TableRow>[
+        TableRow(children: [
+          TypeAheadField(
+            textFieldConfiguration: TextFieldConfiguration(
+                autofocus: true,
+                controller: autoCompleteSeries,
+                style: TextStyle(fontStyle: FontStyle.italic),
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(32.0)))),
+            suggestionsCallback: (pattern) async {
+              return await bloc.getSeries(pattern);
+            },
+            itemBuilder: (BuildContext context, UnidadesModel suggestion) {
+              return ListTile(
+                leading: Icon(Icons.format_list_numbered_rtl),
+                title: Text(suggestion.noSerie),
+              );
+            },
+            onSuggestionSelected: (UnidadesModel suggestion) {
+              autoCompleteSeries.text = suggestion.noSerie;
+            },
+          ),
+          RaisedButton.icon(
+            icon: Icon(Icons.photo_camera),
+            label: Text(""),
+            shape: CircleBorder(),
+            onPressed: () {},
+          ),
+          RaisedButton.icon(
+            icon: Icon(Icons.photo_library),
+            label: Text(""),
+            shape: CircleBorder(),
+            onPressed: () {},
+          ),
+        ]),
+      ],
+    );
   }
 
-  next(){
+  _enviarDatosCierreInstalacion() {
+    pr.show();
+    CierresInstalacionModel model = new CierresInstalacionModel();
+    model.noSerie = bloc.getNoSerie;
+    model.conectividad = bloc.getConectividad;
+    model.aplicativo = bloc.getAplicativo;
+    model.version = bloc.getVersion;
+    model.bateria = bloc.getBateria == null ? true : bloc.getBateria;
+    model.eliminador = bloc.getEliminador == null ? true : bloc.getEliminador;
+    model.tapa = bloc.getTapa == null ? true : bloc.getTapa;
+    model.cableAc = bloc.getCableAc == null ? true : bloc.getCableAc;
+    model.base = bloc.getBase == null ? true : bloc.getBase;
+    model.isAmex = bloc.getIsAmex == null ? false : bloc.getIsAmex;
+    if (bloc.getIsAmex == true) {
+      model.idAmex = bloc.getIdAmex;
+      model.afiliacionAmex = bloc.getAfilAmex;
+      model.conclusionesAmex = bloc.getConclusionesAmex;
+    }
+    model.notificado = bloc.getNotificado == null ? true : bloc.getNotificado;
+    model.promociones =
+        bloc.getPromociones == null ? true : bloc.getPromociones;
+    model.descargaApp =
+        bloc.getDescargarApp == null ? true : bloc.getDescargarApp;
+    model.telefono1 = bloc.getTelefono1;
+    model.telefono2 = bloc.getTelefono2;
+    model.fechaCierre = bloc.getFechaCierre;
+    model.atiende = bloc.getAtiende;
+    model.otorganteVobo = bloc.getOtorgante;
+    model.tipoAtencion = bloc.getTipoAtencion;
+    model.rollos = bloc.getRollos;
+    model.discover = bloc.getDiscover == null ? 0 : bloc.getDiscover;
+    model.caja = bloc.getCaja;
+    model.comentario = bloc.getComentarios;
+    print(model.discover);
+    Future.delayed(Duration(seconds: 15)).then((value) {
+      pr.hide().whenComplete(() {
+        Navigator.pop(context);
+      });
+    });
+  }
+
+  next() {
     currentStep + 1 != totalSteps
-                    ? goTo(currentStep + 1)
-                    : setState(() => isComplete = true);
+        ? goTo(currentStep + 1)
+        : setState(() => isComplete = true);
   }
 
-  cancel(){
-    if(currentStep > 0){
+  cancel() {
+    if (currentStep > 0) {
       goTo(currentStep - 1);
     }
   }
 
-  goTo(int step){
+  goTo(int step) {
     setState(() {
       currentStep = step;
     });

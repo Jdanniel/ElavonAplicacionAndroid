@@ -45,6 +45,7 @@ dependencies:
   flutter_local_notifications: ^0.9.1
   datetime_picker_formfield: ^0.4.3
   progress_dialog: ^1.2.0
+  flutter_typeahead: ^1.7.0
 
 dev_dependencies:
   flutter_test:

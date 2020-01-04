@@ -211,7 +211,7 @@ class _CierresSustitucionState extends State<CierresSustitucion> {
                       bloc.changeVersion(newValue);
                     });
                   },
-                  keyboardType: TextInputType.numberWithOptions(),
+                  keyboardType: TextInputType.number,
                 ),
               ],
             )));

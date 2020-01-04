@@ -511,6 +511,17 @@ class DBProvider {
     return list;
   }
 
+  Future<List<UnidadesModel>> getAllUnidadesBySerie(String serie) async {
+    final db = await database;
+    final res = await db.rawQuery("SELECT * FROM ${Bdunidades.table} WHERE ${Bdunidades.columnNOSERIE} LIKE '%$serie%'");
+
+    List<UnidadesModel> list = res.isNotEmpty
+        ? res.map((s) => UnidadesModel.fromJson(s)).toList()
+        : [];
+    // await db.close();
+    return list;
+  }  
+
   Future<List<MovimientoInventarioSF>> getAllMovimientoInventarioSF() async {
     final db = await database;
     final res = await db.query(CmovimientoInventarioServicioFalla.table);
